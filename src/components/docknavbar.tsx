@@ -68,8 +68,8 @@ const DockNavbar = () => {
       baseItemSize={52}
       magnification={70}
       className="fixed top-6 left-1/2 -translate-x-1/2 z-[999] 
-        bg-white/5 backdrop-blur-md 
-        border border-red-500/30 
+         bg-gradient-to-r from-red-700/55 via-red-600/55 to-amber-500/50 backdrop-blur-md 
+        border border-white
         shadow-[0_0_20px_rgba(255,0,0,0.4)] 
         rounded-2xl px-4 py-2"
     />
