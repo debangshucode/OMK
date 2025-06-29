@@ -16,14 +16,14 @@ export default function HeroOverlay() {
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1 }}
-        className="text-sm sm:text-base md:text-lg tracking-widest text-white/70 font-medium uppercase mb-4"
+        className="text-sm sm:text-base md:text-lg tracking-widest text-white font-medium uppercase mb-4"
       >
         Creating Moments That Matter
       </motion.h2>
 
       {/* Heading with static + animated rotating text */}
       <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-        <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold text-white tracking-tight">
+        <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold text-amber-500 tracking-tight">
           We Capture
         </h1>
         <RotatingText
@@ -40,7 +40,7 @@ export default function HeroOverlay() {
       </div>
 
       {/* Supporting line */}
-      <p className="mt-4 text-white/75 text-sm sm:text-lg md:text-xl max-w-xl font-light leading-relaxed">
+      <p className="mt-4 text-white text-sm sm:text-lg md:text-xl max-w-xl font-light leading-relaxed">
         Professional Wedding Photography & Cinematography – Told with elegance,
         style & soul.
       </p>
