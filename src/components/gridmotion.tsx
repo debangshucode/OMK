@@ -35,51 +35,30 @@ const GridMotion: FC<GridMotionProps> = ({
       ? items.slice(0, totalItems)
       : [...items, ...defaultItems.slice(items.length, totalItems)];
 
-  useEffect(() => {
-    mouseXRef.current = window.innerWidth / 2;
-    gsap.ticker.lagSmoothing(0);
+useEffect(() => {
+  gsap.ticker.lagSmoothing(0);
 
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseXRef.current = e.clientX;
-    };
+  rowRefs.current.forEach((row, index) => {
+    if (row) {
+      const direction = index % 2 === 0 ? 1 : -1;
+      const moveAmount = 100; // Customize scroll distance
+      const duration = 6 + index; // Vary duration slightly per row
 
-    const updateMotion = () => {
-      const maxMoveAmount = 300;
-      const baseDuration = 0.8;
-      const inertiaFactors = [0.6, 0.4, 0.3, 0.2];
-
-      rowRefs.current.forEach((row, index) => {
-        if (row) {
-          const direction = index % 2 === 0 ? 1 : -1;
-          const moveAmount =
-            ((mouseXRef.current / window.innerWidth) * maxMoveAmount -
-              maxMoveAmount / 2) *
-            direction;
-
-          gsap.to(row, {
-            x: moveAmount,
-            duration:
-              baseDuration + inertiaFactors[index % inertiaFactors.length],
-            ease: "power3.out",
-            overwrite: "auto",
-          });
-        }
+      gsap.to(row, {
+        x: direction * moveAmount,
+        duration,
+        ease: "none",
+        repeat: -1,
+        yoyo: true,
       });
-    };
-
-    const removeAnimationLoop = gsap.ticker.add(updateMotion);
-    window.addEventListener("mousemove", handleMouseMove);
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      removeAnimationLoop();
-    };
-  }, []);
+    }
+  });
+}, []);
 
   return (
     
     <div ref={gridRef} className="h-full w-full overflow-hidden">
-        <SplashCursor />
+        {/* <SplashCursor /> */}
       <section 
         className="w-full h-screen overflow-hidden relative flex items-center justify-center"
         style={{
