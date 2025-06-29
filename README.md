@@ -34,3 +34,30 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📁 Project Structure
+omk/
+├── app/
+│ └── page.tsx # Main home page
+│
+├── components/
+│ ├── dock.tsx # macOS-style interactive dock
+│ ├── docknavbar.tsx # Fixed top navbar using Dock
+│ ├── gridmotion.tsx # Background with animated grid motion
+│ ├── herooverlay.tsx # Hero section with animated overlay
+│ ├── rotatingtext.tsx # Custom rotating text component
+│ └── splashcursor.tsx # Cursor splash effect (used only in gridmotion)
+│
+├── data/
+│ └── index.ts # Custom grid items data
+│
+├── public/ # Static assets like images, favicon, etc.
+│
+├── styles/
+│ └── globals.css # Tailwind & global styles
+│
+├── layout.tsx # Root layout with fonts and structure
+├── tailwind.config.ts # Tailwind configuration
+├── tsconfig.json # TypeScript config
+├── next.config.js # Next.js config
+├── package.json # Dependencies and project info
+└── README.md # Project documentation
