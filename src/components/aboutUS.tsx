@@ -104,19 +104,19 @@ const AboutUs = () => {
 
               <div className="grid grid-cols-2 gap-4 pt-4">
                 {[
-                  "Photography",
-                  "Videography",
-                  "Pre-Wedding",
-                  "Cinematography",
+                   { name: "Photography", color: "red-600" },
+                  { name: "Videography", color: "red-600" },
+                  { name: "Pre-Wedding", color: "amber-500" },
+                  { name: "Cinematography", color: "amber-500" },
                 ].map((service, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <div
-                      className={`w-3 h-3 rounded-full ${
-                        i < 2 ? "bg-red-600" : "bg-amber-500"
-                      }`}
-                    />
-                    <span>{service}</span>
-                  </div>
+                  <div
+      key={i}
+      className={`flex items-center gap-3 px-4 py-2 rounded-full border-1 backdrop-blur-md bg-white/10 shadow-md transition-transform duration-300 hover:scale-105 pointer-events-auto 
+        border-${service.color} text-${service.color}`}
+    >
+      <div className={`w-3 h-3 rounded-full bg-${service.color}`} />
+      <span className="font-semibold">{service.name}</span>
+    </div>
                 ))}
               </div>
             </div>
