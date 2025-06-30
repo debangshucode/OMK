@@ -1,7 +1,18 @@
 "use client";
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, Video, Heart, Film, ArrowRight, Play, Pause, Star, Eye, Zap } from 'lucide-react';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Camera,
+  Video,
+  Heart,
+  Film,
+  ArrowRight,
+  Play,
+  Pause,
+  Star,
+  Eye,
+  Zap,
+} from "lucide-react";
 
 const Services = () => {
   const [activeService, setActiveService] = useState(0);
@@ -13,57 +24,101 @@ const Services = () => {
       icon: Camera,
       title: "Photography",
       subtitle: "Capturing Timeless Moments",
-      description: "Professional photography that tells your unique story through stunning visuals and artistic composition.",
-      features: ["Portrait Sessions", "Event Coverage", "Commercial Shoots", "Fine Art Photography"],
+      title2: "Experienced Team",
+      subtitle2:
+        "Our skilled professionals bring years of hands-on experience in photography and cinematography.",
+      description:
+        "Professional photography that tells your unique story through stunning visuals and artistic composition.",
+      features: [
+        "Portrait Sessions",
+        "Event Coverage",
+        "Commercial Shoots",
+        "Fine Art Photography",
+      ],
       color: "from-red-500 to-red-600",
       bgColor: "bg-red-50",
       textColor: "text-red-600",
-      image: "https://images.pexels.com/photos/1264210/pexels-photo-1264210.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
+      buttonColor: "from-red-600/80 to-red-700/50",
+      image:
+        "https://images.pexels.com/photos/1264210/pexels-photo-1264210.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
       price: "Starting at $299",
-      duration: "2-4 hours"
+      duration: "2-4 hours",
     },
     {
       id: 1,
       icon: Video,
       title: "Videography",
       subtitle: "Dynamic Visual Storytelling",
-      description: "Cinematic videography that brings your vision to life with professional equipment and creative direction.",
-      features: ["Event Videography", "Corporate Videos", "Promotional Content", "Documentary Style"],
+      title2: "Client Satisfaction",
+      subtitle2:
+        "We prioritize your vision and satisfaction, ensuring each project exceeds expectations.",
+      description:
+        "Cinematic videography that brings your vision to life with professional equipment and creative direction.",
+      features: [
+        "Event Videography",
+        "Corporate Videos",
+        "Promotional Content",
+        "Documentary Style",
+      ],
       color: "from-red-600 to-red-700",
       bgColor: "bg-red-100",
       textColor: "text-red-700",
-      image: "https://images.pexels.com/photos/3062541/pexels-photo-3062541.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
+      buttonColor: "from-red-600/80 to-red-700/50",
+      image:
+        "https://images.pexels.com/photos/3062541/pexels-photo-3062541.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
       price: "Starting at $599",
-      duration: "4-8 hours"
+      duration: "4-8 hours",
     },
     {
       id: 2,
       icon: Heart,
       title: "Pre-Wedding",
       subtitle: "Romance in Every Frame",
-      description: "Romantic pre-wedding sessions that capture the essence of your love story in beautiful locations.",
-      features: ["Couple Sessions", "Engagement Shoots", "Save-the-Date", "Romantic Portraits"],
+      title2: "Creative Excellence",
+      subtitle2:
+        "Our team captures authentic emotions and moments with a modern, cinematic touch.",
+      description:
+        "Romantic pre-wedding sessions that capture the essence of your love story in beautiful locations.",
+      features: [
+        "Couple Sessions",
+        "Engagement Shoots",
+        "Save-the-Date",
+        "Romantic Portraits",
+      ],
       color: "from-amber-500 to-amber-600",
       bgColor: "bg-amber-50",
       textColor: "text-amber-600",
-      image: "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
+      buttonColor: "from-amber-500/80 to-amber-600/50",
+      image:
+        "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
       price: "Starting at $399",
-      duration: "3-5 hours"
+      duration: "3-5 hours",
     },
     {
       id: 3,
       icon: Film,
       title: "Cinematography",
       subtitle: "Cinematic Excellence",
-      description: "Professional cinematography with cutting-edge equipment and artistic vision for your special moments.",
-      features: ["Wedding Films", "Short Films", "Music Videos", "Cinematic Edits"],
+      title2: "Reliable & On Time",
+      subtitle2:
+        "We value your time and always deliver high-quality output within agreed timelines.",
+      description:
+        "Professional cinematography with cutting-edge equipment and artistic vision for your special moments.",
+      features: [
+        "Wedding Films",
+        "Short Films",
+        "Music Videos",
+        "Cinematic Edits",
+      ],
       color: "from-slate-600 to-slate-700",
       bgColor: "bg-slate-50",
       textColor: "text-slate-600",
-      image: "https://images.pexels.com/photos/3062541/pexels-photo-3062541.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
+      buttonColor: "from-slate-600/80 to-slate-700/50",
+      image:
+        "https://images.pexels.com/photos/3062541/pexels-photo-3062541.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
       price: "Starting at $799",
-      duration: "Full day"
-    }
+      duration: "Full day",
+    },
   ];
 
   const containerVariants = {
@@ -72,9 +127,9 @@ const Services = () => {
       opacity: 1,
       transition: {
         delayChildren: 0.3,
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
@@ -84,9 +139,9 @@ const Services = () => {
       opacity: 1,
       transition: {
         duration: 0.6,
-        ease: "easeOut"
-      }
-    }
+        ease: "easeOut",
+      },
+    },
   };
 
   const cardVariants = {
@@ -96,15 +151,15 @@ const Services = () => {
       opacity: 1,
       transition: {
         duration: 0.5,
-        ease: "easeOut"
-      }
-    }
+        ease: "easeOut",
+      },
+    },
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50 py-20">
       {/* Header Section */}
-      <motion.section 
+      <motion.section
         className="px-6 mb-20"
         initial="hidden"
         animate="visible"
@@ -121,15 +176,16 @@ const Services = () => {
               <span className="text-slate-800">Visual Solutions</span>
             </h1>
             <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
-              From intimate portraits to grand celebrations, we offer comprehensive visual services 
-              tailored to capture your unique story with creativity and professionalism.
+              From intimate portraits to grand celebrations, we offer
+              comprehensive visual services tailored to capture your unique
+              story with creativity and professionalism.
             </p>
           </motion.div>
         </div>
       </motion.section>
 
       {/* Interactive Service Showcase */}
-      <motion.section 
+      <motion.section
         className="px-6 mb-20"
         initial="hidden"
         whileInView="visible"
@@ -138,34 +194,47 @@ const Services = () => {
       >
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            
             {/* Left Side - Service Navigation */}
             <motion.div variants={itemVariants} className="space-y-4">
               {services.map((service, index) => (
                 <motion.div
                   key={service.id}
                   className={`p-6 rounded-2xl cursor-pointer transition-all duration-500 ${
-                    activeService === index 
-                      ? `${service.bgColor} shadow-lg scale-105` 
-                      : 'bg-white hover:bg-gray-50 shadow-md hover:shadow-lg'
+                    activeService === index
+                      ? `${service.bgColor} shadow-lg scale-105`
+                      : "bg-white hover:bg-gray-50 shadow-md hover:shadow-lg"
                   }`}
                   onClick={() => setActiveService(index)}
                   whileHover={{ x: 10 }}
                   whileTap={{ scale: 0.98 }}
                 >
                   <div className="flex items-center space-x-4">
-                    <div className={`w-16 h-16 rounded-xl flex items-center justify-center bg-gradient-to-br ${service.color} shadow-lg`}>
+                    <div
+                      className={`w-16 h-16 rounded-xl flex items-center justify-center bg-gradient-to-br ${service.color} shadow-lg`}
+                    >
                       <service.icon className="w-8 h-8 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h3 className={`text-xl font-bold ${activeService === index ? service.textColor : 'text-slate-800'} transition-colors duration-300`}>
+                      <h3
+                        className={`text-xl font-bold ${
+                          activeService === index
+                            ? service.textColor
+                            : "text-slate-800"
+                        } transition-colors duration-300`}
+                      >
                         {service.title}
                       </h3>
-                      <p className="text-slate-600 text-sm">{service.subtitle}</p>
+                      <p className="text-slate-600 text-sm">
+                        {service.subtitle}
+                      </p>
                     </div>
-                    <ArrowRight className={`w-5 h-5 transition-all duration-300 ${
-                      activeService === index ? `${service.textColor} translate-x-2` : 'text-slate-400'
-                    }`} />
+                    <ArrowRight
+                      className={`w-5 h-5 transition-all duration-300 ${
+                        activeService === index
+                          ? `${service.textColor} translate-x-2`
+                          : "text-slate-400"
+                      }`}
+                    />
                   </div>
                 </motion.div>
               ))}
@@ -183,8 +252,8 @@ const Services = () => {
                   className="bg-white rounded-3xl p-8 shadow-2xl"
                 >
                   <div className="relative mb-6 rounded-2xl overflow-hidden">
-                    <img 
-                      src={services[activeService].image} 
+                    <img
+                      src={services[activeService].image}
                       alt={services[activeService].title}
                       className="w-full h-64 object-cover"
                     />
@@ -192,7 +261,9 @@ const Services = () => {
                     <div className="absolute bottom-4 left-4 text-white">
                       <div className="flex items-center space-x-2 mb-2">
                         <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                        <span className="text-sm font-medium">Premium Service</span>
+                        <span className="text-sm font-medium">
+                          Premium Service
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -208,27 +279,33 @@ const Services = () => {
                     {services[activeService].features.map((feature, idx) => (
                       <div key={idx} className="flex items-center space-x-2">
                         <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
-                        <span className="text-sm text-slate-600">{feature}</span>
+                        <span className="text-sm text-slate-600">
+                          {feature}
+                        </span>
                       </div>
                     ))}
                   </div>
 
                   <div className="flex items-center justify-between pt-6 border-t border-gray-100">
                     <div>
-                      <p className="text-2xl font-bold text-slate-800">{services[activeService].price}</p>
-                      <p className="text-sm text-slate-500">{services[activeService].duration}</p>
+                      <p className="text-2xl font-bold text-slate-800">
+                        {services[activeService].price}
+                      </p>
+                      <p className="text-sm text-slate-500">
+                        {services[activeService].duration}
+                      </p>
                     </div>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`px-6 py-3 bg-gradient-to-r ${services[activeService].color} text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300`}
+                      className={`px-6 py-3 bg-gradient-to-r ${services[activeService].buttonColor} text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300`}
                     >
-                     Our Works
+                      Our Works
                     </motion.button>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`px-6 py-3 bg-gradient-to-r ${services[activeService].color} text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300`}
+                      className={`px-6 py-3 bg-gradient-to-r ${services[activeService].buttonColor} text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300`}
                     >
                       Book Now
                     </motion.button>
@@ -241,7 +318,7 @@ const Services = () => {
       </motion.section>
 
       {/* Service Cards Grid */}
-      <motion.section 
+      <motion.section
         className="px-6 mb-20"
         initial="hidden"
         whileInView="visible"
@@ -254,7 +331,8 @@ const Services = () => {
               Why Choose <span className="text-red-600">Our Services</span>
             </h2>
             <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Professional quality, creative vision, and personalized service for every project.
+              Professional quality, creative vision, and personalized service
+              for every project.
             </p>
           </motion.div>
 
@@ -263,9 +341,9 @@ const Services = () => {
               <motion.div
                 key={service.id}
                 variants={cardVariants}
-                whileHover={{ 
+                whileHover={{
                   y: -10,
-                  transition: { duration: 0.3 }
+                  transition: { duration: 0.3 },
                 }}
                 onHoverStart={() => setHoveredCard(index)}
                 onHoverEnd={() => setHoveredCard(null)}
@@ -273,15 +351,21 @@ const Services = () => {
               >
                 {/* Background Pattern */}
                 <div className="absolute inset-0 opacity-5">
-                  <div className={`w-full h-full bg-gradient-to-br ${service.color}`}></div>
+                  <div
+                    className={`w-full h-full bg-gradient-to-br ${service.color}`}
+                  ></div>
                 </div>
 
                 {/* Floating Icon */}
                 <motion.div
-                  animate={hoveredCard === index ? { 
-                    rotate: [0, -10, 10, 0],
-                    scale: [1, 1.1, 1]
-                  } : {}}
+                  animate={
+                    hoveredCard === index
+                      ? {
+                          rotate: [0, -10, 10, 0],
+                          scale: [1, 1.1, 1],
+                        }
+                      : {}
+                  }
                   transition={{ duration: 0.6 }}
                   className={`w-16 h-16 bg-gradient-to-br ${service.color} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:shadow-xl transition-shadow duration-300`}
                 >
@@ -289,10 +373,10 @@ const Services = () => {
                 </motion.div>
 
                 <h3 className="text-xl font-bold text-slate-800 mb-2 group-hover:text-red-600 transition-colors duration-300">
-                  {service.title}
+                  {service.title2}
                 </h3>
                 <p className="text-slate-600 text-sm mb-4 leading-relaxed">
-                  {service.subtitle}
+                  {service.subtitle2}
                 </p>
 
                 {/* Feature List */}
@@ -307,7 +391,9 @@ const Services = () => {
 
                 {/* Price and CTA */}
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold text-slate-800">{service.price}</span>
+                  <span className="text-lg font-bold text-slate-800">
+                    {service.price}
+                  </span>
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -320,7 +406,11 @@ const Services = () => {
                 {/* Hover Effect Overlay */}
                 <motion.div
                   initial={{ scale: 0, opacity: 0 }}
-                  animate={hoveredCard === index ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+                  animate={
+                    hoveredCard === index
+                      ? { scale: 1, opacity: 1 }
+                      : { scale: 0, opacity: 0 }
+                  }
                   className="absolute top-4 right-4"
                 >
                   <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center">
@@ -334,7 +424,7 @@ const Services = () => {
       </motion.section>
 
       {/* Call to Action */}
-      <motion.section 
+      <motion.section
         className="px-6"
         initial="hidden"
         whileInView="visible"
@@ -342,7 +432,7 @@ const Services = () => {
         variants={containerVariants}
       >
         <div className="max-w-4xl mx-auto">
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="bg-gradient-to-r from-red-600 to-red-700 rounded-3xl p-12 text-center shadow-2xl"
           >
@@ -352,7 +442,8 @@ const Services = () => {
               <span className="text-amber-300">Amazing Together?</span>
             </h2>
             <p className="text-xl text-red-100 mb-8 leading-relaxed">
-              Let's discuss your vision and bring your story to life through our creative lens.
+              Let's discuss your vision and bring your story to life through our
+              creative lens.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.button
