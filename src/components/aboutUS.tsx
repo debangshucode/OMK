@@ -1,5 +1,5 @@
 "use client";
-
+import CountUp from "react-countup";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Award, Users, Clock, Sparkles } from "lucide-react";
@@ -16,11 +16,11 @@ const AboutUs = () => {
     "/images/weadingHome5.jpg",
   ];
   useEffect(() => {
-  images.forEach((src) => {
-    const img = new Image();
-    img.src = src;
-  });
-}, []);
+    images.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prev) =>
@@ -42,17 +42,16 @@ const AboutUs = () => {
   };
 
   const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.8,
-      ease: [0.25, 0.1, 0.25, 1], // ✅ this is valid
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.8,
+        ease: [0.25, 0.1, 0.25, 1], // ✅ this is valid
+      },
     },
-  },
-};
-
+  };
 
   const slideVariants = {
     enter: { x: 300, opacity: 0 },
@@ -61,10 +60,45 @@ const AboutUs = () => {
   };
 
   const stats = [
-    { icon: Award, value: "500+", label: "Projects Completed" },
-    { icon: Users, value: "300+", label: "Happy Clients" },
-    { icon: Clock, value: "5+", label: "Years Experience" },
-    { icon: Sparkles, value: "50+", label: "Awards Won" },
+    { icon: Award, value: 500, label: "Projects Completed", suffix: "+" },
+    { icon: Users, value: 300, label: "Happy Clients", suffix: "+" },
+    { icon: Clock, value: 5, label: "Years Experience", suffix: "+" },
+    { icon: Sparkles, value: 50, label: "Awards Won", suffix: "+" },
+  ];
+
+  const services = [
+    {
+      name: "Photography",
+      color: "red-600",
+      bg: "bg-red-600/20",
+      border: "border-red-600",
+      text: "text-red-600",
+      dot: "bg-red-600",
+    },
+    {
+      name: "Videography",
+      color: "red-600",
+      bg: "bg-red-600/20",
+      border: "border-red-600",
+      text: "text-red-600",
+      dot: "bg-red-600",
+    },
+    {
+      name: "Pre-Wedding",
+      color: "amber-500",
+      bg: "bg-amber-500/20",
+      border: "border-amber-500",
+      text: "text-amber-500",
+      dot: "bg-amber-500",
+    },
+    {
+      name: "Cinematography",
+      color: "amber-500",
+      bg: "bg-amber-500/20",
+      border: "border-amber-500",
+      text: "text-amber-500",
+      dot: "bg-amber-500",
+    },
   ];
 
   return (
@@ -103,20 +137,14 @@ const AboutUs = () => {
               </p>
 
               <div className="grid grid-cols-2 gap-4 pt-4">
-                {[
-                   { name: "Photography", color: "red-600" },
-                  { name: "Videography", color: "red-600" },
-                  { name: "Pre-Wedding", color: "amber-500" },
-                  { name: "Cinematography", color: "amber-500" },
-                ].map((service, i) => (
+                {services.map((service, i) => (
                   <div
-      key={i}
-      className={`flex items-center gap-3 px-4 py-2 rounded-full border-1 backdrop-blur-md bg-white/10 shadow-md transition-transform duration-300 hover:scale-105 pointer-events-auto 
-        border-${service.color} text-${service.color}`}
-    >
-      <div className={`w-3 h-3 rounded-full bg-${service.color}`} />
-      <span className="font-semibold">{service.name}</span>
-    </div>
+                    key={i}
+                    className={`flex items-center gap-3 px-4 py-2 rounded-full backdrop-blur-md ${service.bg} ${service.border} ${service.text} shadow-[0_4px_30px_rgba(18,1,18,0.1)] transition-transform duration-300 hover:scale-105`}
+                  >
+                    <div className={`w-3 h-3 rounded-full ${service.dot}`} />
+                    <span className="font-semibold">{service.name}</span>
+                  </div>
                 ))}
               </div>
             </div>
@@ -219,9 +247,16 @@ const AboutUs = () => {
                 <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-white/20 transition-colors duration-300">
                   <stat.icon className="w-8 h-8 text-amber-300" />
                 </div>
-                <div className="text-3xl md:text-4xl font-bold text-white mb-2">
-                  {stat.value}
-                </div>
+                
+                  <CountUp
+                    end={stat.value}
+                    duration={2.5}
+                    enableScrollSpy
+                    scrollSpyOnce
+                    suffix={stat.suffix}
+                    className="text-3xl md:text-4xl font-bold text-white mb-2"
+                  />
+                
                 <div className="text-red-100 font-medium">{stat.label}</div>
               </motion.div>
             ))}
