@@ -23,13 +23,13 @@ export default function HeroOverlay() {
 
       {/* Heading with static + animated rotating text */}
       <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-        <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold text-amber-500 tracking-tight">
-          We Capture
+        <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold bg-gradient-to-r from-amber-500 via-red-600 to-red-600 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(18,1,18,0.8)] tracking-tight">
+          WE CAPTURE 
         </h1>
         <RotatingText
           texts={["Emotions", "Smiles", "Love", "Stories"]}
           splitBy="words"
-          mainClassName="text-4xl sm:text-6xl md:text-7xl font-extrabold text-white  drop-shadow-[0_0_10px_rgba(255,0,0,0.8)]"
+          mainClassName="text-4xl sm:text-6xl md:text-7xl font-extrabold text-white  drop-shadow-[0_0_10px_rgba(18,0,0,0.8)]"
           splitLevelClassName="gap-x-2"
           elementLevelClassName="inline-block"
           staggerDuration={0.12}
