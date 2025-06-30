@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowBigRightDash } from "lucide-react";
 import RotatingText from "./rotatingtext";
 import { motion } from "framer-motion";
 
@@ -20,6 +21,7 @@ export default function HeroOverlay() {
       >
         Creating Moments That Matter
       </motion.h2>
+      
 
       {/* Heading with static + animated rotating text */}
       <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
@@ -52,7 +54,7 @@ export default function HeroOverlay() {
         transition={{ delay: 1.2, duration: 0.6 }}
         className="mt-8 px-8 py-3 bg-transparent border-2 border-white text-white text-base sm:text-lg font-semibold rounded-full backdrop-blur-md shadow-md hover:scale-105 transition-transform duration-300 pointer-events-auto hover:border-amber-500  glow-border"
       >
-        Book Your Special Day →
+        Book Your Special Day 
       </motion.button>
     </motion.div>
   );

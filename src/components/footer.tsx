@@ -19,6 +19,7 @@ import {
   Clock,
   CheckCircle,
   ArrowRight,
+  Aperture,
 } from "lucide-react";
 
 const Footer = () => {
@@ -27,6 +28,7 @@ const Footer = () => {
     email: "",
     phone: "",
     service: "",
+    service_types : "",
     date: "",
     message: "",
   });
@@ -42,6 +44,7 @@ const Footer = () => {
     "Videography",
     "Cinematography",
   ];
+  const service_types = ["Single Side" , "Both Side"]
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -72,6 +75,7 @@ const Footer = () => {
         email: "",
         phone: "",
         service: "",
+        service_types :"",
         date: "",
         message: "",
       });
@@ -347,6 +351,31 @@ const Footer = () => {
                         </select>
                       </div>
                     </div>
+                    {/* Types of Photography */}
+                   <div className="relative">
+                        <Aperture className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
+                        <select
+                          name="service_types"
+                          value={formData.service_types}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300 appearance-none"
+                        >
+                          <option value="" className="bg-slate-800">
+                            Select Service Type
+                          </option>
+                          {service_types.map((service, index) => (
+                            <option
+                              key={index}
+                              value={service}
+                              className="bg-slate-800"
+                            >
+                              {service}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    
 
                     {/* Date */}
                     <div className="relative">
