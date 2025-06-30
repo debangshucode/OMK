@@ -223,6 +223,13 @@ const Services = () => {
                       whileTap={{ scale: 0.95 }}
                       className={`px-6 py-3 bg-gradient-to-r ${services[activeService].color} text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300`}
                     >
+                     Our Works
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`px-6 py-3 bg-gradient-to-r ${services[activeService].color} text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300`}
+                    >
                       Book Now
                     </motion.button>
                   </div>
