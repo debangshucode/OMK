@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Camera,
@@ -155,7 +155,7 @@ const Services = () => {
       },
     },
   };
-
+  const detailRef = useRef<HTMLDivElement>(null);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50 py-20">
       {/* Header Section */}
@@ -204,7 +204,12 @@ const Services = () => {
                       ? `${service.bgColor} shadow-lg scale-105`
                       : "bg-white hover:bg-gray-50 shadow-md hover:shadow-lg"
                   }`}
-                  onClick={() => setActiveService(index)}
+                  onClick={() => {
+                    setActiveService(index);
+                    if (window.innerWidth < 1024 && detailRef.current) {
+                      detailRef.current.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}
                   whileHover={{ x: 10 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -241,7 +246,7 @@ const Services = () => {
             </motion.div>
 
             {/* Right Side - Active Service Details */}
-            <motion.div variants={itemVariants} className="relative">
+            <motion.div variants={itemVariants} className="relative" ref={detailRef}>
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeService}
@@ -286,9 +291,9 @@ const Services = () => {
                     ))}
                   </div>
 
-                  <div className="flex items-center justify-between pt-6 border-t border-gray-100">
+                  <div className="flex items-center gap-2 justify-between pt-6 border-t border-gray-100">
                     <div>
-                      <p className="text-2xl font-bold text-slate-800">
+                      <p className="text-xl xl:text-2xl font-bold text-slate-800">
                         {services[activeService].price}
                       </p>
                       <p className="text-sm text-slate-500">
@@ -298,14 +303,14 @@ const Services = () => {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`px-6 py-3 bg-gradient-to-r ${services[activeService].buttonColor} text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300`}
+                      className={` px-2 py-2 xl:px-6 xl:py-3 bg-gradient-to-r ${services[activeService].buttonColor} text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300`}
                     >
                       Our Works
                     </motion.button>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`px-6 py-3 bg-gradient-to-r ${services[activeService].buttonColor} text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300`}
+                      className={`px-2 py-2 xl:px-6 xl:py-3 bg-gradient-to-r ${services[activeService].buttonColor} text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300`}
                     >
                       Book Now
                     </motion.button>
