@@ -151,7 +151,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-red-900 text-white relative overflow-hidden">
+    <footer id="contact" className="bg-gradient-to-br from-slate-900 via-slate-800 to-red-900 text-white relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-20 left-20 w-32 h-32 bg-white rounded-full"></div>

@@ -155,6 +155,7 @@ const Quickbook = () => {
     "Portrait Session",
     "Family Photography",
     "Engagement Shoot",
+    "Anniversary Session",
   ];
 
   const stats = [
@@ -316,7 +317,13 @@ const Quickbook = () => {
                   variants={itemVariants}
                   whileHover={{ y: -10, scale: 1.02 }}
                   className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer"
-                  onClick={() => setSelectedClient(member)}
+                  onClick={() => {
+                    setSelectedClient(member);
+                    setFormData((prev) => ({
+                      ...prev,
+                      service: member.service,
+                    }));
+                  }}
                 >
                   {/* Image Section */}
                   <div className="relative overflow-hidden">
@@ -406,14 +413,14 @@ const Quickbook = () => {
             >
               <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-3xl p-12 text-white shadow-2xl">
                 <div className="flex justify-center">
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, duration: 0.5 }}
-                  className=" w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mb-6"
-                >
-                  <Sparkles className="w-10 h-10 text-white" />
-                </motion.div>
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.2, duration: 0.5 }}
+                    className=" w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mb-6"
+                  >
+                    <Sparkles className="w-10 h-10 text-white" />
+                  </motion.div>
                 </div>
                 <h2 className="text-4xl font-bold mb-4">
                   Ready to Join Our{" "}
