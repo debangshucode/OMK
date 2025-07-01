@@ -11,7 +11,13 @@ const HeaderActions = () => {
   };
 
   return (
-    <div className="absolute top-6 right-6 z-[998] flex items-center gap-4">
+    <div
+  className="
+    absolute top-auto bottom-6 left-1/2 -translate-x-1/2
+    xl:top-6 xl:bottom-auto xl:left-auto xl:right-6 xl:translate-x-0
+    flex items-center gap-4 z-[998] w-max xl:w-auto
+  "
+>
       <button
         onClick={handleHireUs}
         className="bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-700 hover:to-amber-600 
