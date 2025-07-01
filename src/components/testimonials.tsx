@@ -458,7 +458,7 @@ const Testimonials = () => {
       </motion.section>
 
       {/* Stats Section */}
-     <Quickbook />
+     {/* <Quickbook /> */}
 
       {/* All Team Grid */}
       <motion.section

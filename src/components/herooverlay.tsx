@@ -29,7 +29,7 @@ export default function HeroOverlay() {
           WE CAPTURE 
         </h1>
         <RotatingText
-          texts={["Emotions", "Smiles", "Love", "Stories"]}
+          texts={["Emotions", "Smiles", "Love", "Stories" , "Moments"]}
           splitBy="words"
           mainClassName="text-4xl sm:text-6xl md:text-7xl font-extrabold text-white  drop-shadow-[0_0_10px_rgba(18,0,0,0.8)]"
           splitLevelClassName="gap-x-2"
