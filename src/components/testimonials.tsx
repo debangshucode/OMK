@@ -221,7 +221,7 @@ const Testimonials = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50 py-20">
+    <div id="testimonials" className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50 py-20">
       {/* Header Section */}
       <motion.section
         className="px-6 mb-20"
@@ -276,15 +276,15 @@ const Testimonials = () => {
                   onMouseEnter={() => setIsAutoPlaying(false)}
                   onMouseLeave={() => setIsAutoPlaying(true)}
                 >
-                  <div className="grid lg:grid-cols-2 gap-12 items-center w-full">
+                  <div className="grid lg:grid-cols-2 gap-0 xl:gap-12 items-center w-full">
                     {/* Left Side - Content */}
-                    <div className="space-y-6">
+                    <div className="space-y-1 xl:space-y-6">
                       {/* Quote Icon */}
                       <motion.div
                         initial={{ scale: 0, rotate: -180 }}
                         animate={{ scale: 1, rotate: 0 }}
                         transition={{ delay: 0.2, duration: 0.5 }}
-                        className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg"
+                        className="w-8 h-8 xl:w-16 xl:h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg"
                       >
                         <Quote className="w-8 h-8 text-white" />
                       </motion.div>
@@ -302,7 +302,7 @@ const Testimonials = () => {
                                 duration: 0.3,
                               }}
                             >
-                              <Star className="w-6 h-6 fill-amber-400 text-amber-400" />
+                              <Star className="w-2 h-2 xl:w-6 xl:h-6 fill-amber-400 text-amber-400" />
                             </motion.div>
                           )
                         )}
@@ -313,7 +313,7 @@ const Testimonials = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4, duration: 0.6 }}
-                        className="text-xl text-slate-700 leading-relaxed italic"
+                        className="text-sm xl:text-xl text-slate-700 leading-relaxed italic"
                       >
                         "{testimonials[activeTestimonial].text}"
                       </motion.p>
@@ -325,7 +325,7 @@ const Testimonials = () => {
                         transition={{ delay: 0.5, duration: 0.6 }}
                         className="space-y-2"
                       >
-                        <h3 className="text-2xl font-bold text-slate-800">
+                        <h3 className="text-md xl:text-2xl font-bold text-slate-800">
                           {testimonials[activeTestimonial].name}
                         </h3>
                         <p className="text-red-600 font-medium">
@@ -345,7 +345,7 @@ const Testimonials = () => {
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.6, duration: 0.4 }}
-                        className="inline-block px-4 py-2 bg-amber-100 text-amber-700 rounded-full text-sm font-medium"
+                        className="inline-block px-2 py-1 xl:px-4 xl:py-2 bg-amber-100 text-amber-700 rounded-full text-sm font-medium"
                       >
                         {testimonials[activeTestimonial].service}
                       </motion.div>
@@ -360,7 +360,7 @@ const Testimonials = () => {
                         className="relative"
                       >
                         {/* Client Image */}
-                        <div className="w-80 h-80 mx-auto rounded-full overflow-hidden shadow-2xl border-8 border-white">
+                        <div className="w-30 h-30 xl:w-80 xl:h-80 mx-auto rounded-full overflow-hidden shadow-2xl border-4 xl:border-8 border-white">
                           <img
                             src={testimonials[activeTestimonial].image}
                             alt={testimonials[activeTestimonial].name}
@@ -379,7 +379,7 @@ const Testimonials = () => {
                             repeat: Infinity,
                             ease: "easeInOut",
                           }}
-                          className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg"
+                          className="absolute -top-4 -right-4 w-8 h-8 xl:w-16 xl:h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg"
                         >
                           <Heart className="w-8 h-8 text-white fill-white" />
                         </motion.div>
@@ -395,7 +395,7 @@ const Testimonials = () => {
                             ease: "easeInOut",
                             delay: 1,
                           }}
-                          className="absolute -bottom-4 -left-4 w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg"
+                          className="absolute -bottom-4 -left-4 w-8 h-8 xl:w-16 xl:h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg"
                         >
                           <Camera className="w-6 h-6 text-white" />
                         </motion.div>

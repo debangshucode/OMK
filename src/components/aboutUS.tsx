@@ -102,7 +102,7 @@ const AboutUs = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-red-50">
+    <div id="about" className="min-h-screen bg-gradient-to-br from-white to-red-50">
       {/* Hero Section */}
       <motion.section
         id="about"
@@ -143,7 +143,7 @@ const AboutUs = () => {
                     className={`flex items-center gap-3 px-4 py-2 rounded-full backdrop-blur-md ${service.bg} ${service.border} ${service.text} shadow-[0_4px_30px_rgba(18,1,18,0.1)] transition-transform duration-300 hover:scale-105`}
                   >
                     <div className={`w-3 h-3 rounded-full ${service.dot}`} />
-                    <span className="font-semibold">{service.name}</span>
+                    <span className="font-semibold xl:text-md text-sm">{service.name}</span>
                   </div>
                 ))}
               </div>
@@ -152,7 +152,7 @@ const AboutUs = () => {
 
           {/* Image Mockup */}
           <motion.div variants={itemVariants} className="relative z-10">
-            <div className="relative w-80 h-[600px] bg-black rounded-[3rem] p-2 shadow-2xl mx-auto">
+            <div className="relative z-50 w-80 h-[600px] bg-black rounded-[3rem] p-2 shadow-2xl mx-auto">
               <div className="w-full h-full bg-white rounded-[2.5rem] relative overflow-hidden">
                 {/* Notch */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-2xl z-10"></div>
