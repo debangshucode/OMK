@@ -13,6 +13,7 @@ import {
   Eye,
   Zap,
 } from "lucide-react";
+import Quickbook from "./quickbook";
 
 const Services = () => {
   const [activeService, setActiveService] = useState(0);
@@ -321,7 +322,7 @@ const Services = () => {
           </div>
         </div>
       </motion.section>
-
+      <Quickbook />
       {/* Service Cards Grid */}
       <motion.section
         className="px-6 mb-20"
@@ -383,7 +384,7 @@ const Services = () => {
                 <p className="text-slate-600 text-sm mb-4 leading-relaxed">
                   {service.subtitle2}
                 </p>
-
+                
                 {/* Feature List */}
                 <div className="space-y-2 mb-6">
                   {service.features.slice(0, 2).map((feature, idx) => (
@@ -427,7 +428,7 @@ const Services = () => {
           </div>
         </div>
       </motion.section>
-
+      
       {/* Call to Action */}
       <motion.section
         className="px-6"
