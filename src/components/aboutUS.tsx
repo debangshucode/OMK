@@ -1,7 +1,7 @@
 "use client";
 import CountUp from "react-countup";
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Easing } from "framer-motion";
 import { Award, Users, Clock, Sparkles } from "lucide-react";
 
 const AboutUs = () => {
@@ -41,6 +41,7 @@ const AboutUs = () => {
     },
   };
 
+  const easeBezier: Easing = [0.25, 0.1, 0.25, 1];
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
@@ -48,7 +49,7 @@ const AboutUs = () => {
       opacity: 1,
       transition: {
         duration: 0.8,
-        ease: [0.25, 0.1, 0.25, 1], // ✅ this is valid
+        ease: easeBezier
       },
     },
   };

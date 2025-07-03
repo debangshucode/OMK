@@ -105,6 +105,8 @@ const Footer = () => {
     },
   };
 
+
+
   const socialLinks = [
     {
       icon: Instagram,

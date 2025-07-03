@@ -1,13 +1,15 @@
 "use client";
 import { UserPlus, LogIn } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const HeaderActions = () => {
+   const router = useRouter();
   const handleHireUs = () => {
     console.log("Hire Us clicked");
   };
 
   const handleLogin = () => {
-    console.log("Login clicked");
+    router.push('/login');
   };
 
   return (
