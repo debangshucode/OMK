@@ -88,7 +88,7 @@ const Services = () => {
       ],
       color: "from-amber-500 to-amber-600",
       bgColor: "bg-amber-50",
-      textColor: "amber-600",
+      textColor: "amber-500",
       buttonColor: "from-amber-500/80 to-amber-600/50",
       image:
         "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
@@ -307,7 +307,7 @@ const Services = () => {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`px-2 py-2 xl:px-6 xl:py-3  bg-white border text-${services[activeService].textColor} border-${services[activeService].textColor} rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300`}
+                      className={`px-2 py-2 xl:px-6 xl:py-3 bg-gradient-to-r ${services[activeService].buttonColor} text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300`}
                     >
                       Book Now
                     </motion.button>
