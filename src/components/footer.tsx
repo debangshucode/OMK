@@ -199,7 +199,7 @@ const Footer = () => {
               <div>
                 <h3 className="text-2xl font-bold mb-6 flex items-center space-x-3">
                   <div className="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center">
-                    <Phone className="w-4 h-4 text-white" />
+                    <Phone className="w-4 h-4 text-white hover:cursor-pointer" />
                   </div>
                   <span>Get In Touch</span>
                 </h3>
@@ -209,7 +209,7 @@ const Footer = () => {
                       key={index}
                       href={contact.href}
                       whileHover={{ x: 10 }}
-                      className="flex items-center space-x-4 text-slate-300 hover:text-white transition-all duration-300 group"
+                      className="flex items-center space-x-4 text-slate-300 hover:text-white transition-all duration-300 group hover:cursor-pointer"
                     >
                       <div className="w-12 h-12 bg-slate-700 rounded-xl flex items-center justify-center group-hover:bg-red-600 transition-colors duration-300">
                         <contact.icon className="w-5 h-5" />
@@ -224,7 +224,7 @@ const Footer = () => {
               <div>
                 <h3 className="text-2xl font-bold mb-6 flex items-center space-x-3">
                   <div className="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center">
-                    <ArrowRight className="w-4 h-4 text-white" />
+                    <ArrowRight className="w-4 h-4 text-white hover:cursor-pointer" />
                   </div>
                   <span>Quick Links</span>
                 </h3>
@@ -234,7 +234,7 @@ const Footer = () => {
                       key={index}
                       href="#"
                       whileHover={{ x: 5 }}
-                      className="text-slate-300 hover:text-amber-400 transition-all duration-300 flex items-center space-x-2"
+                      className="text-slate-300 hover:text-amber-400 transition-all duration-300 flex items-center space-x-2 hover:cursor-pointer"
                     >
                       <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                       <span>{link}</span>
@@ -247,7 +247,7 @@ const Footer = () => {
               <div>
                 <h3 className="text-2xl font-bold mb-6 flex items-center space-x-3">
                   <div className="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center">
-                    <Heart className="w-4 h-4 text-white" />
+                    <Heart className="w-4 h-4 text-white hover:cursor-pointer" />
                   </div>
                   <span>Follow Us</span>
                 </h3>
@@ -258,7 +258,7 @@ const Footer = () => {
                       href={social.href}
                       whileHover={{ scale: 1.1, y: -5 }}
                       whileTap={{ scale: 0.9 }}
-                      className={`w-14 h-14 bg-slate-700 rounded-2xl flex items-center justify-center text-slate-300 ${social.color} transition-all duration-300 shadow-lg hover:shadow-2xl`}
+                      className={`w-14 h-14 bg-slate-700 rounded-2xl flex items-center justify-center text-slate-300 ${social.color} transition-all duration-300 shadow-lg hover:cursor-pointer hover:shadow-2xl`}
                     >
                       <social.icon className="w-6 h-6" />
                     </motion.a>
@@ -410,7 +410,7 @@ const Footer = () => {
                       disabled={isSubmitting}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-70 disabled:cursor-not-allowed"
+                      className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:cursor-pointer hover:shadow-2xl transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                       {isSubmitting ? (
                         <>

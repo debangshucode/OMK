@@ -300,14 +300,14 @@ const Services = () => {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={` px-2 py-2 xl:px-6 xl:py-3  bg-white border text-${services[activeService].textColor} border-${services[activeService].textColor} rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300`}
+                      className={` px-2 py-2 xl:px-6 xl:py-3  bg-white border text-${services[activeService].textColor} border-${services[activeService].textColor} rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:cursor-pointer`}
                     >
                       Our Works
                     </motion.button>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`px-2 py-2 xl:px-6 xl:py-3 bg-gradient-to-r ${services[activeService].buttonColor} text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300`}
+                      className={`px-2 py-2 xl:px-6 xl:py-3 bg-gradient-to-r ${services[activeService].buttonColor} text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:cursor-pointer`}
                     >
                       Book Now
                     </motion.button>
@@ -399,7 +399,7 @@ const Services = () => {
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className={`w-8 h-8 bg-gradient-to-br ${service.color} rounded-full flex items-center justify-center shadow-md`}
+                    className={`w-8 h-8 bg-gradient-to-br ${service.color} rounded-full flex items-center justify-center shadow-md hover:cursor-pointer`}
                   >
                     <ArrowRight className="w-4 h-4 text-white" />
                   </motion.button>
@@ -451,14 +451,14 @@ const Services = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-white text-red-600 px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-white text-red-600 px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:cursor-pointer hover:shadow-xl transition-all duration-300"
               >
                 View Portfolio
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:cursor-pointer"
               >
                 Get Quote
               </motion.button>

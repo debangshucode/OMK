@@ -97,7 +97,7 @@ const DockNavbar = () => {
         magnification={70}
         className="bg-gradient-to-r from-red-800/80 via-red-700/80 to-amber-600/80 
           backdrop-blur-md border border-white/20 shadow-lg rounded-2xl px-4 py-2 
-          transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)]"
+          transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)] hover:cursor-pointer"
       />
     </div>
   );

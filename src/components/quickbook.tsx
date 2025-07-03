@@ -434,7 +434,7 @@ const Quickbook = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:cursor-pointer"
                 >
                   Start Your Journey
                 </motion.button>
@@ -461,7 +461,7 @@ const Quickbook = () => {
                       <Heart className="w-8 h-8 text-white" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-800 mb-2">
+                  <h3 className="text-2xl font-bold text-slate-800 mb-2 hover:cursor-pointer">
                     Join Our Family
                   </h3>
                   <p className="text-slate-600">
@@ -554,7 +554,7 @@ const Quickbook = () => {
                       disabled={isSubmitting}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-70 disabled:cursor-not-allowed"
+                      className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:cursor-pointer hover:to-red-700 text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                       {isSubmitting ? (
                         <>

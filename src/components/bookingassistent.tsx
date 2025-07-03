@@ -48,7 +48,7 @@ const BookingAssistant = () => {
                   .getElementById("contact")
                   ?.scrollIntoView({ behavior: "smooth" })
               }
-              className="ml-2 text-white bg-red-500 hover:bg-red-600 px-2 py-1 rounded text-xs"
+              className="ml-2 text-white bg-red-500 hover:bg-red-600 px-2 py-1 rounded text-xs hover:cursor-pointer"
             >
               Book Now
             </button>

@@ -423,7 +423,7 @@ const Testimonials = () => {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={prevTestimonial}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-red-50 transition-colors duration-300 z-10"
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:cursor-pointer hover:bg-red-50 transition-colors duration-300 z-10"
             >
               <ChevronLeft className="w-6 h-6 text-red-600" />
             </motion.button>
@@ -432,7 +432,7 @@ const Testimonials = () => {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={nextTestimonial}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-red-50 transition-colors duration-300 z-10"
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:cursor-pointer hover:bg-red-50 transition-colors duration-300 z-10"
             >
               <ChevronRight className="w-6 h-6 text-red-600" />
             </motion.button>
@@ -445,7 +445,7 @@ const Testimonials = () => {
                   whileHover={{ scale: 1.2 }}
                   whileTap={{ scale: 0.8 }}
                   onClick={() => setActiveTestimonial(index)}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  className={`w-3 h-3 rounded-full transition-all duration-300 hover:cursor-pointer ${
                     index === activeTestimonial
                       ? "bg-red-600 scale-125"
                       : "bg-red-200 hover:bg-red-300"
