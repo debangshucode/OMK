@@ -7,22 +7,22 @@ const BookingAssistant = () => {
   const [show, setShow] = useState(false);
   const [animationData, setAnimationData] = useState<any>(null);
 
+  // Load Lottie animation from public folder
   useEffect(() => {
-    // Load animation data from /public
     fetch("/lottie/animation.json")
       .then((res) => res.json())
       .then(setAnimationData);
   }, []);
 
+  // Show animation for 6s every 30s
   useEffect(() => {
     const cycle = () => {
       setShow(true);
-      setTimeout(() => setShow(false), 10000); // Show for 6 seconds
+      setTimeout(() => setShow(false), 6000);
     };
 
-    const interval = setInterval(cycle, 20000); // Repeat every 30s
-    cycle(); // Show once initially
-
+    cycle(); // Initial show
+    const interval = setInterval(cycle, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -32,19 +32,17 @@ const BookingAssistant = () => {
     <AnimatePresence>
       {show && (
         <motion.div
-          initial={{ x: 200, y: 100, opacity: 0 }}
+          initial={{ x: 100, y: 100, opacity: 0 }}
           animate={{ x: 0, y: 0, opacity: 1 }}
-          exit={{ x: 200, y: 100, opacity: 0 }}
+          exit={{ x: 100, y: 100, opacity: 0 }}
           transition={{ type: "spring", stiffness: 120, damping: 12 }}
-          className="fixed bottom-6 right-4 z-[9999] flex items-center space-x-3 bg-white/90 shadow-xl rounded-2xl px-4 py-3 backdrop-blur-sm border border-red-100"
+          className="fixed bottom-6 right-6 z-[9999] flex flex-col items-center"
         >
-          <div className="w-16 h-16">
-            <Lottie animationData={animationData} loop autoplay />
-          </div>
-
-          <div className="text-sm font-semibold text-red-700">
-            Ready to book your shoot?
-            <button
+          {/* Message Bubble */}
+          <div className="relative mb-2">
+            <div className="bg-white text-red-600 text-center text-sm px-4 py-2 rounded-2xl shadow-md max-w-[200px]">
+              Ready to book your shoot?
+              <button
               onClick={() =>
                 document
                   .getElementById("contact")
@@ -54,6 +52,13 @@ const BookingAssistant = () => {
             >
               Book Now
             </button>
+            </div>
+            <div className="absolute left-1/2 -bottom-2 w-3 h-3 bg-red-600 rotate-45 transform -translate-x-1/2"></div>
+          </div>
+
+          {/* Lottie Character */}
+          <div className="w-20 h-20">
+            <Lottie animationData={animationData} loop={true} />
           </div>
         </motion.div>
       )}
