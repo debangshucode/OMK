@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///D:/react/OMK/omk/src/app/login/page.tsx"],"sourcesContent":["\"use client\";\r\nimport LoginModal from \"@/components/LoginModal\";\r\nimport { useRouter } from \"next/navigation\";\r\n\r\nexport default function LoginPage() {\r\n  const router = useRouter();\r\n\r\n  return (\r\n    <LoginModal\r\n      onClose={() => router.push(\"/\")}\r\n      onSuccess={() => router.push(\"/admin/home\")}\r\n    />\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;;;;;;AAEA;;;AAFA;;;AAIe,SAAS;;IACtB,MAAM,SAAS,CAAA,GAAA,qIAAA,CAAA,YAAS,AAAD;IAEvB,qBACE,6LAAC;QACC,SAAS,IAAM,OAAO,IAAI,CAAC;QAC3B,WAAW,IAAM,OAAO,IAAI,CAAC;;;;;;AAGnC;GATwB;;QACP,qIAAA,CAAA,YAAS;;;KADF","debugId":null}}]
+}
