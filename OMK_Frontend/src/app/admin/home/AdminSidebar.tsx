@@ -1,4 +1,7 @@
 import React from "react";
+import { useRouter } from "next/navigation"; 
+
+
 import { motion } from "framer-motion";
 import {
   LayoutDashboard,
@@ -18,6 +21,7 @@ interface AdminSidebarProps {
 }
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({
+  
   activeTab,
   setActiveTab,
 }) => {
@@ -31,8 +35,9 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     { id: "clients", label: "Clients", icon: Users },
     { id: "settings", label: "Settings", icon: Settings },
   ];
-
+  const router = useRouter();
   return (
+    
     <motion.aside
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
@@ -77,10 +82,11 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
+          onClick={() => router.push("/")}
           className="w-full flex items-center space-x-3 px-3 lg:px-4 py-2.5 lg:py-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 text-sm lg:text-base"
         >
           <LogOut className="w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0" />
-          <span className="font-medium">Logout</span>
+          <span className="font-medium ">Logout</span>
         </motion.button>
       </div>
     </motion.aside>
