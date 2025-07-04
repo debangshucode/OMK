@@ -18,6 +18,11 @@ const DockNavbar = () => {
   const pathname = usePathname();
   const isMobile = useIsMobile();
 
+  // 👉 Hide on admin routes
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
+
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
@@ -25,9 +30,9 @@ const DockNavbar = () => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setIsVisible(false); // Scrolling down
+        setIsVisible(false);
       } else {
-        setIsVisible(true); // Scrolling up
+        setIsVisible(true);
       }
       setLastScrollY(currentScrollY);
     };
@@ -85,10 +90,8 @@ const DockNavbar = () => {
 
   return (
     <div
-      className={`
-        fixed top-6 left-1/2 -translate-x-1/2 z-[999] transition-opacity duration-500 
-        ${isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
-      `}
+      className={`fixed top-6 left-1/2 -translate-x-1/2 z-[999] transition-opacity duration-500 
+        ${isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
     >
       <Dock
         items={navItems}
