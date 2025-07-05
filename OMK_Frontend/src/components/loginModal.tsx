@@ -146,7 +146,7 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
           {/* Slide to login */}
           <div
             ref={sliderRef}
-            className="relative w-full h-12 mt-6 bg-white/10 border border-white/20 rounded-full overflow-hidden"
+            className="relative w-full h-12 mt-6 bg-white/10 border border-white/20 rounded-full overflow-hidden select-none"
           >
             {/* Slider Track Text */}
             <div className="absolute inset-0 flex items-center justify-center text-sm text-white opacity-60">
@@ -156,7 +156,7 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
             {/* Sliding Thumb */}
             <div
               ref={thumbRef}
-              className="absolute left-0 top-0 w-12 h-12 bg-gradient-to-r from-red-600 to-amber-500 rounded-full shadow-lg cursor-pointer z-10 flex items-center justify-center transition-transform duration-300"
+              className="absolute left-0 top-0 w-12 h-12 bg-gradient-to-r from-red-600 to-amber-500 rounded-full shadow-lg cursor-pointer z-10 flex items-center justify-center transition-transform duration-300 select-none"
             >
               {!loading ? (
                 <Camera className="w-5 h-5 text-white" />
