@@ -149,7 +149,7 @@ type DockIconProps = {
 
 function DockIcon({ children, className = "" }: DockIconProps) {
   return (
-    <div className={`flex items-center justify-center text-white ${className}`}>
+    <div className={`flex items-center justify-center text-white glow-dock-icon ${className}`}>
       {children}
     </div>
   );
@@ -189,7 +189,7 @@ export default function Dock({
           isHovered.set(0);
           mouseX.set(Infinity);
         }}
-        className={`${className} fixed top-2 left-1/2 transform -translate-x-1/2 flex items-end w-fit gap-4 rounded-2xl border-neutral-700 border-2 pb-2 px-4 z-50`}
+        className={`${className} fixed top-2 left-1/2 transform -translate-x-1/2 flex items-end w-fit gap-4 rounded-2xl border-neutral-700 border-2 pb-2 px-4 z-50 hover:cursor-pointer`}
         style={{ height: panelHeight }}
         role="toolbar"
         aria-label="Application dock"
@@ -204,8 +204,8 @@ export default function Dock({
             distance={distance}
             magnification={magnification}
             baseItemSize={baseItemSize}
-          >
-            <DockIcon>{item.icon}</DockIcon>
+          > 
+            <DockIcon className="glow-dock-icon">{item.icon}</DockIcon>
             <DockLabel>{item.label}</DockLabel>
           </DockItem>
         ))}

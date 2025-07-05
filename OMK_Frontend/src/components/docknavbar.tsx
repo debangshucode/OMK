@@ -95,23 +95,27 @@ const DockNavbar = () => {
 
   return (
     <div
-      className={`fixed top-6 left-1/2 -translate-x-1/2 z-[999] transition-opacity duration-500 
-        ${
-          isVisible
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
-        }`}
-    >
-      <Dock
-        items={navItems}
-        panelHeight={64}
-        baseItemSize={isMobile ? 42 : 52}
-        magnification={70}
-        className="bg-gradient-to-r from-red-800/80 via-red-700/80 to-amber-600/80 
-          backdrop-blur-md border border-white/20 shadow-lg rounded-2xl px-4 py-2 
-          transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)] hover:cursor-pointer"
-      />
-    </div>
+  className={`fixed top-6 left-1/2 -translate-x-1/2 z-[999] transition-opacity duration-500
+    ${
+      isVisible
+        ? "opacity-100 pointer-events-auto"
+        : "opacity-0 pointer-events-none"
+    }`}
+>
+  <Dock
+  id="dock-nav"
+  items={navItems}
+  panelHeight={64}
+  baseItemSize={isMobile ? 42 : 52}
+  magnification={70}
+  className={`glow-dock fixed top-6 left-1/2 -translate-x-1/2 z-[999]
+    transition-opacity duration-500
+    ${isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
+  `}
+/>
+
+</div>
+
   );
 };
 

@@ -24,3 +24,31 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+@keyframes redGlow {
+  0% {
+    box-shadow: 0 0 8px #de1010, 0 0 16px #d96e16, 0 0 24px #ddb517;
+  }
+  50% {
+    box-shadow: 0 0 12px #e17924, 0 0 20px #f87171, 0 0 32px #facc15;
+  }
+  100% {
+    box-shadow: 0 0 8px #cb0808, 0 0 16px #ca6e23, 0 0 24px #bb980b;
+  }
+}
+
+.glow-dock {
+  background-color: rgba(0, 0, 0, 0.6); /* dark semi-transparent */
+  color: white;
+  border-radius: 1rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(127, 29, 29, 0.4); /* red-800/40 */
+  backdrop-filter: blur(12px);
+  animation: redGlow 4s ease-in-out infinite;
+  box-shadow: 0 0 10px #f87171, 0 0 25px #facc15, 0 0 35px #fb923c;
+  text-shadow: 0 0 4px #f87171, 0 0 8px #fb923c;
+}
+
+.glow-dock-icon {
+  color: white;
+  text-shadow: 0 0 4px #f87171, 0 0 8px #fb923c;
+}
