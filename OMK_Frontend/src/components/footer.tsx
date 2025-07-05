@@ -28,7 +28,7 @@ const Footer = () => {
     email: "",
     phone: "",
     service: "",
-    service_types : "",
+    serviceType: "",
     date: "",
     message: "",
   });
@@ -57,30 +57,50 @@ const Footer = () => {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+  try {
+    const response = await fetch("http://localhost:4000/api/bookings/request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
 
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+    const data = await response.json();
+  
 
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        service: "",
-        service_types :"",
-        date: "",
-        message: "",
-      });
-    }, 3000);
-  };
+    if (response.ok) {
+      console.log("Booking Success:", data);
+      setIsSubmitted(true);
+      
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          service: "",
+          serviceType: "",
+          date: "",
+          message: "",
+        });
+      }, 3000);
+    } else {
+      console.error("Booking Failed:", data.message);
+      alert("Error: " + data.message);
+    }
+  } catch (err) {
+    console.error("Error submitting booking:", err);
+    alert("Server error. Please try again later.");
+  }
+
+  setIsSubmitting(false);
+};
+
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -357,8 +377,8 @@ const Footer = () => {
                    <div className="relative">
                         <Aperture className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
                         <select
-                          name="service_types"
-                          value={formData.service_types}
+                          name="serviceType"
+                          value={formData.serviceType}
                           onChange={handleInputChange}
                           required
                           className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300 appearance-none"
