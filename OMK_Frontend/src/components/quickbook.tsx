@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
@@ -21,6 +21,9 @@ import {
 } from "lucide-react";
 
 const Quickbook = () => {
+  const formRef = useRef<HTMLDivElement | null>(null);
+  const nameInputRef = useRef<HTMLInputElement | null>(null);
+
   const [selectedClient, setSelectedClient] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -445,6 +448,7 @@ const Quickbook = () => {
           {/* Right Side - Join Family Form */}
           <div className="lg:col-span-1">
             <motion.div
+              ref={formRef}
               className="sticky top-8"
               initial="hidden"
               whileInView="visible"
@@ -480,6 +484,7 @@ const Quickbook = () => {
                     <div className="relative">
                       <User className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
                       <input
+                        ref={nameInputRef}
                         type="text"
                         name="name"
                         value={formData.name}
@@ -714,9 +719,19 @@ const Quickbook = () => {
                 </div>
 
                 <div className="text-center">
-                  <div className="inline-block px-6 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-full font-semibold">
+                  <button
+                    onClick={() => {
+                      setSelectedClient(null); // Close modal
+
+                      setTimeout(() => {
+                        formRef.current?.scrollIntoView({ behavior: "smooth" });
+                        nameInputRef.current?.focus(); // Focus the first input
+                      }, 300); // Delay to ensure scroll happens after modal closes
+                    }}
+                    className="inline-block px-6 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-full font-semibold transition hover:scale-105"
+                  >
                     {selectedClient.highlight}
-                  </div>
+                  </button>
                 </div>
               </div>
 
