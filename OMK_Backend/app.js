@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db.js");
 const userRoutes = require("./routes/auth.routes.js");
 const bookingRoutes = require("./routes/booking.routes");
+const findFaceRoutes = require("./routes/face.routes.js");
 dotenv.config();
 connectDB();
 
@@ -19,5 +20,6 @@ app.use(express.json());
 
 app.use("/api/auth", userRoutes);
 app.use("/api/bookings", bookingRoutes);
+app.use("/api/match", findFaceRoutes);
 
 module.exports = app;
