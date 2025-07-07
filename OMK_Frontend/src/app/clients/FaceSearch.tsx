@@ -273,6 +273,7 @@ const FaceSearch: React.FC = () => {
 
       {/* Search Results */}
       {searchResults.length > 0 && (
+        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -350,6 +351,13 @@ const FaceSearch: React.FC = () => {
             </motion.button>
           </div>
         </motion.div>
+      )}
+      
+      {/* No results message */}
+      {!isSearching && uploadedImage && searchResults.length === 0 && (
+        <div className="text-center text-gray-500 border border-gray-200 rounded-xl p-6 bg-white shadow">
+          <p>No matching faces found. Try another photo.</p>
+        </div>
       )}
 
       {/* Tips Section */}
