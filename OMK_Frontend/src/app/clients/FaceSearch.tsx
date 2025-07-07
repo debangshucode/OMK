@@ -17,6 +17,7 @@ const FaceSearch: React.FC = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [dragActive, setDragActive] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
   const mockResults = [
     {
@@ -70,12 +71,14 @@ const FaceSearch: React.FC = () => {
   ];
 
   const handleImageUpload = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setUploadedImage(e.target?.result as string);
-    };
-    reader.readAsDataURL(file);
+  setUploadedFile(file); // ✅ keep original File
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    setUploadedImage(e.target?.result as string);
   };
+  reader.readAsDataURL(file);
+};
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -304,24 +307,33 @@ const FaceSearch: React.FC = () => {
                   />
                   
                   {/* Overlay */}
-                  <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition-all duration-200 flex items-center justify-center">
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-2">
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg cursor-pointer"
-                      >
-                        <Eye className="w-4 h-4 text-gray-700" />
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg cursor-pointer"
-                      >
-                        <Download className="w-4 h-4 text-gray-700" />
-                      </motion.button>
-                    </div>
-                  </div>
+                 <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition-all duration-200 flex items-center justify-center">
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-2">
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg cursor-pointer"
+                          >
+                            <Eye className="w-4 h-4 text-gray-700" />
+                          </motion.button>
+
+                          <motion.div
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg cursor-pointer"
+                          >
+                            <a
+                              href={result.image} // Ensure result.image is the correct image URL
+                              download
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center justify-center w-full h-full"
+                            >
+                              <Download className="w-4 h-4 text-gray-700" />
+                            </a>
+                          </motion.div>
+                        </div>
+                      </div>
 
                   {/* Confidence Badge */}
                   <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium">
