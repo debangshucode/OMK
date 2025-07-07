@@ -1,9 +1,10 @@
 from flask import Flask, request, jsonify, send_from_directory
 from deepface import DeepFace
 import os
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app)
 # 📁 Serve static images for previewing matched results
 @app.route('/images/<folder>/<filename>')
 def serve_image(folder, filename):

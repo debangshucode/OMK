@@ -105,18 +105,50 @@ const FaceSearch: React.FC = () => {
     }
   };
 
-  const handleSearch = async () => {
-    if (!uploadedImage) return;
+ const handleSearch = async () => {
+  if (!uploadedImage) return;
 
-    setIsSearching(true);
-    setSearchResults([]);
+  setIsSearching(true);
+  setSearchResults([]);
 
-    // Simulate AI processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
+  try {
+    const blob = await fetch(uploadedImage).then(r => r.blob());
+    const file = new File([blob], "uploaded.jpg", { type: blob.type });
 
-    setSearchResults(mockResults);
+    const formData = new FormData();
+    formData.append("image", file);
+    formData.append("folder", "uploaded_pictures"); // 👈 must match Flask folder name
+
+    const res = await fetch("http://localhost:4000/api/match/find", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    if (!Array.isArray(data)) {
+      throw new Error(data.error || "Unknown error");
+    }
+
+    // Convert response URLs to displayable data
+    const formattedResults = data.map((url: string, index: number) => ({
+      id: index + 1,
+      image: url,
+      confidence: Math.floor(85 + Math.random() * 10), // Fake confidence % for UI
+      event: 'Unknown',
+      date: new Date().toISOString().split('T')[0],
+      album: 'Auto-match',
+    }));
+
+    setSearchResults(formattedResults);
+  } catch (err) {
+    console.error("Face search failed:", err);
+    alert("Face match failed. See console for details.");
+  } finally {
     setIsSearching(false);
-  };
+  }
+};
+
 
   const clearUpload = () => {
     setUploadedImage(null);
