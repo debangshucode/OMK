@@ -141,7 +141,7 @@ const AboutUs = () => {
                 {services.map((service, i) => (
                   <div
                     key={i}
-                    className={`flex items-center gap-3 px-4 py-2 rounded-full backdrop-blur-md ${service.bg} ${service.border} ${service.text} shadow-[0_4px_30px_rgba(18,1,18,0.1)] transition-transform duration-300 hover:cursor-pointer  hover:scale-105`}
+                    className={`flex items-center gap-3 px-3 py-2 rounded-full backdrop-blur-md ${service.bg} ${service.border} ${service.text} shadow-[0_4px_30px_rgba(18,1,18,0.1)] transition-transform duration-300 hover:cursor-pointer  hover:scale-105`}
                   >
                     <div className={`w-3 h-3 rounded-full ${service.dot}`} />
                     <span className="font-semibold xl:text-md text-sm">{service.name}</span>

@@ -52,7 +52,7 @@ export default function HeroOverlay() {
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 1.2, duration: 0.6 }}
-        className="mt-8 px-8 py-3 bg-transparent border-2 border-white text-white text-base sm:text-lg font-semibold rounded-full backdrop-blur-md shadow-md hover:cursor-pointer  hover:scale-105 transition-transform duration-300 pointer-events-auto hover:border-amber-500  glow-border"
+        className="mt-8 px-8 py-3 bg-transparent border-2 border-white text-white text-base  sm:text-lg font-semibold rounded-full backdrop-blur-md shadow-md hover:cursor-pointer  hover:scale-105 transition-transform duration-300 pointer-events-auto hover:border-amber-500  glow-border"
       >
         Book Your Special Day 
       </motion.button>

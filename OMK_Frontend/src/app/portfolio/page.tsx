@@ -234,7 +234,7 @@ const Portfolio = () => {
       opacity: 1,
       transition: {
         duration: 0.6,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     },
   };
@@ -249,7 +249,7 @@ const Portfolio = () => {
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <motion.div
-            initial="hidden"
+            initial="visible"
             whileInView="visible"
             viewport={{ once: true }}
             variants={containerVariants}

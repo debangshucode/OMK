@@ -5,6 +5,7 @@ import Testimonials from "@/components/testimonials";
 import BookingAssistant from "@/components/bookingassistent";
 import { customItems } from "@/data";
 import Footer from "@/components/footer";
+import BlogHome from "@/components/blogHome";
 
 export default function HomePage() {
   return (
@@ -12,6 +13,7 @@ export default function HomePage() {
       <GridMotion items={customItems} gradientColor="#dc2626" />
       <AboutUs />
       <Services />
+      <BlogHome />
       <Testimonials />
       <Footer />
       <BookingAssistant />
