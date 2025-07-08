@@ -189,7 +189,7 @@ exports.login = async (req, res) => {
 
     res.json({
       token: generateToken(user),
-      user: { id: user._id, name: user.name, role: user.role },
+      user: { id: user._id, name: user.name, role: user.role , email: user.email ,name: user.name},
     });
   } catch (err) {
     res.status(500).json({ message: "Login error", error: err.message });

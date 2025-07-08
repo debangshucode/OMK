@@ -1,13 +1,28 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+
+let bucket;
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("MongoDB connected");
+    const conn = await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+
+    // Initialize GridFS Bucket (modern approach)
+    bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+      bucketName: 'uploads'
+    });
+
+    return bucket;
   } catch (error) {
-    console.error("DB connection error", error.message);
+    console.error('Database connection error:', error);
     process.exit(1);
   }
 };
 
-module.exports = connectDB;
+const getBucket = () => bucket;
+
+module.exports = { connectDB, getBucket };

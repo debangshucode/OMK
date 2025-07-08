@@ -1,7 +1,11 @@
 const express = require("express");
-const router = express.Router();
-const bookingController = require("../controllers/booking.controller");
+const { createBooking, getAllBookings, updateBookingStatus } = require("../controllers/booking.controller.js");
+const { protect, authorizeRoles } = require("../middlewares/auth.middleware.js");
 
-router.post("/request", bookingController.createBooking);
+const router = express.Router();
+
+router.post("/", protect, createBooking);
+router.get("/", protect, authorizeRoles("admin"), getAllBookings);
+router.patch("/:id", protect, authorizeRoles("admin"), updateBookingStatus);
 
 module.exports = router;
