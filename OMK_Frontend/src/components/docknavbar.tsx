@@ -17,14 +17,15 @@ const DockNavbar = () => {
   const router = useRouter();
   const pathname = usePathname();
   const isMobile = useIsMobile();
-
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   // 👉 Hide on admin routes
   if (pathname.startsWith("/admin")) {
     return null;
   }
-
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  if (pathname.startsWith("/clients")) {
+    return null;
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -95,27 +96,29 @@ const DockNavbar = () => {
 
   return (
     <div
-  className={`fixed top-6 left-1/2 -translate-x-1/2 z-[999] transition-opacity duration-500
+      className={`fixed top-6 left-1/2 -translate-x-1/2 z-[999] transition-opacity duration-500
     ${
       isVisible
         ? "opacity-100 pointer-events-auto"
         : "opacity-0 pointer-events-none"
     }`}
->
-  <Dock
-  id="dock-nav"
-  items={navItems}
-  panelHeight={64}
-  baseItemSize={isMobile ? 42 : 52}
-  magnification={70}
-  className={`glow-dock fixed top-6 left-1/2 -translate-x-1/2 z-[999]
+    >
+      <Dock
+        id="dock-nav"
+        items={navItems}
+        panelHeight={64}
+        baseItemSize={isMobile ? 42 : 52}
+        magnification={70}
+        className={`glow-dock fixed top-6 left-1/2 -translate-x-1/2 z-[999]
     transition-opacity duration-500
-    ${isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
+    ${
+      isVisible
+        ? "opacity-100 pointer-events-auto"
+        : "opacity-0 pointer-events-none"
+    }
   `}
-/>
-
-</div>
-
+      />
+    </div>
   );
 };
 

@@ -11,8 +11,10 @@ export default function ClientLayout({
 }) {
   const pathname = usePathname();
 
-  const hideDock =
-    pathname.startsWith("/admin") || pathname.startsWith("/login");
+ const hideDock =
+  pathname.startsWith("/admin") ||
+  pathname.startsWith("/login") ||
+  pathname.startsWith("/clients");
 
   return (
     <>
