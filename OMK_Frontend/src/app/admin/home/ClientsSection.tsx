@@ -26,6 +26,7 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
+import CreateModal from '@/components/CreateAlbumModal';
 
 const ClientsSection: React.FC = () => {
   const [selectedClients, setSelectedClients] = useState<number[]>([]);
@@ -33,6 +34,7 @@ const ClientsSection: React.FC = () => {
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterService, setFilterService] = useState('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const clients = [
     {
@@ -201,6 +203,7 @@ const ClientsSection: React.FC = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            onClick={() => setIsModalOpen(true)}
             className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 shadow-lg"
           >
             <UserPlus className="w-5 h-5" />
@@ -214,7 +217,7 @@ const ClientsSection: React.FC = () => {
             <Upload className="w-5 h-5" />
             <span>Import</span>
           </motion.button>
-        </div>
+          </div>
       </div>
 
       {/* Stats Cards */}

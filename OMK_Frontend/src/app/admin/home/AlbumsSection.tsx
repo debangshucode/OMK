@@ -17,6 +17,7 @@ import {
   X,
   Users
 } from 'lucide-react';
+import CreateAlbumModal from '@/components/CreateAlbumModal';
 
 const AlbumsSection: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -24,6 +25,7 @@ const AlbumsSection: React.FC = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const albums = [
     {
@@ -132,12 +134,22 @@ const AlbumsSection: React.FC = () => {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => setIsModalOpen(true)}
           className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 shadow-lg hover:cursor-pointer"
         >
           <Plus className="w-5 h-5" />
           <span>Create Album</span>
         </motion.button>
+        <CreateAlbumModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={() => {
+          // Optional: refresh album list
+          console.log("Album created!");
+        }}
+      />
       </div>
+      
 
       {/* Controls */}
       <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow-sm border border-gray-200">

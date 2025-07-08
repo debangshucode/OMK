@@ -1,64 +1,64 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const albumSchema = new mongoose.Schema({
   clientId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
-    index: true
+    index: true,
   },
   title: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   description: {
     type: String,
-    trim: true
+    trim: true,
   },
   category: {
     type: String,
-    enum: ['wedding', 'birthday', 'portfolio', 'personal', 'corporate'],
+    enum: ["wedding", "birthday", "portfolio", "personal", "corporate"],
     required: true,
-    index: true
+    index: true,
   },
   mediaFiles: [
     {
       filename: {
         type: String,
-        required: true
+        required: true,
       },
       fileId: {
         type: String,
-        required: true
+        required: true,
       },
       originalName: String,
       fileType: {
         type: String,
-        enum: ['image', 'video'],
-        required: true
+        enum: ["image", "video"],
+        required: true,
       },
       mimeType: String,
       fileSize: Number,
       uploadedAt: {
         type: Date,
-        default: Date.now
-      }
-    }
+        default: Date.now,
+      },
+    },
   ],
   isPublic: {
     type: Boolean,
-    default: false
+    default: false,
   },
   coverImage: String,
   createdAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   updatedAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 // Index for efficient querying
@@ -66,9 +66,9 @@ albumSchema.index({ clientId: 1, category: 1 });
 albumSchema.index({ createdAt: -1 });
 
 // Update the updatedAt field before saving
-albumSchema.pre('save', function(next) {
+albumSchema.pre("save", function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-module.exports = mongoose.model('Album', albumSchema);
+module.exports = mongoose.model("Album", albumSchema);
