@@ -6,11 +6,13 @@ import BookingAssistant from "@/components/bookingassistent";
 import { customItems } from "@/data";
 import Footer from "@/components/footer";
 import BlogHome from "@/components/blogHome";
+import RecentWorks from "@/components/RecentWorks";
 
 export default function HomePage() {
   return (
     <main className="">
       <GridMotion items={customItems} gradientColor="#dc2626" />
+      <RecentWorks />
       <AboutUs />
       <Services />
       <BlogHome />
