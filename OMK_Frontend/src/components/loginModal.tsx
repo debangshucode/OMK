@@ -115,7 +115,7 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
           &times;
         </button>
         <h1 className="text-3xl font-bold mb-6 text-center">
-          Photographer Login
+          Login
         </h1>
 
         <form
