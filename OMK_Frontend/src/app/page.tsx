@@ -9,6 +9,8 @@ import Footer from "@/components/footer";
 import { useAuth } from "@/context/AuthContext";
 import { useEffect } from "react";
 import axios from "axios";
+import RecentWorks from "@/components/RecentWorks";
+import BlogHome from "@/components/blogHome";
 
 export default function HomePage() {
     const {  setUser } = useAuth();
@@ -32,8 +34,10 @@ export default function HomePage() {
     
     <main className="">
       <GridMotion items={customItems} gradientColor="#dc2626" />
+      <RecentWorks />
       <AboutUs />
       <Services />
+      <BlogHome />
       <Testimonials />
       <Footer />
       <BookingAssistant />

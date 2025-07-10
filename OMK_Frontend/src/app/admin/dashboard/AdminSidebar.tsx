@@ -12,6 +12,7 @@ import {
   BarChart3,
   Users,
   Settings,
+  BookOpen,
   LogOut,
 } from "lucide-react";
 
@@ -26,14 +27,15 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
   setActiveTab,
 }) => {
   const menuItems = [
-    { id: "overview", label: "Overview", icon: LayoutDashboard },
-    { id: "photos", label: "Photos", icon: Camera },
-    { id: "videos", label: "Videos", icon: Video },
-    { id: "albums", label: "Albums", icon: FolderOpen },
-    { id: "reviews", label: "Reviews", icon: Star },
-    { id: "analytics", label: "Analytics", icon: BarChart3 },
-    { id: "clients", label: "Clients", icon: Users },
-    { id: "settings", label: "Settings", icon: Settings },
+    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'photos', label: 'Photos', icon: Camera },
+    { id: 'videos', label: 'Videos', icon: Video },
+    { id: 'albums', label: 'Albums', icon: FolderOpen },
+    { id: 'blogs', label: 'Blogs', icon: BookOpen },
+    { id: 'reviews', label: 'Reviews', icon: Star },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'clients', label: 'Clients', icon: Users },
+    { id: 'settings', label: 'Settings', icon: Settings },
   ];
   const router = useRouter();
   return (

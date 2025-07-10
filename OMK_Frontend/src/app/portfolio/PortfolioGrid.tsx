@@ -49,7 +49,7 @@ const PortfolioGrid: React.FC<PortfolioGridProps> = ({ items, viewMode, onItemCl
       opacity: 1,
       transition: {
         duration: 0.6,
-        ease: "easeOut"
+        ease: "easeOut" as const
       }
     }
   };
@@ -57,6 +57,7 @@ const PortfolioGrid: React.FC<PortfolioGridProps> = ({ items, viewMode, onItemCl
   if (viewMode === 'grid') {
     return (
       <motion.div
+       key={items.length + viewMode} 
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}

@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { forwardRef, useImperativeHandle } from "react";
 import {
   Heart,
   Star,
@@ -19,12 +20,14 @@ import {
   Quote,
   ArrowRight,
 } from "lucide-react";
-
-const Quickbook = () => {
+import { useRouter } from "next/navigation";
+const Quickbook = forwardRef((props, ref) => {
   const formRef = useRef<HTMLDivElement | null>(null);
   const nameInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [selectedClient, setSelectedClient] = useState(null);
+  const [selectedClient, setSelectedClient] = useState<FamilyMember | null>(
+    null
+  );
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -34,7 +37,7 @@ const Quickbook = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
+  const router = useRouter();
   const familyMembers = [
     {
       id: 1,
@@ -149,6 +152,18 @@ const Quickbook = () => {
       category: "family",
     },
   ];
+  type FamilyMember = {
+    id: number;
+    name: string;
+    service: string;
+    image: string;
+    location: string;
+    date: string;
+    story: string;
+    rating: number;
+    highlight: string;
+    category: string;
+  };
 
   const services = [
     "Wedding Photography",
@@ -198,7 +213,12 @@ const Quickbook = () => {
       [e.target.name]: e.target.value,
     });
   };
-
+  useImperativeHandle(ref, () => ({
+    scrollToForm: () => {
+      formRef.current?.scrollIntoView({ behavior: "smooth" });
+      nameInputRef.current?.focus(); // optional: focus first input
+    },
+  }));
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -240,7 +260,7 @@ const Quickbook = () => {
       opacity: 1,
       transition: {
         duration: 0.6,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     },
   };
@@ -426,20 +446,20 @@ const Quickbook = () => {
                   </motion.div>
                 </div>
                 <h2 className="text-4xl font-bold mb-4">
-                  Ready to Join Our{" "}
-                  <span className="text-amber-300">Amazing Family?</span>
+                  Ready to Create Something{" "}
+                  <span className="text-amber-300">Amazing Together?</span>
                 </h2>
                 <p className="text-red-100 text-lg mb-8 max-w-2xl mx-auto">
-                  Every story is unique, every moment is precious. Let us
-                  capture your special moments and welcome you into our growing
-                  family of satisfied clients.
+                  Let's discuss your vision and bring your story to life through
+                  our creative lens.
                 </p>
                 <motion.button
+                  onClick={() => router.push("/portfolio")}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:cursor-pointer"
                 >
-                  Start Your Journey
+                  View Portfolio
                 </motion.button>
               </div>
             </motion.div>
@@ -748,6 +768,6 @@ const Quickbook = () => {
       </AnimatePresence>
     </div>
   );
-};
+});
 
 export default Quickbook;

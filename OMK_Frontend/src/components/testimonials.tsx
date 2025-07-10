@@ -156,7 +156,7 @@ const Testimonials = () => {
       opacity: 1,
       transition: {
         duration: 0.8,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     },
   };
@@ -345,7 +345,7 @@ const Testimonials = () => {
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.6, duration: 0.4 }}
-                        className="inline-block px-2 py-1 xl:px-4 xl:py-2 bg-amber-100 text-amber-700 rounded-full text-sm font-medium"
+                        className="inline-block px-1 py-1 xl:px-4 xl:py-2 bg-amber-100 text-amber-700 rounded-full text-sm font-medium"
                       >
                         {testimonials[activeTestimonial].service}
                       </motion.div>
@@ -360,7 +360,7 @@ const Testimonials = () => {
                         className="relative"
                       >
                         {/* Client Image */}
-                        <div className="w-30 h-30 xl:w-80 xl:h-80 mx-auto rounded-full overflow-hidden shadow-2xl border-4 xl:border-8 border-white">
+                        <div className="w-25 h-25 mt-1 xl:w-80 xl:h-80 mx-auto rounded-full overflow-hidden shadow-2xl border-4 xl:border-8 border-white">
                           <img
                             src={testimonials[activeTestimonial].image}
                             alt={testimonials[activeTestimonial].name}
@@ -408,7 +408,7 @@ const Testimonials = () => {
                         transition={{ delay: 0.7, duration: 0.5 }}
                         className="text-center mt-6"
                       >
-                        <div className="inline-block px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-full font-semibold shadow-lg">
+                        <div className="inline-block px-3 py-2 xl:px-6 xl:py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-full font-semibold shadow-lg">
                           {testimonials[activeTestimonial].highlight}
                         </div>
                       </motion.div>
@@ -423,7 +423,7 @@ const Testimonials = () => {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={prevTestimonial}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:cursor-pointer hover:bg-red-50 transition-colors duration-300 z-10"
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-8 h-8 xl: w-12 xl:h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:cursor-pointer hover:bg-red-50 transition-colors duration-300 z-10"
             >
               <ChevronLeft className="w-6 h-6 text-red-600" />
             </motion.button>
@@ -432,7 +432,7 @@ const Testimonials = () => {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={nextTestimonial}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:cursor-pointer hover:bg-red-50 transition-colors duration-300 z-10"
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-8 h-8 xl: w-12 xl:h-12  bg-white rounded-full shadow-lg flex items-center justify-center hover:cursor-pointer hover:bg-red-50 transition-colors duration-300 z-10"
             >
               <ChevronRight className="w-6 h-6 text-red-600" />
             </motion.button>

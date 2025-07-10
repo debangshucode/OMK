@@ -74,7 +74,7 @@ const HeaderActions = () => {
   return (
     <>
       <div
-        className="absolute top-auto bottom-40 md:bottom-50 left-1/2 -translate-x-1/2
+        className="absolute top-auto bottom-25 md:bottom-50 left-1/2 -translate-x-1/2
         xl:top-6 xl:bottom-auto xl:left-auto xl:right-6 xl:translate-x-0
         flex items-center gap-4 z-[998] w-max xl:w-auto"
       >

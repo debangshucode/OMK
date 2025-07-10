@@ -11,6 +11,7 @@ import AlbumsSection from "./AlbumsSection";
 import ReviewsSection from "./ReviewsSection";
 import AnalyticsSection from "./AnalyticsSection";
 import ClientsSection from "./ClientsSection";
+import BlogsSection from "./BlogSection";
 import { useSearchParams, useRouter } from "next/navigation";
 
 const AdminDashboard: React.FC = () => {
@@ -99,6 +100,16 @@ const AdminDashboard: React.FC = () => {
                   <FolderPlus className="w-5 h-5" />
                   <span className="font-medium">Create Album</span>
                 </motion.button>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => handleTabChange("blogs")}
+                  className="flex items-center justify-center space-x-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-4 rounded-lg shadow-lg transition-all duration-300 cursor-pointer"
+                >
+                  <Plus className="w-5 h-5" />
+                  <span className="font-medium">Create Blog</span>
+                </motion.button>
               </div>
             </div>
 
@@ -155,6 +166,22 @@ const AdminDashboard: React.FC = () => {
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 className="bg-white p-4 lg:p-6 rounded-xl shadow-lg border border-gray-200 cursor-pointer"
+                onClick={() => handleTabChange("blogs")}
+              >
+                <h3 className="font-semibold text-gray-900 mb-2 text-sm lg:text-base">
+                  Blog Management
+                </h3>
+                <p className="text-xs lg:text-sm text-gray-600 mb-3 lg:mb-4">
+                  Create and manage blog posts
+                </p>
+                <div className="text-blue-600 text-xs lg:text-sm font-medium">
+                  Manage blogs →
+                </div>
+              </motion.div>
+
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                className="bg-white p-4 lg:p-6 rounded-xl shadow-lg border border-gray-200 cursor-pointer"
                 onClick={() => handleTabChange("reviews")}
               >
                 <h3 className="font-semibold text-gray-900 mb-2 text-sm lg:text-base">
@@ -182,6 +209,8 @@ const AdminDashboard: React.FC = () => {
         return <AnalyticsSection />;
       case "clients":
         return <ClientsSection />;
+        case 'blogs':
+        return <BlogsSection />;
       case "settings":
         return (
           <div className="bg-white rounded-lg p-6 lg:p-8 shadow-sm border border-gray-200">

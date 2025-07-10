@@ -3,20 +3,19 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Star, 
-  Plus, 
   Heart, 
   MessageSquare, 
   Calendar,
-  User,
   Send,
-  X
 } from 'lucide-react';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const ClientReviews: React.FC = () => {
-  const [showReviewModal, setShowReviewModal] = useState(false);
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [reviewText, setReviewText] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   const reviews = [
     {
@@ -54,14 +53,42 @@ const ClientReviews: React.FC = () => {
     }
   ];
 
-  const handleSubmitReview = (e: React.FormEvent) => {
+  const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
     if (rating > 0 && reviewText.trim()) {
-      // Handle review submission
-      console.log('Review submitted:', { rating, reviewText });
-      setShowReviewModal(false);
-      setRating(0);
-      setReviewText('');
+      try {
+        setSubmitting(true);
+
+        const token = Cookies.get("token");
+        if (!token) {
+          alert("Please login to submit a review.");
+          return;
+        }
+
+        const response = await axios.post(
+          "http://localhost:4000/api/reviews",
+          {
+            rating,
+            comment: reviewText,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        console.log("Review submitted:", response.data);
+        alert("Thank you for your review!");
+        setRating(0);
+        setReviewText('');
+      } catch (error: any) {
+        console.error("Review submission failed:", error.response?.data || error.message);
+        alert("Failed to submit review.");
+      } finally {
+        setSubmitting(false);
+      }
     }
   };
 
@@ -93,23 +120,63 @@ const ClientReviews: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-10">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Reviews & Testimonials</h2>
           <p className="text-gray-600">Share your experience and see what others are saying</p>
         </div>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setShowReviewModal(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 shadow-lg cursor-pointer"
-        >
-          <Plus className="w-5 h-5" />
-          <span>Write Review</span>
-        </motion.button>
       </div>
+
+      {/* Review Form */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 max-w-2xl mx-auto"
+      >
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Write a Review</h3>
+        <form onSubmit={handleSubmitReview} className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+            <div className="flex space-x-1">
+              {renderStars(rating, true)}
+            </div>
+            {rating > 0 && (
+              <p className="text-sm text-gray-600 mt-2">
+                {rating === 1 && "Poor"}
+                {rating === 2 && "Fair"}
+                {rating === 3 && "Good"}
+                {rating === 4 && "Very Good"}
+                {rating === 5 && "Excellent"}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
+            <textarea
+              rows={4}
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value)}
+              className="w-full text-gray-900 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              placeholder="Share your experience with us..."
+              required
+            />
+          </div>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            type="submit"
+            disabled={submitting || rating === 0 || !reviewText.trim()}
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3 rounded-lg font-semibold flex items-center justify-center space-x-2 cursor-pointer"
+          >
+            <Send className="w-4 h-4" />
+            <span>{submitting ? "Submitting..." : "Submit Review"}</span>
+          </motion.button>
+        </form>
+      </motion.div>
 
       {/* Reviews Grid */}
       <div className="grid md:grid-cols-2 gap-6">
@@ -165,78 +232,6 @@ const ClientReviews: React.FC = () => {
           </motion.div>
         ))}
       </div>
-
-      {/* Review Modal */}
-      {showReviewModal && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-          onClick={() => setShowReviewModal(false)}
-        >
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-            className="bg-white rounded-xl p-6 max-w-md w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900">Write a Review</h3>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setShowReviewModal(false)}
-                className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </motion.button>
-            </div>
-
-            <form onSubmit={handleSubmitReview} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
-                <div className="flex space-x-1">
-                  {renderStars(rating, true)}
-                </div>
-                {rating > 0 && (
-                  <p className="text-sm text-gray-600 mt-2">
-                    {rating === 1 && "Poor"}
-                    {rating === 2 && "Fair"}
-                    {rating === 3 && "Good"}
-                    {rating === 4 && "Very Good"}
-                    {rating === 5 && "Excellent"}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
-                <textarea
-                  rows={4}
-                  value={reviewText}
-                  onChange={(e) => setReviewText(e.target.value)}
-                  className="w-full text-gray-900 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                  placeholder="Share your experience with us..."
-                  required
-                />
-              </div>
-
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                type="submit"
-                disabled={rating === 0 || !reviewText.trim()}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3 rounded-lg font-semibold flex items-center justify-center space-x-2 cursor-pointer"
-              >
-                <Send className="w-4 h-4" />
-                <span>Submit Review</span>
-              </motion.button>
-            </form>
-          </motion.div>
-        </motion.div>
-      )}
     </div>
   );
 };

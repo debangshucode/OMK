@@ -7,27 +7,31 @@ import {
   Heart,
   Film,
   ArrowRight,
-  Play,
-  Pause,
+  Images,
   Star,
+  Search, ScanFace,
   Eye,
+  Truck, Clock ,
   Zap,
 } from "lucide-react";
 import Quickbook from "./quickbook";
+import { useRouter } from "next/navigation";
 
 const Services = () => {
   const [activeService, setActiveService] = useState(0);
-  const [hoveredCard, setHoveredCard] = useState(null);
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const quickbookRef = useRef<{ scrollToForm: () => void }>(null);
 
   const services = [
     {
       id: 0,
       icon: Camera,
+      icon2: Camera,
       title: "Photography",
       subtitle: "Capturing Timeless Moments",
-      title2: "Experienced Team",
+      title2: "Cinematography & Photography",
       subtitle2:
-        "Our skilled professionals bring years of hands-on experience in photography and cinematography.",
+        "We capture moments with stunning cinematic style and creativity.",
       description:
         "Professional photography that tells your unique story through stunning visuals and artistic composition.",
       features: [
@@ -36,6 +40,14 @@ const Services = () => {
         "Commercial Shoots",
         "Fine Art Photography",
       ],
+
+      features2: [
+        "Wedding Films",
+        "Couple & Engagement Shoots",
+        "Event Videography",
+        "Cinematic Edits",
+      ],
+
       color: "from-red-500 to-red-600",
       bgColor: "bg-red-50",
       textColor: "red-600",
@@ -48,9 +60,10 @@ const Services = () => {
     {
       id: 1,
       icon: Video,
+      icon2: Images,
       title: "Videography",
       subtitle: "Dynamic Visual Storytelling",
-      title2: "Client Satisfaction",
+      title2: "Personalized albums crafted with moments",
       subtitle2:
         "We prioritize your vision and satisfaction, ensuring each project exceeds expectations.",
       description:
@@ -61,6 +74,14 @@ const Services = () => {
         "Promotional Content",
         "Documentary Style",
       ],
+
+      features2: [
+        "Customized Album Design",
+        "Digital Album Options",
+        "Premium Photo Printing",
+        "Craft Memories",
+      ],
+
       color: "from-red-600 to-red-700",
       bgColor: "bg-red-100",
       textColor: "red-700",
@@ -73,11 +94,11 @@ const Services = () => {
     {
       id: 2,
       icon: Heart,
+      icon2: ScanFace,
       title: "Pre-Wedding",
       subtitle: "Romance in Every Frame",
-      title2: "Creative Excellence",
-      subtitle2:
-        "Our team captures authentic emotions and moments with a modern, cinematic touch.",
+      title2: " Smart Face Search in Albums",
+      subtitle2: "Easily find faces and moments with smart album search tools",
       description:
         "Romantic pre-wedding sessions that capture the essence of your love story in beautiful locations.",
       features: [
@@ -86,6 +107,14 @@ const Services = () => {
         "Save-the-Date",
         "Romantic Portraits",
       ],
+
+      features2: [
+        "Wedding & Event Albums",
+        "Large Family or Group Events",
+        "Easy search by faces",
+        "Corporate Portfolios",
+      ],
+
       color: "from-amber-500 to-amber-600",
       bgColor: "bg-amber-50",
       textColor: "amber-500",
@@ -98,11 +127,12 @@ const Services = () => {
     {
       id: 3,
       icon: Film,
+      icon2: Truck,
       title: "Cinematography",
       subtitle: "Cinematic Excellence",
-      title2: "Reliable & On Time",
+      title2: "Timely Delivery & Reliable Service",
       subtitle2:
-        "We value your time and always deliver high-quality output within agreed timelines.",
+        "On-time, high-quality delivery you can always count on , to track your delivery progress and get updates.",
       description:
         "Professional cinematography with cutting-edge equipment and artistic vision for your special moments.",
       features: [
@@ -111,6 +141,14 @@ const Services = () => {
         "Music Videos",
         "Cinematic Edits",
       ],
+
+      features2: [
+        "Fast Turnaround Times",
+        "Online Previews & Delivery",
+        "Dedicated Support",
+        "Track Delivery Progress",
+      ],
+
       color: "from-slate-600 to-slate-700",
       bgColor: "bg-slate-50",
       textColor: "slate-600",
@@ -140,7 +178,7 @@ const Services = () => {
       opacity: 1,
       transition: {
         duration: 0.6,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     },
   };
@@ -152,13 +190,18 @@ const Services = () => {
       opacity: 1,
       transition: {
         duration: 0.5,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     },
   };
+  const router = useRouter();
+
   const detailRef = useRef<HTMLDivElement>(null);
   return (
-    <div id="services" className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50 py-20">
+    <div
+      id="services"
+      className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50 py-20"
+    >
       {/* Header Section */}
       <motion.section
         className="px-6 mb-20"
@@ -243,7 +286,11 @@ const Services = () => {
             </motion.div>
 
             {/* Right Side - Active Service Details */}
-            <motion.div variants={itemVariants} className="relative" ref={detailRef}>
+            <motion.div
+              variants={itemVariants}
+              className="relative"
+              ref={detailRef}
+            >
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeService}
@@ -300,14 +347,17 @@ const Services = () => {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={` px-2 py-2 xl:px-6 xl:py-3  bg-white border text-${services[activeService].textColor} border-${services[activeService].textColor} rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:cursor-pointer`}
+                      onClick={() => router.push("/portfolio")}
+                      className={`text-sm px-2 py-2 xl:px-6 xl:py-3  bg-white border text-${services[activeService].textColor} border-${services[activeService].textColor} rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:cursor-pointer`}
                     >
                       Our Works
                     </motion.button>
+
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`px-2 py-2 xl:px-6 xl:py-3 bg-gradient-to-r ${services[activeService].buttonColor} text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:cursor-pointer`}
+                      onClick={() => quickbookRef.current?.scrollToForm()}
+                      className={`text-sm px-2 py-2 xl:px-6 xl:py-3 bg-gradient-to-r ${services[activeService].buttonColor} text-white rounded-full font-semibold shadow-lg transition-all duration-300 hover:cursor-pointer`}
                     >
                       Book Now
                     </motion.button>
@@ -318,7 +368,8 @@ const Services = () => {
           </div>
         </div>
       </motion.section>
-      <Quickbook />
+      <Quickbook ref={quickbookRef} />
+
       {/* Service Cards Grid */}
       <motion.section
         className="px-6 mb-20"
@@ -371,19 +422,19 @@ const Services = () => {
                   transition={{ duration: 0.6 }}
                   className={`w-16 h-16 bg-gradient-to-br ${service.color} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:shadow-xl transition-shadow duration-300`}
                 >
-                  <service.icon className="w-8 h-8 text-white" />
+                  <service.icon2 className="w-8 h-8 text-white" />
                 </motion.div>
 
                 <h3 className="text-xl font-bold text-slate-800 mb-2 group-hover:text-red-600 transition-colors duration-300">
                   {service.title2}
                 </h3>
-                <p className="text-slate-600 text-sm mb-4 leading-relaxed">
+                <p className="text-slate-600 text-sm mb-4 leading-relaxed h-[20%]">
                   {service.subtitle2}
                 </p>
-                
+
                 {/* Feature List */}
                 <div className="space-y-2 mb-6">
-                  {service.features.slice(0, 2).map((feature, idx) => (
+                  {service.features2.slice(0, 2).map((feature, idx) => (
                     <div key={idx} className="flex items-center space-x-2">
                       <Eye className="w-3 h-3 text-amber-500" />
                       <span className="text-xs text-slate-600">{feature}</span>
@@ -424,9 +475,9 @@ const Services = () => {
           </div>
         </div>
       </motion.section>
-      
+
       {/* Call to Action */}
-      <motion.section
+      {/* <motion.section
         className="px-6"
         initial="hidden"
         whileInView="visible"
@@ -465,7 +516,7 @@ const Services = () => {
             </div>
           </motion.div>
         </div>
-      </motion.section>
+      </motion.section> */}
     </div>
   );
 };
