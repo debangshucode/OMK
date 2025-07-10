@@ -11,7 +11,7 @@ import AlbumsSection from "./AlbumsSection";
 import ReviewsSection from "./ReviewsSection";
 import AnalyticsSection from "./AnalyticsSection";
 import ClientsSection from "./ClientsSection";
-import BlogsSection from "./BlogSection";
+import BlogsSection from "./BlogsSection";
 import { useSearchParams, useRouter } from "next/navigation";
 
 const AdminDashboard: React.FC = () => {
