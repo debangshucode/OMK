@@ -14,7 +14,12 @@ export default function ClientLayout({
  const hideDock =
   pathname.startsWith("/admin") ||
   pathname.startsWith("/login") ||
-  pathname.startsWith("/clients");
+  pathname.startsWith("/client/dashboard") ||
+  pathname.startsWith("/admin/dashboard") ||
+  pathname.startsWith("/unauthorized") ||
+  pathname.startsWith("/clients") ;
+
+
 
   return (
     <>

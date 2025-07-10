@@ -12,6 +12,18 @@ router.get("/logout", protect,logout)
 router.get("/getuser",protect,getUser);
 router.post("/password/forgot",forgotPassword);
 router.put("/password/reset/:token", resetPassword);
+// GET /api/auth/verify-session
+router.get("/verify-session", protect, (req, res) => {
+  return res.status(200).json({
+    user: {
+      id: req.user._id,
+      name: req.user.name,
+      email: req.user.email,
+      role: req.user.role,
+    }
+  });
+});
+
 
 
 router.post("/google-login", googleLogin);

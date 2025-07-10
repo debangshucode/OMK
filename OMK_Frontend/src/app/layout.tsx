@@ -6,6 +6,8 @@ import dynamic from "next/dynamic";
 import ClientLayout from "@/components/clientlayout";
 
 import HeaderAction from "@/components/headeraction";
+import { AuthProvider } from "@/context/AuthContext";
+import { Toaster } from "sonner";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -32,10 +34,16 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      > <AuthProvider>
         
-         <ClientLayout>{children}</ClientLayout>
-         
+         <ClientLayout>{children}
+          <Toaster 
+          position="top-right"
+        richColors
+        closeButton
+        />
+         </ClientLayout>
+         </AuthProvider>
       </body>
     </html>
   );

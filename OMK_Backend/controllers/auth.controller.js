@@ -4,6 +4,8 @@ const { OAuth2Client } = require("google-auth-library");
 
 const {sendEmail } = require("../utils/sendEmail.js");
 const crypto = require("crypto");
+const { sendToken } = require("../utils/sendToken.js");
+const { cookie } = require("express-validator");
 
 exports.register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -166,11 +168,26 @@ exports.verifyOTP = async (req, res, next) => {
     user.verificationCode = null;
     user.verificationCodeExpire = null;
     await user.save({ validateModifiedOnly: true });
+    
+    const token = generateToken(user);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false, // Set to true in production
+      // secure: process.env.NODE_ENV === "production", // Use this in production
+      sameSite: "Strict",
+      expires: new Date(Date.now() + 360000000)    });
 
-    return res.status(201).json({
-      token: generateToken(user),
-      user: { id: user._id, name: user.name, role: user.role },
-    });
+    return res.status(200).json({
+    token,
+    user: {
+      id: user._id,
+      name: user.name,
+      role: user.role,
+      email: user.email,
+    },
+    message: "User registered successfully and account verified.",
+  });
+    
     
     
   } catch (err) {
@@ -186,27 +203,60 @@ exports.login = async (req, res) => {
     if (!user || !(await user.matchPassword(password))) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
+    // await sendToken(user, 200, "Account Verified.", res);
+    const token = generateToken(user);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false, // Set to true in production
+      // secure: process.env.NODE_ENV === "production", // Use this in production
+      sameSite: "Strict",
+      expires: new Date(Date.now() + 360000000)    });
 
-    res.json({
-      token: generateToken(user),
-      user: { id: user._id, name: user.name, role: user.role , email: user.email ,name: user.name},
-    });
+    return res.status(200).json({
+    token,
+    user: {
+      id: user._id,
+      name: user.name,
+      role: user.role,
+      email: user.email,
+    },
+    message: "Login successful",
+  });
+//   res.cookie("testCookie", "testValue", {
+//   httpOnly: true,
+//   sameSite: "Strict",
+//   secure: false, // force this for localhost
+//   expires: new Date(Date.now() + 3600000)
+// });
+// res.status(200).json({ message: "Cookie test" });
+
+
   } catch (err) {
     res.status(500).json({ message: "Login error", error: err.message });
   }
 };
 
 
-exports.logout = async (req, res) => {
-  try {
-    return res.status(200).json({
-    message: "Logged out successfully.",
-  });
-  } catch (error) {
-    console.error("Logout Error:", error);
-    return res.status(500).json({ message: "Logout failed", error: error.message });
+// exports.logout = async (req, res) => {
+//   try {
+//     return res.status(200).json({
+//     message: "Logged out successfully.",
+//   });
+//   } catch (error) {
+//     console.error("Logout Error:", error);
+//     return res.status(500).json({ message: "Logout failed", error: error.message });
     
-  }
+//   }
+
+exports.logout = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    // secure: process.env.NODE_ENV === "production",
+    secure: false, 
+    sameSite: "Strict",
+  });
+  res.status(200).json({ message: "Logged out successfully" });
+};
   // res
   //   .status(200)
   //   .cookie("token", "", {
@@ -218,7 +268,7 @@ exports.logout = async (req, res) => {
   //     message: "Logged out successfully.",
   //   });
   
-};
+// };
 
 exports.getUser = async (req, res, next) => {
   const user = req.user;
