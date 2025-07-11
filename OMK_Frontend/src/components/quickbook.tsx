@@ -688,7 +688,7 @@ const Quickbook = forwardRef((props, ref) => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               className="relative max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
             >
               {/* Header */}
               <div className="relative">
