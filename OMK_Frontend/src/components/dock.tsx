@@ -181,9 +181,9 @@ export default function Dock({
       className="fixed top-0 left-1/2 -translate-x-1/2 z-50 flex max-w-full items-center"
     >
       <motion.div
-        onMouseMove={({ pageX }) => {
+        onMouseMove={(e: React.MouseEvent) => {
           isHovered.set(1);
-          mouseX.set(pageX);
+          mouseX.set(e.pageX);
         }}
         onMouseLeave={() => {
           isHovered.set(0);

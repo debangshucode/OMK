@@ -1,53 +1,105 @@
 "use client";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Camera, Video, FolderOpen, ArrowRight } from "lucide-react";
+import {
+  Camera,
+  Video,
+  FolderOpen,
+  ArrowRight,
+  ArrowLeftCircle,
+  ArrowRightCircle,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
+
 const RecentWorks = () => {
+  const router = useRouter();
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const autoScrollInterval = useRef<NodeJS.Timeout | null>(null);
+
   const recentWorks = [
     {
       id: 1,
       type: "photo",
       title: "Sarah & Michael Wedding",
-      image:
-        "https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop",
+      image: "images/weadingHome4.jpg",
       category: "Wedding",
     },
     {
       id: 2,
       type: "video",
       title: "Corporate Event Video",
-      image:
-        "https://images.pexels.com/photos/3062541/pexels-photo-3062541.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop",
+      image: "images/weadingHome3.jpg",
       category: "Corporate",
     },
     {
       id: 3,
       type: "album",
       title: "Pre-Wedding Shoot",
-      image:
-        "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop",
+      image: "images/weadingHome5.jpg",
       category: "Pre-Wedding",
+    },
+    {
+      id: 4,
+      type: "video",
+      title: "Engagement Day Highlights",
+      image: "images/weadingHome2.jpg",
+      category: "Engagement",
+    },
+    {
+      id: 5,
+      type: "photo",
+      title: "Destination Wedding Goa",
+      image: "images/weadingHome1.jpg",
+      category: "Wedding",
     },
   ];
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case "photo":
-        return Camera;
-      case "video":
-        return Video;
-      case "album":
-        return FolderOpen;
-      default:
-        return Camera;
+      case "photo": return Camera;
+      case "video": return Video;
+      case "album": return FolderOpen;
+      default: return Camera;
     }
   };
-  const router = useRouter();
+
+  
+
+  // Infinite Auto Scroll
+  useEffect(() => {
+    const container = scrollRef.current;
+
+    const startAutoScroll = () => {
+      autoScrollInterval.current = setInterval(() => {
+        if (container) {
+          // When we reach near end, reset scroll
+          if (container.scrollLeft >= container.scrollWidth / 2) {
+            container.scrollLeft = 0;
+          } else {
+            container.scrollLeft += 1;
+          }
+        }
+      }, 16); // ~60fps
+    };
+
+    const stopAutoScroll = () => {
+      if (autoScrollInterval.current) clearInterval(autoScrollInterval.current);
+    };
+
+    startAutoScroll();
+    container?.addEventListener("mouseenter", stopAutoScroll);
+    container?.addEventListener("mouseleave", startAutoScroll);
+
+    return () => {
+      stopAutoScroll();
+      container?.removeEventListener("mouseenter", stopAutoScroll);
+      container?.removeEventListener("mouseleave", startAutoScroll);
+    };
+  }, []);
+
   return (
-    <section className="py-16 bg-gradient-to-br from-red-50 to-red-100">
+    <section className="py-16 bg-gradient-to-br from-red-50 to-red-100 relative">
       <div className="max-w-6xl mx-auto px-6">
-        {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Recent <span className="text-red-600">Works</span>
@@ -57,21 +109,25 @@ const RecentWorks = () => {
           </p>
         </div>
 
-        {/* Works Grid */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          {recentWorks.map((work, index) => {
+
+        {/* Scrollable Row with Duplicated Items */}
+        <div
+          ref={scrollRef}
+          className="flex gap-6 overflow-x-auto scroll-smooth hide-scrollbar pb-4 px-2 whitespace-nowrap"
+        >
+          {[...recentWorks, ...recentWorks].map((work, index) => {
             const TypeIcon = getTypeIcon(work.type);
             return (
               <motion.div
+                key={index}
                 onClick={() => router.push("/portfolio")}
-                key={work.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
+                transition={{ delay: index * 0.05, duration: 0.4 }}
                 whileHover={{ y: -5 }}
-                className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+                className="min-w-[250px] max-w-[250px] flex-shrink-0 bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
               >
-                <div className="relative aspect-[4/3]">
+                <div className="relative aspect-[3/4]">
                   <img
                     src={work.image}
                     alt={work.title}
@@ -96,13 +152,13 @@ const RecentWorks = () => {
           })}
         </div>
 
-        {/* View More Button */}
-        <div className="text-center">
+        {/* View All */}
+        <div className="text-center mt-6">
           <motion.button
             onClick={() => router.push("/portfolio")}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-semibold flex items-center space-x-2 mx-auto transition-colors duration-300 cursor-pointer"
+            className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-semibold flex items-center space-x-2 mx-auto transition-colors duration-300"
           >
             <span>View All Works</span>
             <ArrowRight className="w-4 h-4" />
