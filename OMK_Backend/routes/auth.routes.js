@@ -1,7 +1,7 @@
 const express = require("express");
-const { register, login, verifyOTP, logout, getUser, forgotPassword, resetPassword } = require("../controllers/auth.controller.js");
+const { register, login, verifyOTP, logout, getUser, forgotPassword, resetPassword, getAllUsers } = require("../controllers/auth.controller.js");
 const { googleLogin } = require("../controllers/auth.controller.js");
-const { protect } = require("../middlewares/auth.middleware.js");
+const { protect, authorizeRoles } = require("../middlewares/auth.middleware.js");
 
 const router = express.Router();
 
@@ -10,6 +10,7 @@ router.post("/otp-verification", verifyOTP);
 router.post("/login",login);
 router.get("/logout", protect,logout)
 router.get("/getuser",protect,getUser);
+router.get("/all-user", protect,authorizeRoles("admin"), getAllUsers);
 router.post("/password/forgot",forgotPassword);
 router.put("/password/reset/:token", resetPassword);
 // GET /api/auth/verify-session

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, 
@@ -35,6 +35,8 @@ import {
   FileText,
   Camera
 } from 'lucide-react';
+import axios from 'axios';
+import { toast } from 'sonner';
 
 interface Blog {
   id: number;
@@ -57,6 +59,9 @@ interface Blog {
 }
 
 const BlogsSection: React.FC = () => {
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [selectedBlogs, setSelectedBlogs] = useState<number[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [filterStatus, setFilterStatus] = useState('all');
@@ -69,8 +74,7 @@ const BlogsSection: React.FC = () => {
   const [blogForm, setBlogForm] = useState({
     title: '',
     content: '',
-    excerpt: '',
-    featuredImage: '',
+    featuredImageFile: null as File | null,
     category: '',
     tags: '',
     status: 'draft' as 'draft' | 'published' | 'scheduled',
@@ -78,79 +82,61 @@ const BlogsSection: React.FC = () => {
     youtubeUrl: '',
     images: [] as string[]
   });
+    useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const res = await axios.get("http://localhost:4000/api/blogs", {
+          withCredentials: true
+        }
+        );
+        console.log("Response data:", res.data);
+        setBlogs(res.data);
+        console.log("Fetched blogs:", res.data.blogs);
+      } catch (err: any) {
+        console.error("Failed to fetch blogs:", err);
+        setError(err.response?.data?.message || "Failed to load blogs");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const blogs: Blog[] = [
-    {
-      id: 1,
-      title: 'Top 10 Wedding Photography Tips for Perfect Shots',
-      slug: 'wedding-photography-tips-perfect-shots',
-      content: 'Wedding photography is an art that requires skill, patience, and creativity...',
-      excerpt: 'Discover essential tips and techniques for capturing stunning wedding moments that couples will treasure forever.',
-      featuredImage: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop',
-      author: 'Alex Thompson',
-      category: 'Wedding Photography',
-      tags: ['wedding', 'photography', 'tips', 'couples'],
-      status: 'published',
-      publishDate: '2024-01-15',
-      views: 2456,
-      likes: 189,
-      comments: 23,
-      readTime: '5 min read',
-      youtubeUrl: 'https://www.youtube.com/watch?v=example1',
-      images: [
-        'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop',
-        'https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop'
-      ]
-    },
-    {
-      id: 2,
-      title: 'Behind the Scenes: Corporate Event Photography',
-      slug: 'behind-scenes-corporate-event-photography',
-      content: 'Corporate events require a different approach to photography...',
-      excerpt: 'Learn the secrets of professional corporate event photography and how to capture the essence of business gatherings.',
-      featuredImage: 'https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop',
-      author: 'Sarah Mitchell',
-      category: 'Corporate Photography',
-      tags: ['corporate', 'events', 'business', 'professional'],
-      status: 'published',
-      publishDate: '2024-01-12',
-      views: 1834,
-      likes: 156,
-      comments: 18,
-      readTime: '7 min read',
-      images: [
-        'https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop'
-      ]
-    },
-    {
-      id: 3,
-      title: 'The Art of Pre-Wedding Photography',
-      slug: 'art-pre-wedding-photography',
-      content: 'Pre-wedding shoots are becoming increasingly popular...',
-      excerpt: 'Explore creative techniques and ideas for memorable pre-wedding photography sessions that tell love stories.',
-      featuredImage: 'https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop',
-      author: 'Mike Johnson',
-      category: 'Pre-Wedding',
-      tags: ['pre-wedding', 'couples', 'romance', 'creativity'],
-      status: 'draft',
-      publishDate: '2024-01-20',
-      views: 0,
-      likes: 0,
-      comments: 0,
-      readTime: '6 min read',
-      youtubeUrl: 'https://www.youtube.com/watch?v=example2',
-      images: []
-    }
-  ];
+    fetchBlogs();
+  }, []);
+  if (loading) return <p className="text-gray-600">Loading blogs...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
+  // const blogs: Blog[] = [
+  //   {
+  //     id: 1,
+  //     title: 'Top 10 Wedding Photography Tips for Perfect Shots',
+  //     slug: 'wedding-photography-tips-perfect-shots',
+  //     content: 'Wedding photography is an art that requires skill, patience, and creativity...',
+  //     excerpt: 'Discover essential tips and techniques for capturing stunning wedding moments that couples will treasure forever.',
+  //     featuredImage: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop',
+  //     author: 'Alex Thompson',
+  //     category: 'Wedding Photography',
+  //     tags: ['wedding', 'photography', 'tips', 'couples'],
+  //     status: 'published',
+  //     publishDate: '2024-01-15',
+  //     views: 2456,
+  //     likes: 189,
+  //     comments: 23,
+  //     readTime: '5 min read',
+  //     youtubeUrl: 'https://www.youtube.com/watch?v=example1',
+  //     images: [
+  //       'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop',
+  //       'https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop'
+  //     ]
+  //   }
+  // ];
 
   const categories = ['all', 'Wedding Photography', 'Corporate Photography', 'Pre-Wedding', 'Portrait', 'Event Photography'];
   const statuses = ['all', 'published', 'draft', 'scheduled'];
 
-  const filteredBlogs = blogs.filter(blog => {
-    const statusMatch = filterStatus === 'all' || blog.status === filterStatus;
-    const categoryMatch = filterCategory === 'all' || blog.category === filterCategory;
-    return statusMatch && categoryMatch;
-  });
+  // const filteredBlogs = blogs.filter(blog => {
+  //   const statusMatch = filterStatus === 'all' || blog.status === filterStatus;
+  //   const categoryMatch = filterCategory === 'all' || blog.category === filterCategory;
+  //   return statusMatch && categoryMatch;
+  // });
 
   const toggleBlogSelection = (blogId: number) => {
     setSelectedBlogs(prev => 
@@ -164,8 +150,7 @@ const BlogsSection: React.FC = () => {
     setBlogForm({
       title: '',
       content: '',
-      excerpt: '',
-      featuredImage: '',
+      featuredImageFile: null,
       category: '',
       tags: '',
       status: 'draft',
@@ -181,8 +166,7 @@ const BlogsSection: React.FC = () => {
     setBlogForm({
       title: blog.title,
       content: blog.content,
-      excerpt: blog.excerpt,
-      featuredImage: blog.featuredImage,
+      featuredImageFile: blog.featuredImageFile || null,
       category: blog.category,
       tags: blog.tags.join(', '),
       status: blog.status,
@@ -194,11 +178,31 @@ const BlogsSection: React.FC = () => {
     setShowCreateModal(true);
   };
 
-  const handleSaveBlog = () => {
-    console.log('Saving blog:', blogForm);
+  const handleSaveBlog = async () => {
+    const formData = new FormData();
+    formData.append("title", blogForm.title);
+    formData.append("content", blogForm.content);
+    formData.append("category", blogForm.category);
+    formData.append("status", blogForm.status);
+    formData.append("tags", blogForm.tags); // comma-separated string
+    if (blogForm.featuredImageFile) {
+      formData.append("image", blogForm.featuredImageFile); // 👈 Important for Cloudinary
+    }
+    try {
+    const response = await axios.post("http://localhost:4000/api/blogs", formData, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
+    toast.success("Blog created successfully");
     setShowCreateModal(false);
     setEditingBlog(null);
-  };
+  } catch (error: any) {
+    toast.error(error.response?.data?.message || "Blog creation failed");
+  }
+};
+
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -213,15 +217,16 @@ const BlogsSection: React.FC = () => {
   };
 
   const handleFeaturedImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setBlogForm(prev => ({
-        ...prev,
-        featuredImage: imageUrl
-      }));
-    }
-  };
+  const file = e.target.files?.[0];
+  if (file) {
+    const imageUrl = URL.createObjectURL(file);
+    setBlogForm(prev => ({
+      ...prev,
+      featuredImage: imageUrl,
+      featuredImageFile: file // 👈 store actual file for FormData
+    }));
+  }
+};
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -404,7 +409,7 @@ const BlogsSection: React.FC = () => {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         {viewMode === 'grid' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredBlogs.map((blog, index) => (
+            {blogs.map((blog, index) => (
               <motion.div
                 key={blog.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -415,8 +420,8 @@ const BlogsSection: React.FC = () => {
                 {/* Featured Image */}
                 <div className="relative aspect-[16/9]">
                   <img
-                    src={blog.featuredImage}
-                    alt={blog.title}
+                    src={blog?.image }
+                    alt={blog?.title}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute top-2 left-2">
@@ -524,7 +529,7 @@ const BlogsSection: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {filteredBlogs.map((blog, index) => (
+            {blogs.map((blog, index) => (
               <motion.div
                 key={blog.id}
                 initial={{ opacity: 0, x: -20 }}
@@ -542,7 +547,7 @@ const BlogsSection: React.FC = () => {
 
                 {/* Thumbnail */}
                 <img
-                  src={blog.featuredImage}
+                  src={blog?.image}
                   alt={blog.title}
                   className="w-20 h-16 object-cover rounded-lg"
                 />
@@ -665,17 +670,7 @@ const BlogsSection: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Excerpt */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Excerpt</label>
-                  <textarea
-                    rows={3}
-                    value={blogForm.excerpt}
-                    onChange={(e) => setBlogForm(prev => ({ ...prev, excerpt: e.target.value }))}
-                    className="w-full border text-gray-900 border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none text-gray-900"
-                    placeholder="Brief description of the blog post..."
-                  />
-                </div>
+                
 
                 {/* Featured Image */}
                 <div>
@@ -695,9 +690,9 @@ const BlogsSection: React.FC = () => {
                       <Upload className="w-4 h-4" />
                       <span>Upload Image</span>
                     </label>
-                    {blogForm.featuredImage && (
+                    {blogForm.featuredImageFile && (
                       <img
-                        src={blogForm.featuredImage}
+                        src={blogForm.featuredImageFile}
                         alt="Featured"
                         className="w-20 h-16 object-cover rounded-lg"
                       />
