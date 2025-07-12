@@ -51,8 +51,11 @@ const HeaderActions = () => {
       icon: <BarChart3 size={16} />,
       label: "Dashboard",
       onClick: () => {
-        // Navigate to dashboard
+        if(user?.role === "admin") {
+          window.location.href = "/admin/dashboard";
+        }else{
         window.location.href = "/client/dashboard";
+        }
       },
     },
     // {
