@@ -1,20 +1,20 @@
 "use client";
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import {
-  Star,
-  Heart,
-  MessageSquare,
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { 
+  Star, 
+  Heart, 
+  MessageSquare, 
   Calendar,
   Send,
-} from "lucide-react";
-import axios from "axios";
-import Cookies from "js-cookie";
+} from 'lucide-react';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const ClientReviews: React.FC = () => {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
-  const [reviewText, setReviewText] = useState("");
+  const [reviewText, setReviewText] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const reviews = [
@@ -23,37 +23,34 @@ const ClientReviews: React.FC = () => {
       clientName: "Sarah Johnson",
       rating: 5,
       date: "2024-01-20",
-      comment:
-        "Absolutely amazing work! Every moment was captured perfectly. The team was professional and made us feel comfortable throughout the entire process.",
+      comment: "Absolutely amazing work! Every moment was captured perfectly. The team was professional and made us feel comfortable throughout the entire process.",
       service: "Wedding Photography",
       avatar: "/images/weadingHome1.jpg",
       likes: 23,
-      replies: 3,
+      replies: 3
     },
     {
       id: 2,
       clientName: "Emma Rodriguez",
       rating: 5,
       date: "2024-01-18",
-      comment:
-        "Professional and creative. Loved our pre-wedding shoot! The photos exceeded our expectations and the editing was flawless.",
+      comment: "Professional and creative. Loved our pre-wedding shoot! The photos exceeded our expectations and the editing was flawless.",
       service: "Pre-Wedding Shoot",
       avatar: "/images/weadingHome2.jpg",
       likes: 18,
-      replies: 2,
+      replies: 2
     },
     {
       id: 3,
       clientName: "David Chen",
       rating: 4,
       date: "2024-01-15",
-      comment:
-        "Great corporate photography service. Very professional and delivered high-quality results on time.",
+      comment: "Great corporate photography service. Very professional and delivered high-quality results on time.",
       service: "Corporate Photography",
       avatar: "/images/weadingHome3.jpg",
       likes: 12,
-      replies: 1,
-    },
+      replies: 1
+    }
   ];
 
   const handleSubmitReview = async (e: React.FormEvent) => {
@@ -62,50 +59,41 @@ const ClientReviews: React.FC = () => {
       try {
         setSubmitting(true);
 
-        const token = Cookies.get("token");
-        console.log("Token:", token);
-
-        if (!token) {
-          alert("Please login to submit a review.");
-          return;
-        }
+        // const token = Cookies.get("token");
+        // if (!token) {
+        //   alert("Please login to submit a review.");
+        //   return;
+        // }
 
         const response = await axios.post(
-          "http://localhost:4000/api/reviews",
-          {
-            rating,
-            comment: reviewText,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+  "http://localhost:4000/api/reviews",
+  {
+    rating,
+    comment: reviewText,
+  },
+  {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    withCredentials: true
+  }
+);
+
 
         console.log("Review submitted:", response.data);
         alert("Thank you for your review!");
         setRating(0);
-        setReviewText("");
+        setReviewText('');
       } catch (error: any) {
-        console.error(
-          "Review submission failed:",
-          error.response?.data || error.message
-        );
+        console.error("Review submission failed:", error.response?.data || error.message);
         alert("Failed to submit review.");
       } finally {
         setSubmitting(false);
       }
-    } else {
-      alert("Please add a rating and comment.");
     }
   };
 
-  const renderStars = (
-    currentRating: number,
-    interactive: boolean = false
-  ) => {
+  const renderStars = (currentRating: number, interactive: boolean = false) => {
     return [...Array(5)].map((_, index) => {
       const starValue = index + 1;
       return (
@@ -117,17 +105,14 @@ const ClientReviews: React.FC = () => {
           onClick={interactive ? () => setRating(starValue) : undefined}
           onMouseEnter={interactive ? () => setHoverRating(starValue) : undefined}
           onMouseLeave={interactive ? () => setHoverRating(0) : undefined}
-          className={`${
-            interactive ? "cursor-pointer" : "cursor-default"
-          } transition-colors duration-200`}
+          className={`${interactive ? 'cursor-pointer' : 'cursor-default'} transition-colors duration-200`}
           disabled={!interactive}
         >
           <Star
             className={`w-5 h-5 ${
-              starValue <=
-              (interactive ? hoverRating || rating : currentRating)
-                ? "fill-amber-400 text-amber-400"
-                : "text-gray-300"
+              starValue <= (interactive ? (hoverRating || rating) : currentRating)
+                ? 'fill-amber-400 text-amber-400'
+                : 'text-gray-300'
             }`}
           />
         </motion.button>
@@ -141,9 +126,7 @@ const ClientReviews: React.FC = () => {
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Reviews & Testimonials</h2>
-          <p className="text-gray-600">
-            Share your experience and see what others are saying
-          </p>
+          <p className="text-gray-600">Share your experience and see what others are saying</p>
         </div>
       </div>
 
@@ -157,10 +140,16 @@ const ClientReviews: React.FC = () => {
         <form onSubmit={handleSubmitReview} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
-            <div className="flex space-x-1">{renderStars(rating, true)}</div>
+            <div className="flex space-x-1">
+              {renderStars(rating, true)}
+            </div>
             {rating > 0 && (
               <p className="text-sm text-gray-600 mt-2">
-                {["Poor", "Fair", "Good", "Very Good", "Excellent"][rating - 1]}
+                {rating === 1 && "Poor"}
+                {rating === 2 && "Fair"}
+                {rating === 3 && "Good"}
+                {rating === 4 && "Very Good"}
+                {rating === 5 && "Excellent"}
               </p>
             )}
           </div>
@@ -190,7 +179,7 @@ const ClientReviews: React.FC = () => {
         </form>
       </motion.div>
 
-      {/* Reviews List */}
+      {/* Reviews Grid */}
       <div className="grid md:grid-cols-2 gap-6">
         {reviews.map((review, index) => (
           <motion.div
@@ -201,7 +190,7 @@ const ClientReviews: React.FC = () => {
             className="bg-white rounded-xl p-6 shadow-lg border border-gray-100"
           >
             <div className="flex items-center space-x-4 mb-4">
-              <img
+              <img 
                 src={review.avatar}
                 alt={review.clientName}
                 className="w-12 h-12 rounded-full object-cover"
@@ -214,9 +203,9 @@ const ClientReviews: React.FC = () => {
                 {renderStars(review.rating)}
               </div>
             </div>
-
+            
             <p className="text-gray-700 mb-4 leading-relaxed">"{review.comment}"</p>
-
+            
             <div className="flex items-center justify-between text-sm text-gray-500">
               <div className="flex items-center space-x-1">
                 <Calendar className="w-4 h-4" />
