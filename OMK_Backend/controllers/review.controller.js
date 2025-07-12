@@ -2,8 +2,8 @@ const Review = require("../models/review.model");
 
 // User submits a review
 exports.createReview = async (req, res) => {
-  const { name , rating, comment } = req.body;
-  if (!name || !rating || !comment) {
+  const { name, rating, comment } = req.body;
+  if (!rating || !comment) {
     return res.status(400).json({ message: "Rating and comment are required" });
   }
 
@@ -11,40 +11,51 @@ exports.createReview = async (req, res) => {
     const existingReview = await Review.findOne({ user: req.user.id });
 
     if (existingReview) {
-      return res.status(400).json({ message: "You have already submitted a review" });
+      return res
+        .status(400)
+        .json({ message: "You have already submitted a review" });
     }
 
     const review = await Review.create({
       user: req.user.id,
       name: req.user.name,
       rating,
-      comment
+      comment,
     });
 
     res.status(201).json({ message: "Review submitted successfully", review });
   } catch (err) {
-    res.status(500).json({ message: "Error submitting review", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error submitting review", error: err.message });
   }
 };
-
 
 // Admin: Get all reviews
 exports.getAllReviews = async (req, res) => {
   try {
-    const reviews = await Review.find().populate("user", "name email").sort({ createdAt: -1 });
+    const reviews = await Review.find()
+      .populate("user", "name email")
+      .sort({ createdAt: -1 });
     res.json(reviews);
   } catch (err) {
-    res.status(500).json({ message: "Failed to fetch reviews", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to fetch reviews", error: err.message });
   }
 };
 
 // Public: Get approved reviews
 exports.getApprovedReviews = async (req, res) => {
   try {
-    const reviews = await Review.find({ approved: true }).sort({ createdAt: -1 });
+    const reviews = await Review.find({ approved: true }).sort({
+      createdAt: -1,
+    });
     res.json(reviews);
   } catch (err) {
-    res.status(500).json({ message: "Failed to fetch reviews", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to fetch reviews", error: err.message });
   }
 };
 
@@ -54,10 +65,16 @@ exports.updateReviewApproval = async (req, res) => {
   const { approved } = req.body;
 
   try {
-    const updatedReview = await Review.findByIdAndUpdate(id, { approved }, { new: true });
+    const updatedReview = await Review.findByIdAndUpdate(
+      id,
+      { approved },
+      { new: true }
+    );
     res.json({ message: "Review status updated", updatedReview });
   } catch (err) {
-    res.status(500).json({ message: "Error updating review", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error updating review", error: err.message });
   }
 };
 
@@ -72,6 +89,8 @@ exports.deleteReview = async (req, res) => {
     }
     res.json({ message: "Review deleted successfully" });
   } catch (err) {
-    res.status(500).json({ message: "Error deleting review", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error deleting review", error: err.message });
   }
 };

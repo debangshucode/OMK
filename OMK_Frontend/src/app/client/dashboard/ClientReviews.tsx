@@ -59,25 +59,26 @@ const ClientReviews: React.FC = () => {
       try {
         setSubmitting(true);
 
-        const token = Cookies.get("token");
-        if (!token) {
-          alert("Please login to submit a review.");
-          return;
-        }
+        // const token = Cookies.get("token");
+        // if (!token) {
+        //   alert("Please login to submit a review.");
+        //   return;
+        // }
 
         const response = await axios.post(
-          "http://localhost:4000/api/reviews",
-          {
-            rating,
-            comment: reviewText,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+  "http://localhost:4000/api/reviews",
+  {
+    rating,
+    comment: reviewText,
+  },
+  {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    withCredentials: true
+  }
+);
+
 
         console.log("Review submitted:", response.data);
         alert("Thank you for your review!");
