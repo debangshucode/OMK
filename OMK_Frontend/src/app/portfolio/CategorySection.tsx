@@ -21,7 +21,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   onViewMore,
   showViewMore = true,
   icon: Icon,
-  iconColor = 'bg-gradient-to-r from-red-700 via-red-600 to-amber-600'
+  iconColor = 'bg-gray-700'
 }) => {
   const displayItems = items.slice(0, 8);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -39,7 +39,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   };
 
   return (
-    <div className="mb-12  ">
+    <div className="mb-2  ">
       {/* Section Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
@@ -48,12 +48,12 @@ const CategorySection: React.FC<CategorySectionProps> = ({
               <Icon className="w-5 h-5 text-white" />
             </div>
           )}
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-red-700 via-red-600 to-amber-600 bg-clip-text text-transparent">{title}</h2>
+          <h2 className="text-2xl font-bold bg-gray-700 bg-clip-text text-transparent">{title}</h2>
         </div>
         {showViewMore && (
           <button
             onClick={onViewMore}
-            className="flex items-center space-x-2 bg-gradient-to-r from-red-700 via-red-600 to-amber-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity duration-200 group font-medium"
+            className="flex items-center space-x-2 text-gray-700 hover:opacity-80 transition-opacity duration-200 group font-medium"
           >
             <span>View More</span>
             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />

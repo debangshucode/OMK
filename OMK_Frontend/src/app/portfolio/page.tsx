@@ -152,7 +152,7 @@ const Portfolio: React.FC = () => {
         {selectedMedia && (
           <FullScreenViewer
             media={selectedMedia}
-             allMedia={mediaGroup}
+            allMedia={mediaGroup}
             onClose={() => setSelectedMedia(null)}
           />
         )}
@@ -203,18 +203,21 @@ const Portfolio: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-amber-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-red-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-red-800 mb-2">
-              Eternal Moments
+    <div className="min-h-screen bg-gradient-to-br from-white to-red-50">
+      {/* Header with Background and Centered Text */}
+      <div
+        className="relative h-[60vh] w-full bg-gray-100 to-black flex items-center justify-center px-4"
+      >
+        <div className="absolute inset-0 flex items-center justify-center text-center px-4 ">
+          
+            <h1 className="text-7xl font-bold bg-gradient-to-br from-amber-900 via-amber-700 to-amber-600 bg-clip-text text-transparent">Portfolio</h1>
+          
+          <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-white text-lg font-semibold xl:bottom-10">
+            <h1 className="text-2xl font-bold bg-gradient-to-br from-amber-900 via-amber-700 to-amber-600 bg-clip-text text-transparent">
+              Explore Our Stunning Collection of Memories
             </h1>
-            <p className="text-gray-600 text-lg">
-              Capturing love, joy, and precious memories
-            </p>
           </div>
+          
         </div>
       </div>
 
@@ -227,18 +230,18 @@ const Portfolio: React.FC = () => {
             onClick={() => setShowFaceSearch(!showFaceSearch)}
             className={`flex items-center space-x-2 px-4 py-3 rounded-xl border transition-all duration-300 ${
               showFaceSearch
-                ? "bg-red-50 border-red-200 text-red-600"
-                : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+                ? "bg-red-50 border-red-200 text-red-600 hover:cursor-pointer"
+                : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:cursor-pointer"
             }`}
           >
             <Scan className="w-5 h-5" />
-            <span className="inline">Face Search</span>
+            <span className="inline ">Face Search</span>
           </motion.button>
         </div>
       </div>
 
       {/* Portfolio Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl my-2 mx-auto px-4 sm:px-6 lg:px-2 py-8">
         <AnimatePresence>
           {showFaceSearch && (
             <motion.div

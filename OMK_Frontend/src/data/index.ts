@@ -39,15 +39,15 @@ import { MediaItem, Album } from '../types/types';
 
 const samplePhotos = [
   '/images/weadingHome.jpg',
-  '/images/weadingHome.jpg',
-  '/images/weadingHome.jpg',
-  '/images/weadingHome.jpg',
-  '/images/weadingHome.jpg',
-  '/images/weadingHome.jpg',
-  '/images/weadingHome.jpg',
-  '/images/weadingHome.jpg',
-  '/images/weadingHome.jpg',
-  '/images/weadingHome.jpg'
+  '/images/weadingHome1.jpg',
+  '/images/weadingHome2.jpg',
+  '/images/weadingHome3.jpg',
+  '/images/weadingHome4.jpg',
+  '/images/weadingHome5.jpg',
+  '/images/weadingHome6.jpg',
+  '/images/weadingHome2.jpg',
+  '/images/weadingHome4.jpg',
+  '/images/weadingHome5.jpg'
 ];
 
 // Using placeholder for videos since external video URLs may not work

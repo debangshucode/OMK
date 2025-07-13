@@ -162,7 +162,7 @@ const FaceSearch: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 my-5">
       {/* Header */}
       <div>
         <h2 className="text-2xl font-bold text-gray-900">
