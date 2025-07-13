@@ -35,6 +35,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     { id: 'reviews', label: 'Reviews', icon: Star },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'clients', label: 'Clients', icon: Users },
+    { id: 'bookings', label: 'Bookings', icon: BookOpen },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
   const router = useRouter();

@@ -36,3 +36,17 @@ export interface Album {
   items: MediaItem[];
   thumbnail?: string;
 }
+
+export interface Booking {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  serviceType: string;
+  date: string;
+  timeSlot: string;
+  status: string;
+  message: string;
+  createdAt: string;
+  updatedAt: string;
+}

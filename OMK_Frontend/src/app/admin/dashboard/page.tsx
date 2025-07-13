@@ -12,6 +12,7 @@ import ReviewsSection from "./ReviewsSection";
 import AnalyticsSection from "./AnalyticsSection";
 import ClientsSection from "./ClientsSection";
 import BlogsSection from "./BlogsSection";
+import BookingSection from "./bookingsection";
 import { useSearchParams, useRouter } from "next/navigation";
 
 const AdminDashboard: React.FC = () => {
@@ -209,7 +210,9 @@ const AdminDashboard: React.FC = () => {
         return <AnalyticsSection />;
       case "clients":
         return <ClientsSection />;
-        case 'blogs':
+      case "bookings":
+        return <BookingSection />;
+      case "blogs":
         return <BlogsSection />;
       case "settings":
         return (
