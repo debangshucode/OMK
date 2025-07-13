@@ -1,154 +1,38 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from '@/utils/axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Users, 
-  Search, 
-  Filter, 
-  Plus, 
-  Eye, 
-  Edit, 
-  Trash2, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Calendar, 
-  Star,
-  Camera,
-  Video,
-  FolderOpen,
-  X,
-  UserPlus,
-  Download,
-  Upload,
-  Heart,
-  Clock,
-  CheckCircle,
-  AlertCircle
+  Users, Search, Filter, Plus, Eye, Edit, Trash2, Mail, Phone, MapPin, Calendar, 
+  Star, Camera, Video, FolderOpen, X, UserPlus, Download, Upload, Heart, Clock, 
+  CheckCircle, AlertCircle 
 } from 'lucide-react';
 import CreateModal from '@/components/CreateAlbumModal';
 
 const ClientsSection: React.FC = () => {
+  const [clients, setClients] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedClients, setSelectedClients] = useState<number[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterService, setFilterService] = useState('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const clients = [
-    {
-      id: 1,
-      name: 'Sarah & Michael Johnson',
-      email: 'sarah.johnson@email.com',
-      phone: '+1 (555) 123-4567',
-      location: 'New York, NY',
-      joinDate: '2024-01-15',
-      status: 'active',
-      totalProjects: 3,
-      totalSpent: 2850,
-      lastProject: 'Wedding Photography',
-      rating: 5,
-      avatar: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',
-      services: ['Wedding Photography', 'Engagement Shoot'],
-      notes: 'Preferred photographer for outdoor shoots. Very satisfied with previous work.',
-      nextAppointment: '2024-02-20'
-    },
-    {
-      id: 2,
-      name: 'Emma Rodriguez',
-      email: 'emma.rodriguez@email.com',
-      phone: '+1 (555) 234-5678',
-      location: 'Los Angeles, CA',
-      joinDate: '2024-01-12',
-      status: 'active',
-      totalProjects: 2,
-      totalSpent: 1200,
-      lastProject: 'Pre-Wedding Shoot',
-      rating: 5,
-      avatar: 'https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',
-      services: ['Pre-Wedding Shoot', 'Portrait Session'],
-      notes: 'Loves natural lighting and candid shots. Planning wedding for next year.',
-      nextAppointment: null
-    },
-    {
-      id: 3,
-      name: 'David Chen',
-      email: 'david.chen@techcorp.com',
-      phone: '+1 (555) 345-6789',
-      location: 'San Francisco, CA',
-      joinDate: '2024-01-10',
-      status: 'active',
-      totalProjects: 5,
-      totalSpent: 4500,
-      lastProject: 'Corporate Photography',
-      rating: 4,
-      avatar: 'https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',
-      services: ['Corporate Photography', 'Event Photography'],
-      notes: 'Regular corporate client. Prefers professional headshots and event coverage.',
-      nextAppointment: '2024-02-15'
-    },
-    {
-      id: 4,
-      name: 'Lisa Wilson',
-      email: 'lisa.wilson@email.com',
-      phone: '+1 (555) 456-7890',
-      location: 'Chicago, IL',
-      joinDate: '2024-01-08',
-      status: 'inactive',
-      totalProjects: 1,
-      totalSpent: 800,
-      lastProject: 'Family Photography',
-      rating: 5,
-      avatar: 'https://images.pexels.com/photos/1024967/pexels-photo-1024967.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',
-      services: ['Family Photography'],
-      notes: 'Family of 4. Interested in annual family portraits.',
-      nextAppointment: null
-    },
-    {
-      id: 5,
-      name: 'Maria Gonzalez',
-      email: 'maria.gonzalez@email.com',
-      phone: '+1 (555) 567-8901',
-      location: 'Miami, FL',
-      joinDate: '2024-01-05',
-      status: 'active',
-      totalProjects: 2,
-      totalSpent: 1500,
-      lastProject: 'Event Photography',
-      rating: 5,
-      avatar: 'https://images.pexels.com/photos/1043473/pexels-photo-1043473.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',
-      services: ['Event Photography', 'Portrait Session'],
-      notes: 'Event planner. Regular client for various celebrations.',
-      nextAppointment: '2024-02-25'
-    },
-    {
-      id: 6,
-      name: 'Alex Thompson',
-      email: 'alex.thompson@email.com',
-      phone: '+1 (555) 678-9012',
-      location: 'Seattle, WA',
-      joinDate: '2024-01-03',
-      status: 'pending',
-      totalProjects: 0,
-      totalSpent: 0,
-      lastProject: null,
-      rating: 0,
-      avatar: 'https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',
-      services: ['Portrait Session'],
-      notes: 'New inquiry for professional headshots. Waiting for confirmation.',
-      nextAppointment: '2024-02-10'
-    }
-  ];
-
-  const statuses = ['all', 'active', 'inactive', 'pending'];
-  const services = ['all', 'Wedding Photography', 'Pre-Wedding Shoot', 'Corporate Photography', 'Family Photography', 'Event Photography', 'Portrait Session'];
-
-  const filteredClients = clients.filter(client => {
-    const statusMatch = filterStatus === 'all' || client.status === filterStatus;
-    const serviceMatch = filterService === 'all' || client.services.includes(filterService);
-    return statusMatch && serviceMatch;
-  });
+  useEffect(() => {
+    axios
+      .get("/auth/all-user") // ⬅️ Adjust route as per your backend
+      .then((res) => {
+        setClients(res.data.users || []);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch users:", err);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+  if (loading) {
+    return <div className="text-center text-gray-500">Loading...</div>;
+  }
 
   const toggleClientSelection = (clientId: number) => {
     setSelectedClients(prev => 
@@ -160,37 +44,34 @@ const ClientsSection: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active':
-        return 'bg-green-100 text-green-700';
-      case 'inactive':
-        return 'bg-gray-100 text-gray-700';
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-700';
-      default:
-        return 'bg-blue-100 text-blue-700';
+      case 'active': return 'bg-green-100 text-green-700';
+      case 'inactive': return 'bg-gray-100 text-gray-700';
+      case 'pending': return 'bg-yellow-100 text-yellow-700';
+      default: return 'bg-blue-100 text-blue-700';
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'active':
-        return <CheckCircle className="w-4 h-4 text-green-600" />;
-      case 'inactive':
-        return <Clock className="w-4 h-4 text-gray-600" />;
-      case 'pending':
-        return <AlertCircle className="w-4 h-4 text-yellow-600" />;
-      default:
-        return <CheckCircle className="w-4 h-4 text-blue-600" />;
+      case 'active': return <CheckCircle className="w-4 h-4 text-green-600" />;
+      case 'inactive': return <Clock className="w-4 h-4 text-gray-600" />;
+      case 'pending': return <AlertCircle className="w-4 h-4 text-yellow-600" />;
+      default: return <CheckCircle className="w-4 h-4 text-blue-600" />;
     }
   };
+
+  const filteredClients = clients.filter(client => {
+    const statusMatch = filterStatus === 'all' || client.status === filterStatus;
+    const serviceMatch = filterService === 'all' || client.services?.includes(filterService);
+    return statusMatch && serviceMatch;
+  });
 
   const clientStats = [
     { label: 'Total Clients', value: clients.length, icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
     { label: 'Active Clients', value: clients.filter(c => c.status === 'active').length, icon: CheckCircle, color: 'text-green-600', bg: 'bg-green-50' },
     { label: 'Pending Inquiries', value: clients.filter(c => c.status === 'pending').length, icon: AlertCircle, color: 'text-yellow-600', bg: 'bg-yellow-50' },
-    { label: 'Total Revenue', value: `$${clients.reduce((sum, c) => sum + c.totalSpent, 0).toLocaleString()}`, icon: Heart, color: 'text-purple-600', bg: 'bg-purple-50' }
+    { label: 'Total Revenue', value: `$${clients.reduce((sum, c) => sum + (c.totalSpent || 0), 0).toLocaleString()}`, icon: Heart, color: 'text-purple-600', bg: 'bg-purple-50' }
   ];
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -428,7 +309,7 @@ const ClientsSection: React.FC = () => {
                 </div>
 
                 {/* Stats */}
-                <div className="grid grid-cols-2 gap-4 mb-4 text-center">
+                {/* <div className="grid grid-cols-2 gap-4 mb-4 text-center">
                   <div>
                     <p className="text-lg font-bold text-gray-900">{client.totalProjects}</p>
                     <p className="text-xs text-gray-600">Projects</p>
@@ -437,7 +318,7 @@ const ClientsSection: React.FC = () => {
                     <p className="text-lg font-bold text-gray-900">${client.totalSpent.toLocaleString()}</p>
                     <p className="text-xs text-gray-600">Total Spent</p>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Rating */}
                 {client.rating > 0 && (
@@ -493,7 +374,7 @@ const ClientsSection: React.FC = () => {
           <div className="space-y-4">
             {filteredClients.map((client, index) => (
               <motion.div
-                key={client.id}
+                key={client._id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}

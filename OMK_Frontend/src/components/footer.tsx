@@ -21,15 +21,16 @@ import {
   ArrowRight,
   Aperture,
 } from "lucide-react";
+import axios from "axios";
 
 const Footer = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    service: "",
     serviceType: "",
     date: "",
+    timeSlot: "",
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,7 +45,7 @@ const Footer = () => {
     "Videography",
     "Cinematography",
   ];
-  const service_types = ["Single Side" , "Both Side"]
+  const service_types = ["Single Side", "Both Side"];
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -57,50 +58,50 @@ const Footer = () => {
     });
   };
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setIsSubmitting(true);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
 
-  try {
-    const response = await fetch("http://localhost:4000/api/bookings/request", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/bookings",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
 
-    const data = await response.json();
-  
+      console.log("Booking Success:", response.data);
 
-    if (response.ok) {
-      console.log("Booking Success:", data);
       setIsSubmitted(true);
-      
+
       setTimeout(() => {
         setIsSubmitted(false);
         setFormData({
           name: "",
           email: "",
           phone: "",
-          service: "",
           serviceType: "",
           date: "",
+          timeSlot: "",
           message: "",
         });
       }, 3000);
-    } else {
-      console.error("Booking Failed:", data.message);
-      alert("Error: " + data.message);
+    } catch (error: any) {
+      if (error.response) {
+        console.error("Booking Failed:", error.response.data.message);
+        alert("Error: " + error.response.data.message);
+      } else {
+        console.error("Error submitting booking:", error.message);
+        alert("Server error. Please try again later.");
+      }
     }
-  } catch (err) {
-    console.error("Error submitting booking:", err);
-    alert("Server error. Please try again later.");
-  }
 
-  setIsSubmitting(false);
-};
-
+    setIsSubmitting(false);
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -124,8 +125,6 @@ const Footer = () => {
       },
     },
   };
-
-
 
   const socialLinks = [
     {
@@ -173,7 +172,10 @@ const Footer = () => {
   ];
 
   return (
-    <footer id="contact" className="bg-gradient-to-br from-slate-900 via-slate-800 to-red-900 text-white relative overflow-hidden">
+    <footer
+      id="contact"
+      className="bg-gradient-to-br from-slate-900 via-slate-800 to-red-900 text-white relative overflow-hidden"
+    >
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-20 left-20 w-32 h-32 bg-white rounded-full"></div>
@@ -349,11 +351,12 @@ const Footer = () => {
                           className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300"
                         />
                       </div>
+
                       <div className="relative">
                         <Camera className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
                         <select
-                          name="service"
-                          value={formData.service}
+                          name="serviceType"
+                          value={formData.serviceType}
                           onChange={handleInputChange}
                           required
                           className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300 appearance-none"
@@ -372,9 +375,7 @@ const Footer = () => {
                           ))}
                         </select>
                       </div>
-                    </div>
-                    {/* Types of Photography */}
-                   <div className="relative">
+                      {/* <div className="relative">
                         <Aperture className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
                         <select
                           name="serviceType"
@@ -396,33 +397,66 @@ const Footer = () => {
                             </option>
                           ))}
                         </select>
-                      </div>
-                    
+                      </div> */}
+                    </div>
+                    {/* Types of Photography */}
 
                     {/* Date */}
-                    <div className="relative">
-                      <Calendar className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                      <input
-                        type="date"
-                        name="date"
-                        value={formData.date}
-                        onChange={handleInputChange}
-                        className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300"
-                      />
-                    </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="relative">
+                        <Calendar className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
+                        <input
+                          type="date"
+                          name="date"
+                          value={formData.date}
+                          onChange={handleInputChange}
+                          className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300"
+                        />
+                      </div>
 
-                    {/* Message */}
-                    <div className="relative">
-                      <MessageSquare className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                      <textarea
-                        name="message"
-                        value={formData.message}
-                        onChange={handleInputChange}
-                        placeholder="Tell us about your vision..."
-                        rows={4}
-                        className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300 resize-none"
-                      />
+                      
+                      {/* Time Slot */}
+                      <div className="relative">
+                        <Clock className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
+                        <select
+                          name="timeSlot"
+                          value={formData.timeSlot}
+                          onChange={handleInputChange}
+                          className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white appearance-none focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300"
+                        >
+                          <option value="" disabled>
+                            Select a time slot
+                          </option>
+                          <option value="10:00 AM - 12:00 PM">
+                            10:00 AM - 12:00 PM
+                          </option>
+                          <option value="12:00 PM - 2:00 PM">
+                            12:00 PM - 2:00 PM
+                          </option>
+                          <option value="2:00 PM - 4:00 PM">
+                            2:00 PM - 4:00 PM
+                          </option>
+                          <option value="4:00 PM - 6:00 PM">
+                            4:00 PM - 6:00 PM
+                          </option>
+                          <option value="6:00 PM - 8:00 PM">
+                            6:00 PM - 8:00 PM
+                          </option>
+                        </select>
+                      </div>
                     </div>
+                    {/* Message */}
+                      <div className="relative">
+                        <MessageSquare className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
+                        <textarea
+                          name="message"
+                          value={formData.message}
+                          onChange={handleInputChange}
+                          placeholder="Tell us about your vision..."
+                          rows={4}
+                          className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300 resize-none"
+                        />
+                      </div>
 
                     {/* Submit Button */}
                     <motion.button

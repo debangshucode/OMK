@@ -2,11 +2,11 @@ const Blog = require("../models/blog.model");
 
 // Create blog
 exports.createBlog = async (req, res) => {
-  const { title, content, tags } = req.body;
+  const { title, content, category , status, tags } = req.body;
   const imageUrl = req.file?.path; // Cloudinary URL
 
   try {
-    if (!title || !content || !imageUrl) {
+    if (!title || !content || !imageUrl || !category || !status || !tags ) {
       return res.status(400).json({ message: "All fields including image are required" });
     }
 
@@ -14,7 +14,10 @@ exports.createBlog = async (req, res) => {
       title,
       content,
       tags: tags ? tags.split(",") : [],
-      image: imageUrl
+      image: imageUrl,
+      category,
+      status
+
     });
 
     res.status(201).json(blog);
@@ -48,12 +51,12 @@ exports.getBlogBySlug = async (req, res) => {
 // Update blog (admin only)
 exports.updateBlog = async (req, res) => {
   const { id } = req.params;
-  const { title, content, tags, image } = req.body;
+  const { title, content, tags, image , category, status } = req.body;
 
   try {
     const updated = await Blog.findByIdAndUpdate(
       id,
-      { title, content, tags, image },
+      { title, content, tags, image , category, status },
       { new: true }
     );
     res.json(updated);

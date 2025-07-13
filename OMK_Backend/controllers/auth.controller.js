@@ -278,6 +278,23 @@ exports.getUser = async (req, res, next) => {
   });
 };
 
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({role:"user"}).select("-password");
+    res.status(200).json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching users",
+      error: error.message,
+    });
+  }
+};
+
 
 exports.forgotPassword = async (req, res, next) => {
   const user = await User.findOne({
