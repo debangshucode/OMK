@@ -69,7 +69,7 @@ const FullScreenViewer: React.FC<FullScreenViewerProps> = ({
   }, [currentIndex, allMedia.length]);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
       {/* Close Button */}
       <button
         onClick={onClose}
@@ -79,7 +79,7 @@ const FullScreenViewer: React.FC<FullScreenViewerProps> = ({
       </button>
 
       {/* Media Container */}
-      <div className="relative w-full h-full flex items-center justify-center mx-4">
+      <div className="relative w-full h-full flex items-center justify-center ">
         {currentMedia.type === "video" ? (
           <div className="relative">
             <iframe
@@ -104,7 +104,7 @@ const FullScreenViewer: React.FC<FullScreenViewerProps> = ({
         )}
 
         {/* Media Info */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black to-transparent p-6 rounded-b-lg">
+        <div className="absolute  bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black to-transparent p-6 ">
           <h2 className="text-2xl font-bold text-white mb-2">
             {currentMedia.title}
           </h2>
