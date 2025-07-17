@@ -50,3 +50,13 @@ export interface Booking {
   createdAt: string;
   updatedAt: string;
 }
+export interface testimonials {
+  _id: string
+  user: string
+  name: string
+  rating: number
+  comment: string
+  approved: boolean
+  createdAt: string
+  updatedAt: string
+}
