@@ -94,3 +94,15 @@ exports.deleteReview = async (req, res) => {
       .json({ message: "Error deleting review", error: err.message });
   }
 };
+
+//Client Review Given or not
+// GET /api/reviews/check
+exports.checkReviewStatus = async (req, res) => {
+  try {
+    const review = await Review.findOne({ user: req.user.id });
+    res.json({ hasReview: !!review });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

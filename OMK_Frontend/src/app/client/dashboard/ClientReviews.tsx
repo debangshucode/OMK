@@ -1,57 +1,38 @@
 "use client";
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { 
-  Star, 
-  Heart, 
-  MessageSquare, 
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Star,
+  Heart,
+  MessageSquare,
   Calendar,
   Send,
-} from 'lucide-react';
-import axios from 'axios';
-import Cookies from 'js-cookie';
+} from "lucide-react";
+import axios from "axios";
 
 const ClientReviews: React.FC = () => {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
-  const [reviewText, setReviewText] = useState('');
+  const [reviewText, setReviewText] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [hasReview, setHasReview] = useState<boolean | null>(null);
 
-  const reviews = [
-    {
-      id: 1,
-      clientName: "Sarah Johnson",
-      rating: 5,
-      date: "2024-01-20",
-      comment: "Absolutely amazing work! Every moment was captured perfectly. The team was professional and made us feel comfortable throughout the entire process.",
-      service: "Wedding Photography",
-      avatar: "/images/weadingHome1.jpg",
-      likes: 23,
-      replies: 3
-    },
-    {
-      id: 2,
-      clientName: "Emma Rodriguez",
-      rating: 5,
-      date: "2024-01-18",
-      comment: "Professional and creative. Loved our pre-wedding shoot! The photos exceeded our expectations and the editing was flawless.",
-      service: "Pre-Wedding Shoot",
-      avatar: "/images/weadingHome2.jpg",
-      likes: 18,
-      replies: 2
-    },
-    {
-      id: 3,
-      clientName: "David Chen",
-      rating: 4,
-      date: "2024-01-15",
-      comment: "Great corporate photography service. Very professional and delivered high-quality results on time.",
-      service: "Corporate Photography",
-      avatar: "/images/weadingHome3.jpg",
-      likes: 12,
-      replies: 1
-    }
-  ];
+  // Check if user already submitted a review
+  useEffect(() => {
+    const checkReviewStatus = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/api/reviews/check-review", {
+          withCredentials: true,
+        });
+        setHasReview(response.data.hasReview);
+      } catch (error) {
+        console.error("Failed to check review status:", error);
+        setHasReview(false); // fail open
+      }
+    };
+
+    checkReviewStatus();
+  }, []);
 
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,34 +40,28 @@ const ClientReviews: React.FC = () => {
       try {
         setSubmitting(true);
 
-        // const token = Cookies.get("token");
-        // if (!token) {
-        //   alert("Please login to submit a review.");
-        //   return;
-        // }
-
         const response = await axios.post(
-  "http://localhost:4000/api/reviews",
-  {
-    rating,
-    comment: reviewText,
-  },
-  {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    withCredentials: true
-  }
-);
-
+          "http://localhost:4000/api/reviews",
+          {
+            rating,
+            comment: reviewText,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
 
         console.log("Review submitted:", response.data);
         alert("Thank you for your review!");
         setRating(0);
-        setReviewText('');
+        setReviewText("");
+        setHasReview(true); // prevent another submission
       } catch (error: any) {
         console.error("Review submission failed:", error.response?.data || error.message);
-        alert("Failed to submit review.");
+        alert(error.response?.data?.message || "Failed to submit review.");
       } finally {
         setSubmitting(false);
       }
@@ -105,14 +80,14 @@ const ClientReviews: React.FC = () => {
           onClick={interactive ? () => setRating(starValue) : undefined}
           onMouseEnter={interactive ? () => setHoverRating(starValue) : undefined}
           onMouseLeave={interactive ? () => setHoverRating(0) : undefined}
-          className={`${interactive ? 'cursor-pointer' : 'cursor-default'} transition-colors duration-200`}
+          className={`${interactive ? "cursor-pointer" : "cursor-default"} transition-colors duration-200`}
           disabled={!interactive}
         >
           <Star
             className={`w-5 h-5 ${
-              starValue <= (interactive ? (hoverRating || rating) : currentRating)
-                ? 'fill-amber-400 text-amber-400'
-                : 'text-gray-300'
+              starValue <= (interactive ? hoverRating || rating : currentRating)
+                ? "fill-amber-400 text-amber-400"
+                : "text-gray-300"
             }`}
           />
         </motion.button>
@@ -120,9 +95,33 @@ const ClientReviews: React.FC = () => {
     });
   };
 
+  const reviews = [
+    {
+      id: 1,
+      clientName: "Sarah Johnson",
+      rating: 5,
+      date: "2024-01-20",
+      comment: "Absolutely amazing work! Every moment was captured perfectly.",
+      service: "Wedding Photography",
+      avatar: "/images/weadingHome1.jpg",
+      likes: 23,
+      replies: 3,
+    },
+    {
+      id: 2,
+      clientName: "Emma Rodriguez",
+      rating: 5,
+      date: "2024-01-18",
+      comment: "Professional and creative. Loved our pre-wedding shoot!",
+      service: "Pre-Wedding Shoot",
+      avatar: "/images/weadingHome2.jpg",
+      likes: 18,
+      replies: 2,
+    },
+  ];
+
   return (
     <div className="space-y-10">
-      {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Reviews & Testimonials</h2>
@@ -131,53 +130,53 @@ const ClientReviews: React.FC = () => {
       </div>
 
       {/* Review Form */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 max-w-2xl mx-auto"
-      >
-        <h3 className="text-xl font-bold text-gray-900 mb-6">Write a Review</h3>
-        <form onSubmit={handleSubmitReview} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
-            <div className="flex space-x-1">
-              {renderStars(rating, true)}
+      {hasReview === false && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 max-w-2xl mx-auto"
+        >
+          <h3 className="text-xl font-bold text-gray-900 mb-6">Write a Review</h3>
+          <form onSubmit={handleSubmitReview} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+              <div className="flex space-x-1">{renderStars(rating, true)}</div>
+              {rating > 0 && (
+                <p className="text-sm text-gray-600 mt-2">
+                  {["Poor", "Fair", "Good", "Very Good", "Excellent"][rating - 1]}
+                </p>
+              )}
             </div>
-            {rating > 0 && (
-              <p className="text-sm text-gray-600 mt-2">
-                {rating === 1 && "Poor"}
-                {rating === 2 && "Fair"}
-                {rating === 3 && "Good"}
-                {rating === 4 && "Very Good"}
-                {rating === 5 && "Excellent"}
-              </p>
-            )}
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
-            <textarea
-              rows={4}
-              value={reviewText}
-              onChange={(e) => setReviewText(e.target.value)}
-              className="w-full text-gray-900 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-              placeholder="Share your experience with us..."
-              required
-            />
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
+              <textarea
+                rows={4}
+                value={reviewText}
+                onChange={(e) => setReviewText(e.target.value)}
+                className="w-full text-gray-900 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                placeholder="Share your experience with us..."
+                required
+              />
+            </div>
 
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            type="submit"
-            disabled={submitting || rating === 0 || !reviewText.trim()}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3 rounded-lg font-semibold flex items-center justify-center space-x-2 cursor-pointer"
-          >
-            <Send className="w-4 h-4" />
-            <span>{submitting ? "Submitting..." : "Submit Review"}</span>
-          </motion.button>
-        </form>
-      </motion.div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              type="submit"
+              disabled={submitting || rating === 0 || !reviewText.trim()}
+              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3 rounded-lg font-semibold flex items-center justify-center space-x-2 cursor-pointer"
+            >
+              <Send className="w-4 h-4" />
+              <span>{submitting ? "Submitting..." : "Submit Review"}</span>
+            </motion.button>
+          </form>
+        </motion.div>
+      )}
+
+      {hasReview && (
+        <p className="text-center text-gray-500">You have already submitted a review.</p>
+      )}
 
       {/* Reviews Grid */}
       <div className="grid md:grid-cols-2 gap-6">
@@ -190,7 +189,7 @@ const ClientReviews: React.FC = () => {
             className="bg-white rounded-xl p-6 shadow-lg border border-gray-100"
           >
             <div className="flex items-center space-x-4 mb-4">
-              <img 
+              <img
                 src={review.avatar}
                 alt={review.clientName}
                 className="w-12 h-12 rounded-full object-cover"
@@ -199,13 +198,9 @@ const ClientReviews: React.FC = () => {
                 <h4 className="font-bold text-gray-900">{review.clientName}</h4>
                 <p className="text-sm text-blue-600">{review.service}</p>
               </div>
-              <div className="flex items-center space-x-1">
-                {renderStars(review.rating)}
-              </div>
+              <div className="flex items-center space-x-1">{renderStars(review.rating)}</div>
             </div>
-            
             <p className="text-gray-700 mb-4 leading-relaxed">"{review.comment}"</p>
-            
             <div className="flex items-center justify-between text-sm text-gray-500">
               <div className="flex items-center space-x-1">
                 <Calendar className="w-4 h-4" />
