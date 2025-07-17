@@ -1,74 +1,70 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Star,
-  Search,
-  Filter,
-  Eye,
-  EyeOff,
-  Edit,
-  Trash2,
-  Calendar,
-  User,
-  X,
-  ThumbsUp,
-  MessageSquare,
   CheckCircle,
+  EyeOff,
+  Eye,
   XCircle,
   Clock
 } from 'lucide-react';
 import axios from 'axios';
 
 const ReviewsSection: React.FC = () => {
-  const [selectedReviews, setSelectedReviews] = useState<number[]>([]);
+  const [selectedReviews, setSelectedReviews] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [filterRating, setFilterRating] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterService, setFilterService] = useState('all');
-  const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
         const response = await axios.get("http://localhost:4000/api/reviews", {
-          withCredentials : true
+          withCredentials: true
         });
-        console.log(response);
         setReviews(response.data);
       } catch (error) {
         console.error("Error fetching reviews:", error);
       }
     };
 
-    fetchReviews(); // ✅ Call the function
+    fetchReviews();
   }, []);
 
-  const ratings = ['all', '5', '4', '3', '2', '1'];
-  const statuses = ['all', 'published', 'hidden', 'pending', 'unlisted'];
-  const services = ['all', 'Wedding Photography', 'Pre-Wedding Shoot', 'Corporate Photography', 'Family Photography', 'Event Photography', 'Portrait Session'];
+  const handleReviewStatusChange = async (reviewId: string, approved: boolean) => {
+    try {
+      const response = await axios.patch(
+        `http://localhost:4000/api/reviews/${reviewId}`,
+        { approved },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-  const toggleReviewSelection = (reviewId: number) => {
-    setSelectedReviews(prev =>
-      prev.includes(reviewId)
-        ? prev.filter(id => id !== reviewId)
-        : [...prev, reviewId]
-    );
+      console.log("Review status updated:", response.data);
+
+      // Update local UI
+      setReviews(prev =>
+        prev.map(r =>
+          r._id === reviewId ? { ...r, approved } : r
+        )
+      );
+    } catch (error: any) {
+      console.error("Failed to update review:", error.response?.data || error.message);
+      alert(error.response?.data?.message || "Failed to update review.");
+    }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'published':
-        return <CheckCircle className="w-4 h-4 text-green-600" />;
-      case 'hidden':
-        return <EyeOff className="w-4 h-4 text-gray-600" />;
-      case 'pending':
-        return <Clock className="w-4 h-4 text-yellow-600" />;
-      case 'unlisted':
-        return <XCircle className="w-4 h-4 text-red-600" />;
-      default:
-        return <Eye className="w-4 h-4 text-blue-600" />;
-    }
+  const getStatusIcon = (approved: boolean | null | undefined) => {
+    if (approved === true) return <CheckCircle className="w-4 h-4 text-green-600" />;
+    if (approved === false) return <XCircle className="w-4 h-4 text-red-600" />;
+    return <Clock className="w-4 h-4 text-yellow-600" />;
   };
 
   return (
@@ -103,22 +99,36 @@ const ReviewsSection: React.FC = () => {
                 key={review._id}
                 className="border p-4 rounded-lg shadow-sm bg-white space-y-2"
               >
-                <h3 className="font-semibold text-lg text-gray-800">{review.name}</h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-lg text-gray-800">{review.name}</h3>
+                  <div>{getStatusIcon(review.approved)}</div>
+                </div>
+
                 <div className="flex items-center text-yellow-500">
                   {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
                   <span className="ml-2 text-gray-600">({review.rating}/5)</span>
                 </div>
+
                 <p className="text-gray-700">{review.comment}</p>
+
                 <div className='flex space-x-4 mt-4'>
-                    <button className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md transition duration-300">
-    Approve
-  </button>
-  <button className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md transition duration-300">
-    Decline
-  </button>
+                  <button
+                    className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md transition duration-300"
+                    onClick={() => handleReviewStatusChange(review._id, true)}
+                    disabled={review.approved === true}
+                  >
+                    Approve
+                  </button>
+
+                  <button
+                    className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md transition duration-300"
+                    onClick={() => handleReviewStatusChange(review._id, false)}
+                    disabled={review.approved === false}
+                  >
+                    Decline
+                  </button>
                 </div>
               </div>
-            
             ))
           )}
         </div>
