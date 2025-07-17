@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Camera,
@@ -20,6 +20,7 @@ import AllAlbumsView from "./AllAlbumsView";
 import { portfolioData } from "../../data/index";
 import { MediaItem, Album as AlbumType } from "../../types/types";
 import FaceSearch from "./FaceSearch";
+import { useSearchParams, useRouter } from "next/navigation";
 const Portfolio: React.FC = () => {
   const [mediaGroup, setMediaGroup] = useState<MediaItem[]>([]);
 
@@ -29,6 +30,28 @@ const Portfolio: React.FC = () => {
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
   const [selectedAlbum, setSelectedAlbum] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    const view = searchParams.get("view");
+    const albumId = searchParams.get("album");
+    const categoryId = searchParams.get("category");
+
+    if (view === "album" && albumId) {
+      setSelectedAlbum(albumId);
+      setCurrentView("album");
+    } else if (view === "category" && categoryId) {
+      setSelectedCategory(categoryId);
+      setCurrentView("category");
+    } else if (view === "all-albums") {
+      setCurrentView("all-albums");
+    } else {
+      setCurrentView("home");
+      setSelectedAlbum(null);
+      setSelectedCategory(null);
+    }
+  }, [searchParams]);
 
   // Get all photos and videos
   const allPhotos = Object.values(portfolioData.categories)
@@ -44,22 +67,22 @@ const Portfolio: React.FC = () => {
   };
 
   const handleAlbumClick = (album: AlbumType) => {
-    setSelectedAlbum(album.id);
+    router.push(`?view=album&album=${album.id}`);
     setCurrentView("album");
   };
   const [showFaceSearch, setShowFaceSearch] = useState(false);
   const handleViewMore = (section: string) => {
     if (section === "albums") {
-      setCurrentView("all-albums");
+       router.push(`?view=all-albums`);
     } else if (section === "photos") {
       setSelectedCategory("photos");
-      setCurrentView("category");
+      router.push(`?view=category&category=${section}`);
     } else if (section === "videos") {
       setSelectedCategory("videos");
-      setCurrentView("category");
+      router.push(`?view=category&category=${section}`);
     } else {
       setSelectedCategory(section);
-      setCurrentView("category");
+      router.push(`?view=category&category=${section}`);
     }
   };
 
@@ -205,19 +228,17 @@ const Portfolio: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-red-50">
       {/* Header with Background and Centered Text */}
-      <div
-        className="relative h-[60vh] w-full bg-gray-100 to-black flex items-center justify-center px-4"
-      >
+      <div className="relative h-[60vh] w-full bg-gray-100 to-black flex items-center justify-center px-4">
         <div className="absolute inset-0 flex items-center justify-center text-center px-4 ">
-          
-            <h1 className="text-7xl font-bold bg-gradient-to-br from-amber-900 via-amber-700 to-amber-600 bg-clip-text text-transparent">Portfolio</h1>
-          
+          <h1 className="text-7xl font-bold bg-gradient-to-br from-amber-900 via-amber-700 to-amber-600 bg-clip-text text-transparent">
+            Portfolio
+          </h1>
+
           <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-white text-lg font-semibold xl:bottom-10">
             <h1 className="text-2xl font-bold bg-gradient-to-br from-amber-900 via-amber-700 to-amber-600 bg-clip-text text-transparent">
               Explore Our Stunning Collection of Memories
             </h1>
           </div>
-          
         </div>
       </div>
 
