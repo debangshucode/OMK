@@ -96,7 +96,7 @@ const DockNavbar = () => {
 
   return (
     <div
-      className={`fixed top-6 left-1/2 -translate-x-1/2 z-[999] transition-opacity duration-500
+      className={`fixed top-0 left-1/2 -translate-x-1/2 z-[999] transition-opacity duration-500
     ${
       isVisible
         ? "opacity-100 pointer-events-auto"
@@ -106,10 +106,10 @@ const DockNavbar = () => {
       <Dock
         id="dock-nav"
         items={navItems}
-        panelHeight={64}
-        baseItemSize={isMobile ? 42 : 52}
-        magnification={70}
-        className={`glow-dock fixed top-6 left-1/2 -translate-x-1/2 z-[999]
+        panelHeight={65}
+        baseItemSize={isMobile ? 42 : 42}
+        magnification={60}
+        className={`bg-white shadow-lg fixed py-1 top-6 left-1/2 -translate-x-1/2 z-[999]
     transition-opacity duration-500
     ${
       isVisible

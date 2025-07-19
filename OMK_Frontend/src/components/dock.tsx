@@ -87,7 +87,7 @@ function DockItem({
       onFocus={() => isHovered.set(1)}
       onBlur={() => isHovered.set(0)}
       onClick={onClick}
-      className={`relative inline-flex items-center justify-center rounded-2xl  bg-gradient-to-r from-red-700 via-red-600 to-amber-500 bg-clip-text text-transparent border border-white  border  shadow-md ${className}`}
+      className={`relative inline-flex items-center justify-center rounded-full bg-red-600 shadow-lg ${className}`}
       tabIndex={0}
       role="button"
       aria-haspopup="true"
@@ -125,19 +125,19 @@ function DockLabel({ children, className = "", ...rest }: DockLabelProps) {
 
   return (
     <AnimatePresence>
-      {isVisible && (
+      
         <motion.div
           initial={{ opacity: 0, y: 0 }}
           animate={{ opacity: 1, y: 10 }}
           exit={{ opacity: 0, y: 0 }}
           transition={{ duration: 0.2 }}
-          className={`${className} absolute -bottom-6 left-1/2 w-fit whitespace-pre rounded-md border border-white bg-gradient-to-r from-red-700 via-red-600 to-amber-500 bg-clip-text   px-2 py-0.5 text-xs text-white`}
+          className={`${className} absolute -bottom-3 left-1/2 w-fit whitespace-pre rounded-md px-2 py-0.5 text-xs text-amber-700 font-semibold`}
           role="tooltip"
           style={{ x: "-50%" }}
         >
           {children}
         </motion.div>
-      )}
+     
     </AnimatePresence>
   );
 }
@@ -149,7 +149,7 @@ type DockIconProps = {
 
 function DockIcon({ children, className = "" }: DockIconProps) {
   return (
-    <div className={`flex items-center justify-center text-white glow-dock-icon ${className}`}>
+    <div className={`flex items-center justify-center text-white  ${className}`}>
       {children}
     </div>
   );
@@ -189,7 +189,7 @@ export default function Dock({
           isHovered.set(0);
           mouseX.set(Infinity);
         }}
-        className={`${className} fixed top-2 left-1/2 transform -translate-x-1/2 flex items-end w-fit gap-4 rounded-2xl border-neutral-700 border-2 pb-2 px-4 z-50 hover:cursor-pointer`}
+        className={`${className} fixed top-2 left-1/2 transform -translate-x-1/2 flex items-start w-fit gap-6 rounded  pb- px-4 z-50 hover:cursor-pointer`}
         style={{ height: panelHeight }}
         role="toolbar"
         aria-label="Application dock"
@@ -205,7 +205,7 @@ export default function Dock({
             magnification={magnification}
             baseItemSize={baseItemSize}
           > 
-            <DockIcon className="glow-dock-icon">{item.icon}</DockIcon>
+            <DockIcon className="">{item.icon}</DockIcon>
             <DockLabel>{item.label}</DockLabel>
           </DockItem>
         ))}
