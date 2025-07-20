@@ -4,7 +4,8 @@ exports.updateUserSettings = async (req, res) => {
   try {
     const userId = req.user.id;
     console.log(userId);
-    const { name, email, phone, partnerName, profileImage } = req.body;
+      const { name, email, phone, partnerName } = req.body;
+      const profileImage = req.file?.path;
 
     const updateFields = {};
 
