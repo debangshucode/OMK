@@ -16,7 +16,6 @@ const jwt = require("jsonwebtoken");
 //   }
 // };
 
-
 exports.protect = (req, res, next) => {
   const token = req.cookies?.token;
 
@@ -32,8 +31,6 @@ exports.protect = (req, res, next) => {
     return res.status(401).json({ message: "Invalid or expired token" });
   }
 };
-
-
 
 exports.authorizeRoles = (...roles) => {
   return (req, res, next) => {
