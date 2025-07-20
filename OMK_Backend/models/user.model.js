@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema({
   phone: { type: String }, // optional
   partnerName: { type: String }, // optional
   profileImage: { type: String },
+  address: { type: String },
   createdAt: { type: Date, default: Date.now },
 });
 

@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { updateUserSettings } = require("../controllers/user.controller");
+const {
+  updateUserSettings,
+  getUserSettings,
+} = require("../controllers/user.controller");
 const { protect, authorizeRoles } = require("../middlewares/auth.middleware");
 const upload = require("../middlewares/upload.middleware.js");
 router.patch(
@@ -11,7 +14,7 @@ router.patch(
   updateUserSettings
 );
 
-router.patch(
+router.put(
   "/clientsettings",
   protect,
   authorizeRoles("user"),
@@ -19,4 +22,5 @@ router.patch(
   updateUserSettings
 );
 
+router.get("/get-user", protect, authorizeRoles("user"), getUserSettings);
 module.exports = router;
