@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Camera, 
@@ -15,6 +15,7 @@ import {
   CheckCircle,
   Clock
 } from 'lucide-react';
+import axios from 'axios';
 
 interface ClientDashboardProps {
   setActiveTab: (tab: string) => void;
@@ -130,6 +131,25 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({ setActiveTab }) => {
     }
   ];
 
+  //fetching the user
+  const [userData, setUserData] = useState<any>(null);
+
+  useEffect(() => {
+      const fetchUser = async () => {
+    try {
+      const res = await axios.get("http://localhost:4000/api/settings/get-user", {
+        withCredentials: true,
+      });
+      const data = res.data;
+      console.log("User data:", data);
+      setUserData(res.data);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+  fetchUser();
+}, []);
+
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
@@ -141,14 +161,20 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({ setActiveTab }) => {
       >
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h2 className="text-2xl lg:text-3xl font-bold mb-2">Welcome back, Sarah!</h2>
+            {userData ? (
+            <h2 className="text-2xl lg:text-3xl font-bold mb-2">
+              Welcome back, {userData.name}
+            </h2>
+          ) : (
+            <p>Loading user info...</p>
+          )}
             <p className="text-blue-100 mb-4 lg:mb-0">Your wedding memories are ready to view and download</p>
           </div>
           <div className="flex items-center space-x-4 text-sm">
-            <div className="flex items-center space-x-2">
+            {/* <div className="flex items-center space-x-2">
               <Calendar className="w-4 h-4" />
               <span>Wedding: Jan 15, 2024</span>
-            </div>
+            </div> */}
             <div className="flex items-center space-x-2">
               <Award className="w-4 h-4" />
               <span>Premium Package</span>
