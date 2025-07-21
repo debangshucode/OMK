@@ -10,6 +10,7 @@ const albumRoutes = require("./routes/album.routes.js");
 const fileRoutes = require("./routes/file.routes.js");
 const faceRoutes = require("./routes/face.routes.js");
 const settingRoutes = require("./routes/user.routes.js");
+const recentRoutes = require("./routes/recentwork.routes.js");
 
 dotenv.config();
 connectDB();
@@ -38,6 +39,7 @@ app.use("/api/reviews", reviewRoutes);
 app.use("/api/blogs", require("./routes/blog.routes"));
 app.use("/api/albums", albumRoutes);
 app.use("/api/files", fileRoutes);
+app.use("/api/recentwork", recentRoutes);
 
 // portfolio face matching
 app.use("/api/match", faceRoutes);
