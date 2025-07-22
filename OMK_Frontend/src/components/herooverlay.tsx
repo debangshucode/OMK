@@ -21,15 +21,14 @@ export default function HeroOverlay() {
       >
         Creating Moments That Matter
       </motion.h2>
-      
 
       {/* Heading with static + animated rotating text */}
       <div className="flex flex-col items-center justify-center gap-3 mb-4">
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold bg-gradient-to-r from-amber-500 via-red-600 to-red-600 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(18,1,18,0.8)] tracking-tight">
-          WE CAPTURE 
+          WE CAPTURE
         </h1>
         <RotatingText
-          texts={["Moments", "Smiles", "Love", "Stories" , "Emotions"]}
+          texts={["Moments", "Smiles", "Love", "Stories", "Emotions"]}
           splitBy="words"
           mainClassName="text-4xl sm:text-6xl md:text-7xl font-extrabold text-white  drop-shadow-[0_0_10px_rgba(18,0,0,0.8)]"
           splitLevelClassName="gap-x-2"
@@ -49,12 +48,21 @@ export default function HeroOverlay() {
 
       {/* CTA Button */}
       <motion.button
+        onClick={() => {
+          const contactSection = document.getElementById("contact");
+          if (contactSection) {
+            contactSection.scrollIntoView({ behavior: "smooth" });
+            setTimeout(() => {
+              window.focusContactNameInput?.();
+            }, 600); // Wait for scroll animation to finish
+          }
+        }}
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 1.2, duration: 0.6 }}
         className="mt-8 px-8 py-3 bg-transparent border-2 border-white text-white text-base  sm:text-lg font-semibold rounded-full backdrop-blur-md shadow-md hover:cursor-pointer  hover:scale-105 transition-transform duration-300 pointer-events-auto hover:border-amber-500  glow-border"
       >
-        Book Your Special Day 
+        Book Your Special Day
       </motion.button>
     </motion.div>
   );
