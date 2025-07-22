@@ -2,21 +2,27 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 
-
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true,
+  password: {
+    type: String,
+    required: true,
     minLength: [8, "Password must have at least 8 characters."],
     // maxLength: [32, "Password cannot have more than 32 characters."],
-    select: false  // Do not return password in queries by default
-   },
+    select: false, // Do not return password in queries by default
+  },
   role: { type: String, enum: ["user", "admin"], default: "user" },
   accountVerified: { type: Boolean, default: false },
   verificationCode: Number,
   verificationCodeExpire: Date,
   resetPasswordToken: String,
   resetPasswordExpire: Date,
+  //for update purpose
+  phone: { type: String }, // optional
+  partnerName: { type: String }, // optional
+  profileImage: { type: String },
+  address: { type: String },
   createdAt: { type: Date, default: Date.now },
 });
 
@@ -25,7 +31,6 @@ userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
   this.password = await bcrypt.hash(this.password, 10);
 });
-
 
 // Compare password
 userSchema.methods.matchPassword = async function (enteredPassword) {
@@ -69,6 +74,3 @@ userSchema.methods.generateToken = function () {
 
 module.exports = mongoose.model("User", userSchema);
 // export const User = mongoose.model("User", userSchema);
-
-
-

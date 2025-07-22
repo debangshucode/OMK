@@ -72,7 +72,7 @@ const ClientHeader: React.FC<ClientHeaderProps> = ({
           </div>
           <div className="hidden sm:block">
             <h1 className="text-xl lg:text-2xl font-bold text-gray-900">Client Portal</h1>
-            <p className="text-xs lg:text-sm text-gray-500">Welcome back, {clientName}</p>
+            {/* <p className="text-xs lg:text-sm text-gray-500">Welcome back, {clientName}</p> */}
           </div>
         </div>
 
