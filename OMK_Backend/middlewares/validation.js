@@ -31,6 +31,14 @@ const albumValidation = {
     body('clientId')
       .isMongoId()
       .withMessage('Invalid client ID'),
+    body('parentAlbumId')
+      .optional()
+      .isMongoId()
+      .withMessage('Invalid parent album ID'),
+    body('isFolder')
+      .optional()
+      .isBoolean()
+      .withMessage('isFolder must be a boolean'),
     validate
   ],
   
@@ -50,8 +58,69 @@ const albumValidation = {
       .optional()
       .isIn(['wedding', 'birthday', 'portfolio', 'personal', 'corporate'])
       .withMessage('Invalid category'),
+    body('isPublic')
+      .optional()
+      .isBoolean()
+      .withMessage('isPublic must be a boolean'),
+    body('coverImage')
+      .optional()
+      .isString()
+      .withMessage('coverImage must be a string'),
+    validate
+  ],
+
+  getById: [
+    param('albumId').isMongoId().withMessage('Invalid album ID'),
+    validate
+  ],
+
+  delete: [
+    param('albumId').isMongoId().withMessage('Invalid album ID'),
+    validate
+  ],
+
+  uploadFiles: [
+    param('albumId').isMongoId().withMessage('Invalid album ID'),
+    validate
+  ],
+
+  removeFile: [
+    param('albumId').isMongoId().withMessage('Invalid album ID'),
+    param('filename').notEmpty().withMessage('Filename is required'),
+    validate
+  ],
+
+  getClientAlbums: [
+    param('clientId').isMongoId().withMessage('Invalid client ID'),
     validate
   ]
 };
 
-module.exports = { validate, albumValidation };
+// File validation rules
+const fileValidation = {
+  getFile: [
+    param('filename').notEmpty().withMessage('Filename is required'),
+    validate
+  ],
+
+  getFileById: [
+    param('fileId').isMongoId().withMessage('Invalid file ID'),
+    validate
+  ],
+
+  getFileInfo: [
+    param('filename').notEmpty().withMessage('Filename is required'),
+    validate
+  ],
+
+  downloadFile: [
+    param('filename').notEmpty().withMessage('Filename is required'),
+    validate
+  ]
+};
+
+module.exports = { 
+  validate, 
+  albumValidation, 
+  fileValidation 
+};

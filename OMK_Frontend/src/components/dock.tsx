@@ -34,6 +34,8 @@ export type DockProps = {
   dockHeight?: number;
   magnification?: number;
   spring?: SpringOptions;
+  id?: string;
+  isMobile?: boolean;
 };
 
 type DockItemProps = {
@@ -45,6 +47,7 @@ type DockItemProps = {
   distance: number;
   baseItemSize: number;
   magnification: number;
+  isMobile?: boolean;
 };
 
 function DockItem({
@@ -56,6 +59,7 @@ function DockItem({
   distance,
   magnification,
   baseItemSize,
+  isMobile = false,
 }: DockItemProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isHovered = useMotionValue(0);
@@ -75,6 +79,13 @@ function DockItem({
   );
   const size = useSpring(targetSize, spring);
 
+  // Enhanced hover effects with better colors
+  const backgroundOpacity = useTransform(
+    mouseDistance,
+    [-distance / 2, 0, distance / 2],
+    [0, 1, 0]
+  );
+
   return (
     <motion.div
       ref={ref}
@@ -87,20 +98,44 @@ function DockItem({
       onFocus={() => isHovered.set(1)}
       onBlur={() => isHovered.set(0)}
       onClick={onClick}
-      className={`relative inline-flex items-center justify-center rounded-full bg-red-600 shadow-lg ${className}`}
+      className={`
+        relative inline-flex items-center justify-center rounded-2xl cursor-pointer
+        transition-all duration-300 ease-out
+        bg-gradient-to-br from-red-500 via-red-600 to-orange-600
+        hover:from-red-600 hover:via-red-700 hover:to-orange-700
+        active:from-red-700 active:via-red-800 active:to-orange-800
+        shadow-lg hover:shadow-2xl
+        border border-white/30 hover:border-white/40
+        focus:outline-none focus:ring-2 focus:ring-orange-300 focus:ring-offset-2 focus:ring-offset-white/50
+        group overflow-hidden
+        ${isMobile ? 'flex-col pb-1' : ''}
+        ${className}
+      `}
       tabIndex={0}
       role="button"
       aria-haspopup="true"
+      whileHover={{ 
+        scale: isMobile ? 1.02 : 1.08,
+        boxShadow: "0 12px 35px rgba(239, 68, 68, 0.4)"
+      }}
+      whileTap={{ scale: 0.95 }}
     >
+      {/* Animated background glow with improved colors */}
+      <motion.div
+        className="absolute inset-0 rounded-2xl bg-gradient-to-br from-orange-400 via-red-400 to-red-500 opacity-0 group-hover:opacity-30 transition-opacity duration-300"
+        style={{ opacity: backgroundOpacity }}
+      />
+      
+      {/* Subtle shine effect */}
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-white/20 via-transparent to-transparent opacity-60" />
+      
       {Children.map(children, (child) => {
         if (React.isValidElement(child) && typeof child.type !== "string") {
-          // Clone only if it's a React component, and cast props properly
           return cloneElement(child as React.ReactElement<any>, {
             isHovered,
+            isMobile,
           });
         }
-
-        // Don't try to add props to HTML elements (like div/span)
         return child;
       })}
     </motion.div>
@@ -110,34 +145,68 @@ function DockItem({
 type DockLabelProps = {
   className?: string;
   children: React.ReactNode;
+  isMobile?: boolean;
 };
 
-function DockLabel({ children, className = "", ...rest }: DockLabelProps) {
+function DockLabel({ children, className = "", isMobile = false, ...rest }: DockLabelProps) {
   const { isHovered } = rest as { isHovered: MotionValue<number> };
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    if (isMobile) {
+      setIsVisible(true); // Always visible on mobile
+      return;
+    }
+    
     const unsubscribe = isHovered.on("change", (latest) => {
       setIsVisible(latest === 1);
     });
     return () => unsubscribe();
-  }, [isHovered]);
+  }, [isHovered, isMobile]);
 
+  // Mobile: Always visible, positioned below icon
+  if (isMobile) {
+    return (
+      <div className={`
+        ${className} 
+        text-[9px] font-bold text-white/90 mt-1 text-center
+        drop-shadow-sm leading-tight tracking-wide
+      `}>
+        {children}
+      </div>
+    );
+  }
+
+  // Desktop: Show on hover, positioned below the dock item
   return (
     <AnimatePresence>
-      
+      {isVisible && (
         <motion.div
-          initial={{ opacity: 0, y: 0 }}
-          animate={{ opacity: 1, y: 10 }}
-          exit={{ opacity: 0, y: 0 }}
-          transition={{ duration: 0.2 }}
-          className={`${className} absolute -bottom-3 left-1/2 w-fit whitespace-pre rounded-md px-2 py-0.5 text-xs text-amber-700 font-semibold`}
+          initial={{ opacity: 0, y: -5, scale: 0.8 }}
+          animate={{ opacity: 1, y: 12, scale: 1 }}
+          exit={{ opacity: 0, y: -5, scale: 0.8 }}
+          transition={{ 
+            duration: 0.25, 
+            type: "spring", 
+            stiffness: 400, 
+            damping: 25 
+          }}
+          className={`
+            ${className} 
+            absolute top-full left-1/2 -translate-x-1/2 w-fit whitespace-nowrap 
+            rounded-lg px-3 py-1.5 text-xs font-bold
+            bg-gradient-to-r from-gray-900 via-red-900 to-orange-900
+            text-white shadow-xl border border-red-400/30
+            before:content-[''] before:absolute before:bottom-full before:left-1/2 
+            before:-translate-x-1/2 before:border-4 before:border-transparent 
+            before:border-b-gray-900 before:drop-shadow-sm
+            backdrop-blur-sm z-50
+          `}
           role="tooltip"
-          style={{ x: "-50%" }}
         >
           {children}
         </motion.div>
-     
+      )}
     </AnimatePresence>
   );
 }
@@ -147,9 +216,15 @@ type DockIconProps = {
   children: React.ReactNode;
 };
 
-function DockIcon({ children, className = "" }: DockIconProps) {
+function DockIcon({ children, className = "", isMobile = false }: DockIconProps & { isMobile?: boolean }) {
   return (
-    <div className={`flex items-center justify-center text-white  ${className}`}>
+    <div className={`
+      flex items-center justify-center text-white 
+      transition-all duration-300 group-hover:scale-110
+      drop-shadow-lg
+      ${isMobile ? 'mb-0.5' : ''}
+      ${className}
+    `}>
       {children}
     </div>
   );
@@ -158,41 +233,58 @@ function DockIcon({ children, className = "" }: DockIconProps) {
 export default function Dock({
   items,
   className = "",
-  spring = { mass: 0.1, stiffness: 150, damping: 12 },
-  magnification = 70,
-  distance = 200,
-  panelHeight = 64,
+  spring = { mass: 0.1, stiffness: 250, damping: 18 },
+  magnification = 65,
+  distance = 180,
+  panelHeight = 65,
   dockHeight = 256,
-  baseItemSize = 50,
+  baseItemSize = 45,
+  id,
+  isMobile = false,
 }: DockProps) {
   const mouseX = useMotionValue(Infinity);
   const isHovered = useMotionValue(0);
 
   const maxHeight = useMemo(
     () => Math.max(dockHeight, magnification + magnification / 2 + 4),
-    [magnification]
+    [magnification, dockHeight]
   );
+  
   const heightRow = useTransform(isHovered, [0, 1], [panelHeight, maxHeight]);
   const height = useSpring(heightRow, spring);
 
   return (
     <motion.div
-      style={{ height, scrollbarWidth: "none" }}
+      id={id}
+      style={{ height: isMobile ? panelHeight : height, scrollbarWidth: "none" }}
       className="fixed top-0 left-1/2 -translate-x-1/2 z-50 flex max-w-full items-center"
     >
       <motion.div
         onMouseMove={(e: React.MouseEvent) => {
-          isHovered.set(1);
-          mouseX.set(e.pageX);
+          if (!isMobile) {
+            isHovered.set(1);
+            mouseX.set(e.pageX);
+          }
         }}
         onMouseLeave={() => {
-          isHovered.set(0);
-          mouseX.set(Infinity);
+          if (!isMobile) {
+            isHovered.set(0);
+            mouseX.set(Infinity);
+          }
         }}
-        className={`${className} fixed top-2 left-1/2 transform -translate-x-1/2 flex items-start w-fit gap-6 rounded  pb- px-4 z-50 hover:cursor-pointer`}
+        className={`
+          ${className} 
+          fixed top-2 left-1/2 transform -translate-x-1/2 
+          flex items-center justify-center w-fit 
+          gap-2 sm:gap-3 rounded-2xl px-3 sm:px-4 py-2 z-50 
+          hover:cursor-pointer
+          transition-all duration-300 ease-out
+          ${isMobile ? 'min-h-[60px]' : ''}
+        `}
         style={{ height: panelHeight }}
         role="toolbar"
         aria-label="Application dock"
+        whileHover={{ scale: isMobile ? 1 : 1.02 }}
       >
         {items.map((item, index) => (
           <DockItem
@@ -204,9 +296,10 @@ export default function Dock({
             distance={distance}
             magnification={magnification}
             baseItemSize={baseItemSize}
+            isMobile={isMobile}
           > 
-            <DockIcon className="">{item.icon}</DockIcon>
-            <DockLabel>{item.label}</DockLabel>
+            <DockIcon isMobile={isMobile}>{item.icon}</DockIcon>
+            <DockLabel isMobile={isMobile}>{item.label}</DockLabel>
           </DockItem>
         ))}
       </motion.div>

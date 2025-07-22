@@ -22,6 +22,7 @@ import {
   Aperture,
 } from "lucide-react";
 import axios from "axios";
+import { toast } from "sonner";
 
 const Footer = () => {
   const [formData, setFormData] = useState({
@@ -93,10 +94,10 @@ const Footer = () => {
     } catch (error: any) {
       if (error.response) {
         console.error("Booking Failed:", error.response.data.message);
-        alert("Error: " + error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
         console.error("Error submitting booking:", error.message);
-        alert("Server error. Please try again later.");
+        toast.error("Server error. Please try again later.");
       }
     }
 

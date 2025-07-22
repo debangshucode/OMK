@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const dotenv = require("dotenv");
 const cookieParser = require('cookie-parser');
 const {connectDB} = require("./config/db.js");
@@ -10,10 +11,14 @@ const albumRoutes = require("./routes/album.routes.js");
 const fileRoutes = require("./routes/file.routes.js");
 const faceRoutes = require("./routes/face.routes.js");
 
+const app = express();
+
+// Make the 'uploads' folder publicly accessible
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 dotenv.config();
 connectDB();
 
-const app = express();
 app.use(
   cors({
     origin: [process.env.FRONTEND_URL],

@@ -67,10 +67,10 @@ const Clients: React.FC = () => {
         return <ClientGallery />;
       case "albums":
         return <AlbumSearch />;
-      case "videos":
-        return <ClientGallery />; // Replace with video component if needed
-      case "downloads":
-        return <ClientGallery />; // Replace with download component if needed
+      // case "videos":
+      //   return <ClientGallery />; // Replace with video component if needed
+      // case "downloads":
+      //   return <ClientGallery />; // Replace with download component if needed
       case "face-search":
         return <FaceSearch />;
       case "reviews":

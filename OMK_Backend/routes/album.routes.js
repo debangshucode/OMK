@@ -1,21 +1,52 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const router = express.Router();
 const albumController = require('../controllers/albumController');
-const upload = require('../middlewares/gridfsUpload');
-const { albumValidation } = require('../middlewares/validation');
+const { upload, handleMulterError } = require('../middlewares/upload.album'); // updated to use multer.diskStorage
+const { albumValidation } = require('../middlewares/validation'); // Optional, if still using validation middleware
 
-// Album CRUD routes
-router.post('/', albumValidation.create, albumController.createAlbum);
-router.get('/', albumController.getAlbums);
-router.get('/:albumId', albumController.getAlbumById);
-router.put('/:albumId', albumValidation.update, albumController.updateAlbum);
-router.delete('/:albumId', albumController.deleteAlbum);
+// Assign album to a specific client
+router.post('/assign', albumController.assignAlbumToClient);      // Assign album to a user
 
-// File upload routes
-router.post('/:albumId/upload', upload.single('file'), albumController.uploadFile);
-router.delete('/:albumId/files/:filename', albumController.removeFile);
+// Album CRUD
+router.post('/', albumController.createAlbum);                    // Create album (no client required)
+router.get('/', albumController.getAlbums);                       // Get all root/child albums
+router.get('/:albumId', albumController.getAlbumById);            // Get single album with children
+router.put('/:albumId', albumController.updateAlbum);             // Update album
+router.delete('/:albumId', albumController.deleteAlbum.bind(albumController));
 
-// Client specific routes
-router.get('/client/:clientId', albumController.getClientAlbums);
+
+// File Upload
+router.post(
+  '/:albumId/upload',
+  upload.array('files', 10),
+  handleMulterError,
+  albumController.uploadFiles
+);
+
+// File download and delete
+router.delete('/:albumId/files/:filename', albumController.removeFile);  // Remove file
+// router.get('/:albumId/files/:filename', albumController.downloadFile);   // Download file
+
+// Breadcrumb (album path)
+router.get('/:albumId/path', albumController.getBreadcrumbs);
+
+// New Route to Download File
+router.get('/:albumId/download/:filename', async (req, res) => {
+  const { albumId, filename } = req.params;
+  const filePath = path.join(__dirname, '../uploads', albumId, filename);
+
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ success: false, message: 'File not found' });
+  }
+
+  res.download(filePath, filename, (err) => {
+    if (err) {
+      console.error('Download error:', err);
+      res.status(500).json({ success: false, message: 'Download failed' });
+    }
+  });
+});
 
 module.exports = router;

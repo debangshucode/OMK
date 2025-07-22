@@ -26,7 +26,7 @@ import {
 import BookingDetailsModal from "./detailsBooking";
 import { Booking } from "@/types/types";
 import axios from "@/utils/axios";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 const BookingsSection: React.FC = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);

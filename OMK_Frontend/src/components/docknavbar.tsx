@@ -19,18 +19,22 @@ const DockNavbar = () => {
   const isMobile = useIsMobile();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  // 👉 Hide on admin routes
-  if (pathname.startsWith("/admin")) {
-    return null;
-  }
-  if (pathname.startsWith("/clients")) {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Hide on admin routes
+  if (pathname.startsWith("/admin") || pathname.startsWith("/clients")) {
     return null;
   }
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+      
+      // Update scroll state for styling
+      setIsScrolled(currentScrollY > 50);
+      
+      // Hide/show logic - more refined
+      if (currentScrollY > lastScrollY && currentScrollY > 150) {
         setIsVisible(false);
       } else {
         setIsVisible(true);
@@ -39,10 +43,7 @@ const DockNavbar = () => {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
   const scrollToSection = (id: string) => {
@@ -52,19 +53,19 @@ const DockNavbar = () => {
 
   const navItems = [
     {
-      icon: <VscHome size={22} />,
+      icon: <VscHome size={isMobile ? 16 : 20} />,
       label: "Home",
       onClick: () =>
         pathname === "/" ? scrollToSection("home") : router.push("/#home"),
     },
     {
-      icon: <VscAccount size={22} />,
+      icon: <VscAccount size={isMobile ? 16 : 20} />,
       label: "About",
       onClick: () =>
         pathname === "/" ? scrollToSection("about") : router.push("/#about"),
     },
     {
-      icon: <VscBriefcase size={22} />,
+      icon: <VscBriefcase size={isMobile ? 16 : 20} />,
       label: "Services",
       onClick: () =>
         pathname === "/"
@@ -72,12 +73,12 @@ const DockNavbar = () => {
           : router.push("/#services"),
     },
     {
-      icon: <VscDeviceCameraVideo size={22} />,
+      icon: <VscDeviceCameraVideo size={isMobile ? 16 : 20} />,
       label: "Portfolio",
       onClick: () => router.push("/portfolio"),
     },
     {
-      icon: <VscComment size={22} />,
+      icon: <VscComment size={isMobile ? 16 : 20} />,
       label: "Testimonials",
       onClick: () =>
         pathname === "/"
@@ -85,7 +86,7 @@ const DockNavbar = () => {
           : router.push("/#testimonials"),
     },
     {
-      icon: <VscMail size={22} />,
+      icon: <VscMail size={isMobile ? 16 : 20} />,
       label: "Contact",
       onClick: () =>
         pathname === "/"
@@ -96,27 +97,38 @@ const DockNavbar = () => {
 
   return (
     <div
-      className={`fixed top-0 left-1/2 -translate-x-1/2 z-[999] transition-opacity duration-500
-    ${
-      isVisible
-        ? "opacity-100 pointer-events-auto"
-        : "opacity-0 pointer-events-none"
-    }`}
+      className={`fixed top-0 left-1/2 -translate-x-1/2 z-[999] transition-all duration-300 ease-out
+        ${
+          isVisible
+            ? "opacity-100 pointer-events-auto translate-y-0"
+            : "opacity-0 pointer-events-none -translate-y-4"
+        }`}
     >
       <Dock
         id="dock-nav"
         items={navItems}
-        panelHeight={65}
-        baseItemSize={isMobile ? 42 : 42}
-        magnification={60}
-        className={`bg-white shadow-lg fixed py-1 top-6 left-1/2 -translate-x-1/2 z-[999]
-    transition-opacity duration-500
-    ${
-      isVisible
-        ? "opacity-100 pointer-events-auto"
-        : "opacity-0 pointer-events-none"
-    }
-  `}
+        panelHeight={isMobile ? 70 : 65}
+        baseItemSize={isMobile ? 40 : 45}
+        magnification={isMobile ? 52 : 65}
+        distance={isMobile ? 120 : 180}
+        spring={{ mass: 0.1, stiffness: 250, damping: 18 }}
+        isMobile={isMobile}
+        className={`
+          fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-[999]
+          transition-all duration-300 ease-out
+          backdrop-blur-xl border
+          shadow-2xl hover:shadow-3xl
+          ${
+            isScrolled
+              ? "bg-white/95 border-red-200/50 shadow-red-500/20"
+              : "bg-gradient-to-r from-white/95 via-orange-50/95 to-red-50/95 border-orange-200/50"
+          }
+          ${
+            isVisible
+              ? "opacity-100 pointer-events-auto translate-y-0 scale-100"
+              : "opacity-0 pointer-events-none -translate-y-2 scale-95"
+          }
+        `}
       />
     </div>
   );

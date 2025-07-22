@@ -38,9 +38,11 @@ export default function RootLayout({
         
          <ClientLayout>{children}
           <Toaster 
-          position="top-right"
+          position="top-center"
         richColors
-        closeButton
+
+          />
+          <HeaderAction 
         />
          </ClientLayout>
          </AuthProvider>
