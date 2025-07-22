@@ -82,7 +82,7 @@ const RecentWorks = () => {
 
   return (
     <section className="py-16 bg-gradient-to-br from-red-50 to-red-100 relative">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="flex flex-col mb-12 gap-4">
           <div className="w-full flex items-center justify-between flex-wrap gap-4">

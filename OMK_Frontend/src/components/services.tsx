@@ -9,14 +9,16 @@ import {
   ArrowRight,
   Images,
   Star,
-  Search, ScanFace,
+  Search,
+  ScanFace,
   Eye,
-  Truck, Clock ,
+  Truck,
+  Clock,
   Zap,
 } from "lucide-react";
 import Quickbook from "./quickbook";
 import { useRouter } from "next/navigation";
-
+import Book from "./book";
 const Services = () => {
   const [activeService, setActiveService] = useState(0);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
@@ -356,7 +358,16 @@ const Services = () => {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => quickbookRef.current?.scrollToForm()}
+                      onClick={() => {
+                        const contactSection =
+                          document.getElementById("contact");
+                        if (contactSection) {
+                          contactSection.scrollIntoView({ behavior: "smooth" });
+                          setTimeout(() => {
+                            window.focusContactNameInput?.();
+                          }, 600); // Wait for scroll animation to finish
+                        }
+                      }}
                       className={`text-sm px-2 py-2 xl:px-6 xl:py-3 bg-gradient-to-r ${services[activeService].buttonColor} text-white rounded-full font-semibold shadow-lg transition-all duration-300 hover:cursor-pointer`}
                     >
                       Book Now
@@ -368,7 +379,8 @@ const Services = () => {
           </div>
         </div>
       </motion.section>
-      <Quickbook ref={quickbookRef} />
+
+      <Book />
 
       {/* Service Cards Grid */}
       <motion.section
@@ -442,21 +454,6 @@ const Services = () => {
                   ))}
                 </div>
 
-                {/* Price and CTA */}
-                <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold text-slate-800">
-                    {service.price}
-                  </span>
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className={`w-8 h-8 bg-gradient-to-br ${service.color} rounded-full flex items-center justify-center shadow-md hover:cursor-pointer`}
-                  >
-                    <ArrowRight className="w-4 h-4 text-white" />
-                  </motion.button>
-                </div>
-
-                {/* Hover Effect Overlay */}
                 <motion.div
                   initial={{ scale: 0, opacity: 0 }}
                   animate={

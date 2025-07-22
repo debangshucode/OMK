@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+
 import { motion } from "framer-motion";
 import {
   Camera,
@@ -23,6 +24,12 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
+
+declare global {
+  interface Window {
+    focusContactNameInput?: () => void;
+  }
+}
 
 const Footer = () => {
   const [formData, setFormData] = useState({
@@ -172,6 +179,14 @@ const Footer = () => {
     "Contact",
   ];
 
+  const nameInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    window.focusContactNameInput = () => {
+      nameInputRef.current?.focus();
+    };
+  }, []);
+
   return (
     <footer
       id="contact"
@@ -316,6 +331,7 @@ const Footer = () => {
                       <div className="relative">
                         <User className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
                         <input
+                          ref={nameInputRef}
                           type="text"
                           name="name"
                           value={formData.name}
@@ -415,7 +431,6 @@ const Footer = () => {
                         />
                       </div>
 
-                      
                       {/* Time Slot */}
                       <div className="relative">
                         <Clock className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
@@ -447,17 +462,17 @@ const Footer = () => {
                       </div>
                     </div>
                     {/* Message */}
-                      <div className="relative">
-                        <MessageSquare className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                        <textarea
-                          name="message"
-                          value={formData.message}
-                          onChange={handleInputChange}
-                          placeholder="Tell us about your vision..."
-                          rows={4}
-                          className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300 resize-none"
-                        />
-                      </div>
+                    <div className="relative">
+                      <MessageSquare className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
+                      <textarea
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        placeholder="Tell us about your vision..."
+                        rows={4}
+                        className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300 resize-none"
+                      />
+                    </div>
 
                     {/* Submit Button */}
                     <motion.button
