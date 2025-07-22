@@ -28,12 +28,12 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 }) => {
   const menuItems = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-    { id: 'photos', label: 'Photos', icon: Camera },
-    { id: 'videos', label: 'Videos', icon: Video },
+    // { id: 'photos', label: 'Photos', icon: Camera },
+    // { id: 'videos', label: 'Videos', icon: Video },
     { id: 'albums', label: 'Albums', icon: FolderOpen },
     { id: 'blogs', label: 'Blogs', icon: BookOpen },
     { id: 'reviews', label: 'Reviews', icon: Star },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    // { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'clients', label: 'Clients', icon: Users },
     { id: 'bookings', label: 'Bookings', icon: BookOpen },
     { id: 'settings', label: 'Settings', icon: Settings },

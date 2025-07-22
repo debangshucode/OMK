@@ -214,8 +214,23 @@ exports.updateBookingStatus = async (req, res) => {
 
   try {
     const updated = await Booking.findByIdAndUpdate(id, { status }, { new: true });
+
     res.json(updated);
+    
   } catch (error) {
     res.status(500).json({ message: "Failed to update booking status" });
+  }
+};
+
+// Admin: Delete booking
+exports.deleteBooking = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deleted = await Booking.findByIdAndDelete(id);
+    if (!deleted) return res.status(404).json({ message: "Booking not found" });
+    res.json({ message: "Booking deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete booking" });
   }
 };

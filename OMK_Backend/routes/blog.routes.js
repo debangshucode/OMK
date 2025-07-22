@@ -22,7 +22,7 @@ router.post(
   "/",
   protect,
   authorizeRoles("admin"),
-  upload.single("image"), // 👈 this line handles file upload
+  upload.array("image"), // 👈 this line handles file upload
   createBlog
 );
 router.put("/:id", protect, authorizeRoles("admin"), updateBlog);

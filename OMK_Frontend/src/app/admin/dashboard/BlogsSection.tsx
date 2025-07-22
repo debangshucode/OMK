@@ -85,7 +85,7 @@ const BlogsSection: React.FC = () => {
     useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/blogs", {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs`, {
           withCredentials: true
         }
         );
@@ -104,39 +104,11 @@ const BlogsSection: React.FC = () => {
   }, []);
   if (loading) return <p className="text-gray-600">Loading blogs...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
-  // const blogs: Blog[] = [
-  //   {
-  //     id: 1,
-  //     title: 'Top 10 Wedding Photography Tips for Perfect Shots',
-  //     slug: 'wedding-photography-tips-perfect-shots',
-  //     content: 'Wedding photography is an art that requires skill, patience, and creativity...',
-  //     excerpt: 'Discover essential tips and techniques for capturing stunning wedding moments that couples will treasure forever.',
-  //     featuredImage: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop',
-  //     author: 'Alex Thompson',
-  //     category: 'Wedding Photography',
-  //     tags: ['wedding', 'photography', 'tips', 'couples'],
-  //     status: 'published',
-  //     publishDate: '2024-01-15',
-  //     views: 2456,
-  //     likes: 189,
-  //     comments: 23,
-  //     readTime: '5 min read',
-  //     youtubeUrl: 'https://www.youtube.com/watch?v=example1',
-  //     images: [
-  //       'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop',
-  //       'https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop'
-  //     ]
-  //   }
-  // ];
+ 
 
   const categories = ['all', 'Wedding Photography', 'Corporate Photography', 'Pre-Wedding', 'Portrait', 'Event Photography'];
   const statuses = ['all', 'published', 'draft', 'scheduled'];
 
-  // const filteredBlogs = blogs.filter(blog => {
-  //   const statusMatch = filterStatus === 'all' || blog.status === filterStatus;
-  //   const categoryMatch = filterCategory === 'all' || blog.category === filterCategory;
-  //   return statusMatch && categoryMatch;
-  // });
 
   const toggleBlogSelection = (blogId: number) => {
     setSelectedBlogs(prev => 
@@ -189,7 +161,7 @@ const BlogsSection: React.FC = () => {
       formData.append("image", blogForm.featuredImageFile); // 👈 Important for Cloudinary
     }
     try {
-    const response = await axios.post("http://localhost:4000/api/blogs", formData, {
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs`, formData, {
       withCredentials: true,
       headers: {
         "Content-Type": "multipart/form-data"
@@ -473,27 +445,7 @@ const BlogsSection: React.FC = () => {
                     )}
                   </div>
 
-                  {/* Stats */}
-                  <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
-                    <div className="flex items-center space-x-3">
-                      <span className="flex items-center space-x-1">
-                        <Eye className="w-3 h-3" />
-                        <span>{blog.views}</span>
-                      </span>
-                      <span className="flex items-center space-x-1">
-                        <Heart className="w-3 h-3" />
-                        <span>{blog.likes}</span>
-                      </span>
-                      <span className="flex items-center space-x-1">
-                        <MessageSquare className="w-3 h-3" />
-                        <span>{blog.comments}</span>
-                      </span>
-                    </div>
-                    <span className="flex items-center space-x-1">
-                      <Calendar className="w-3 h-3" />
-                      <span>{blog.publishDate}</span>
-                    </span>
-                  </div>
+                  
 
                   {/* Actions */}
                   <div className="flex items-center justify-between pt-3 border-t border-gray-100">
@@ -679,6 +631,7 @@ const BlogsSection: React.FC = () => {
                     <input
                       type="file"
                       accept="image/*"
+                      multiple
                       onChange={handleFeaturedImageUpload}
                       className="hidden text-gray-900"
                       id="featured-image"

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Calendar, Clock, MapPin, User, Mail, Phone, Camera, Video, 
   DollarSign, MessageSquare, Star, CheckCircle, XCircle, Edit,
-  Download, Send, Heart, AlertTriangle, Users, CalendarDays
+  Download, Send, Heart, AlertTriangle, Users, CalendarDays, Trash2
 } from 'lucide-react';
 
 import { Booking } from "@/types/types";
@@ -14,6 +14,7 @@ interface BookingDetailsModalProps {
   onClose: () => void;
   onAccept: (bookingId: string) => void;
   onReject: (bookingId: string) => void;
+  onDelete?: (bookingId: string) => void;
 }
 
 const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
@@ -21,51 +22,49 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
   isOpen,
   onClose,
   onAccept,
-  onReject
+  onReject,
+  onDelete
 }) => {
   if (!booking) return null;
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'accepted': return 'bg-green-100 text-green-700 border-green-200';
-      case 'rejected': return 'bg-red-100 text-red-700 border-red-200';
-      case 'pending': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
-      case 'completed': return 'bg-blue-100 text-blue-700 border-blue-200';
-      case 'cancelled': return 'bg-gray-100 text-gray-700 border-gray-200';
-      default: return 'bg-gray-100 text-gray-700 border-gray-200';
+      case 'confirmed': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      case 'cancelled': return 'bg-rose-50 text-rose-700 border-rose-200';
+      case 'pending': return 'bg-amber-50 text-amber-700 border-amber-200';
+      default: return 'bg-slate-50 text-slate-700 border-slate-200';
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'accepted': return <CheckCircle className="w-5 h-5 text-green-600" />;
-      case 'rejected': return <XCircle className="w-5 h-5 text-red-600" />;
-      case 'pending': return <Clock className="w-5 h-5 text-yellow-600" />;
-      case 'completed': return <CheckCircle className="w-5 h-5 text-blue-600" />;
-      case 'cancelled': return <XCircle className="w-5 h-5 text-gray-600" />;
-      default: return <Clock className="w-5 h-5 text-gray-600" />;
+      case 'confirmed': return <CheckCircle className="w-5 h-5 text-emerald-600" />;
+      case 'cancelled': return <XCircle className="w-5 h-5 text-rose-600" />;
+      case 'pending': return <Clock className="w-5 h-5 text-amber-600" />;
+      default: return <Clock className="w-5 h-5 text-slate-600" />;
     }
   };
-
-  
 
   const getServiceIcon = (serviceType: string) => {
     switch (serviceType) {
-      case 'photography': return <Camera className="w-6 h-6 text-blue-600" />;
+      case 'photography': return <Camera className="w-6 h-6 text-indigo-600" />;
       case 'videography': return <Video className="w-6 h-6 text-purple-600" />;
       case 'both': return (
-        <div className="flex space-x-1">
-          <Camera className="w-5 h-5 text-blue-600" />
-          <Video className="w-5 h-5 text-purple-600" />
+        <div className="flex space-x-2">
+          <Camera className="w-6 h-6 text-indigo-600" />
+          <Video className="w-6 h-6 text-purple-600" />
         </div>
       );
-      default: return <Camera className="w-6 h-6 text-blue-600" />;
+      default: return <Camera className="w-6 h-6 text-indigo-600" />;
     }
   };
 
-  
-
-  
+  const handleDelete = () => {
+    if (onDelete && confirm("Are you sure you want to delete this booking? This action cannot be undone.")) {
+      onDelete(booking._id);
+      onClose();
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -76,7 +75,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
             onClick={onClose}
           />
 
@@ -86,193 +85,261 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl"
+              className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden"
               onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
             >
-              {/* Header */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                <div className="flex items-center space-x-4">
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900">{booking.name}</h2>
-                    <p className="text-lg text-gray-600">{booking.serviceType}</p>
-                    <div className="flex items-center space-x-3 mt-2">
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(booking.status)}`}>
-                        <div className="flex items-center space-x-1">
-                          {getStatusIcon(booking.status)}
-                          <span className="capitalize">{booking.status}</span>
-                        </div>
-                      </span>
+              {/* Header with Gradient */}
+              <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-teal-500 p-8 text-white">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-6">
+                    <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                      <User className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-3xl font-bold mb-2">{booking.name}</h2>
+                      <p className="text-xl text-white/90 mb-3">
+                        {booking.serviceType === 'both' ? 'Photography + Videography' : 
+                         booking.serviceType.charAt(0).toUpperCase() + booking.serviceType.slice(1)}
+                      </p>
+                      <div className="flex items-center space-x-3">
+                        <span className={`px-4 py-2 rounded-xl text-sm font-bold border-2 ${getStatusColor(booking.status)}`}>
+                          <div className="flex items-center space-x-2">
+                            {getStatusIcon(booking.status)}
+                            <span className="uppercase tracking-wide">{booking.status}</span>
+                          </div>
+                        </span>
+                      </div>
                     </div>
                   </div>
+                  <button
+                    onClick={onClose}
+                    className="p-3 text-white/80 hover:text-white hover:bg-white/20 rounded-xl transition-colors"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
                 </div>
-                <button
-                  onClick={onClose}
-                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  <X className="w-6 h-6" />
-                </button>
               </div>
 
               {/* Content */}
-              <div className="p-6 max-h-[70vh] overflow-y-auto hide-scrollbar"> 
-                <h1 className='text-center mb-4 text-green-700'>Scroll Here</h1>
+              <div className="p-8 max-h-[70vh] overflow-y-auto hide-scrollbar bg-gradient-to-br from-slate-50 to-blue-50"> 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   {/* Left Column */}
                   <div className="space-y-6">
-                    {/* Service & Budget */}
-                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-100">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center space-x-3">
-                          {getServiceIcon(booking.serviceType)}
+                    {/* Service Details */}
+                    <motion.div 
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200"
+                    >
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
+                            {getServiceIcon(booking.serviceType)}
+                          </div>
                           <div>
-                            <h3 className="text-lg font-semibold text-gray-900">
-                              {booking.serviceType === 'both' ? 'Photography + Videography' : 
+                            <h3 className="text-xl font-bold text-slate-900">
+                              {booking.serviceType === 'both' ? 'Full Service Package' : 
                                booking.serviceType.charAt(0).toUpperCase() + booking.serviceType.slice(1)}
                             </h3>
-                            <p className="text-sm text-gray-600">Professional service</p>
+                            <p className="text-slate-600">Professional service</p>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
 
                     {/* Event Details */}
-                    <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-                        <CalendarDays className="w-5 h-5 text-blue-600" />
+                    <motion.div 
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.1 }}
+                      className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200"
+                    >
+                      <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                          <CalendarDays className="w-5 h-5 text-white" />
+                        </div>
                         <span>Event Details</span>
                       </h3>
                       <div className="space-y-4">
-                        <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                          <Calendar className="w-5 h-5 text-gray-600" />
+                        <div className="flex items-center space-x-4 p-4 bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl border border-slate-200">
+                          <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                            <Calendar className="w-5 h-5 text-indigo-600" />
+                          </div>
                           <div>
-                            <p className="font-medium text-gray-900">{booking.date}</p>
-                            <p className="text-sm text-gray-600">Event Date</p>
+                            <p className="font-bold text-slate-900 text-lg">{booking.date}</p>
+                            <p className="text-slate-600">Event Date</p>
                           </div>
                         </div>
-                        <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                          <Clock className="w-5 h-5 text-gray-600" />
+                        <div className="flex items-center space-x-4 p-4 bg-gradient-to-r from-slate-50 to-purple-50 rounded-xl border border-slate-200">
+                          <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <Clock className="w-5 h-5 text-purple-600" />
+                          </div>
                           <div>
-                            <p className="font-medium text-gray-900">{booking.timeSlot}</p>
-                            <p className="text-sm text-gray-600">Time & Duration</p>
+                            <p className="font-bold text-slate-900 text-lg">{booking.timeSlot}</p>
+                            <p className="text-slate-600">Time & Duration</p>
                           </div>
                         </div>
-                            
                       </div>
-                    </div>
+                    </motion.div>
                   </div>
 
                   {/* Right Column */}
                   <div className="space-y-6">
                     {/* Contact Information */}
-                    <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-                        <User className="w-5 h-5 text-green-600" />
+                    <motion.div 
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200"
+                    >
+                      <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-500 rounded-lg flex items-center justify-center">
+                          <User className="w-5 h-5 text-white" />
+                        </div>
                         <span>Contact Information</span>
                       </h3>
                       <div className="space-y-4">
-                        <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                          <Mail className="w-5 h-5 text-gray-600" />
+                        <div className="flex items-center space-x-4 p-4 bg-gradient-to-r from-slate-50 to-emerald-50 rounded-xl border border-slate-200">
+                          <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                            <Mail className="w-5 h-5 text-emerald-600" />
+                          </div>
                           <div className="flex-1">
-                            <p className="font-medium text-gray-900">{booking.email}</p>
-                            <p className="text-sm text-gray-600">Email Address</p>
+                            <p className="font-bold text-slate-900">{booking.email}</p>
+                            <p className="text-slate-600">Email Address</p>
                           </div>
                           <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
+                            whileHover={{ scale: 1.1, rotate: 5 }}
+                            whileTap={{ scale: 0.9 }}
+                            className="p-2 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors"
                           >
                             <Send className="w-4 h-4" />
                           </motion.button>
                         </div>
-                        <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                          <Phone className="w-5 h-5 text-gray-600" />
+                        <div className="flex items-center space-x-4 p-4 bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl border border-slate-200">
+                          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <Phone className="w-5 h-5 text-blue-600" />
+                          </div>
                           <div className="flex-1">
-                            <p className="font-medium text-gray-900">{booking.phone}</p>
-                            <p className="text-sm text-gray-600">Phone Number</p>
+                            <p className="font-bold text-slate-900">{booking.phone}</p>
+                            <p className="text-slate-600">Phone Number</p>
                           </div>
                           <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors"
+                            whileHover={{ scale: 1.1, rotate: -5 }}
+                            whileTap={{ scale: 0.9 }}
+                            className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
                           >
                             <Phone className="w-4 h-4" />
                           </motion.button>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
 
                     {/* Client Message */}
-                    <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-                        <MessageSquare className="w-5 h-5 text-purple-600" />
+                    <motion.div 
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.1 }}
+                      className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200"
+                    >
+                      <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                          <MessageSquare className="w-5 h-5 text-white" />
+                        </div>
                         <span>Client Message</span>
                       </h3>
-                      <div className="bg-gray-50 rounded-lg p-4">
-                        <p className="text-gray-700 leading-relaxed">{booking.message}</p>
+                      <div className="bg-gradient-to-r from-slate-50 to-purple-50 rounded-xl p-6 border border-slate-200">
+                        <p className="text-slate-700 leading-relaxed text-lg italic">
+                          "{booking.message}"
+                        </p>
                       </div>
-                    </div>
+                    </motion.div>
 
-                   
                     {/* Request Timeline */}
-                    <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Request Timeline</h3>
-                      <div className="text-sm text-gray-600">
-                        <p>Requested on {new Date(booking.createdAt).toLocaleDateString('en-US', {
-                          weekday: 'long',
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                          hour: 'numeric',
-                          minute: '2-digit'
-                        })}</p>
+                    <motion.div 
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200"
+                    >
+                      <h3 className="text-xl font-bold text-slate-900 mb-4 flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg flex items-center justify-center">
+                          <Clock className="w-5 h-5 text-white" />
+                        </div>
+                        <span>Timeline</span>
+                      </h3>
+                      <div className="bg-gradient-to-r from-slate-50 to-amber-50 rounded-xl p-4 border border-slate-200">
+                        <p className="text-slate-600 font-medium">
+                          Requested on {new Date(booking.createdAt).toLocaleDateString('en-US', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: 'numeric',
+                            minute: '2-digit'
+                          })}
+                        </p>
                       </div>
-                    </div>
+                    </motion.div>
                   </div>
                 </div>
               </div>
 
               {/* Footer Actions */}
-              <div className="flex items-center justify-between p-6 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
-                
-                {booking.status === 'pending' && (
-                  <div className="flex space-x-3">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => {
-                        onReject(booking._id);
-                        onClose();
-                      }}
-                      className="flex items-center space-x-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium shadow-lg transition-colors"
-                    >
-                      <XCircle className="w-5 h-5" />
-                      <span>Reject</span>
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => {
-                        onAccept(booking._id);
-                        onClose();
-                      }}
-                      className="flex items-center space-x-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium shadow-lg transition-colors"
-                    >
-                      <CheckCircle className="w-5 h-5" />
-                      <span>Accept Booking</span>
-                    </motion.button>
-                  </div>
-                )}
+              <div className="bg-white border-t border-slate-200 px-8 py-6">
+                <div className="flex items-center justify-between">
+                  {booking.status === 'pending' && (
+                    <div className="flex space-x-4">
+                      <motion.button
+                        whileHover={{ scale: 1.05, y: -2 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => {
+                          onReject(booking._id);
+                          onClose();
+                        }}
+                        className="flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white rounded-xl font-bold shadow-lg transition-all duration-300"
+                      >
+                        <XCircle className="w-5 h-5" />
+                        <span>Decline Booking</span>
+                      </motion.button>
+                      
+                      <motion.button
+                        whileHover={{ scale: 1.05, y: -2 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => {
+                          onAccept(booking._id);
+                          onClose();
+                        }}
+                        className="flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white rounded-xl font-bold shadow-lg transition-all duration-300"
+                      >
+                        <CheckCircle className="w-5 h-5" />
+                        <span>Accept Booking</span>
+                      </motion.button>
+                    </div>
+                  )}
 
-                {booking.status !== 'pending' && (
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={onClose}
-                    className="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium shadow-lg transition-colors"
-                  >
-                    Close
-                  </motion.button>
-                )}
+                  {booking.status !== 'pending' && (
+                    <motion.button
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={onClose}
+                      className="px-8 py-4 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white rounded-xl font-bold shadow-lg transition-all duration-300"
+                    >
+                      Close Details
+                    </motion.button>
+                  )}
+
+                  {/* Delete Button - Always Available */}
+                  {onDelete && (
+                    <motion.button
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={handleDelete}
+                      className="flex items-center space-x-2 px-6 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-xl font-bold shadow-lg transition-all duration-300 ml-4"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                      <span>Delete</span>
+                    </motion.button>
+                  )}
+                </div>
               </div>
             </motion.div>
           </div>

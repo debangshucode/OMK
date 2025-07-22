@@ -5,10 +5,11 @@ const blogSchema = new mongoose.Schema({
   title: { type: String, required: true },
   slug: { type: String, unique: true },
   content: { type: String, required: true },
-  image: { type: String }, // image URL
+  image: [{ type: String }], // image URL
   tags: [{ type: String }],
   category: { type: String, required: true },
-  status: { type: String },
+  status: { type: String , enum: ["draft", "published"], default: "draft" } ,
+  youTubeLink: { type: String },
   createdAt: { type: Date, default: Date.now }
 });
 

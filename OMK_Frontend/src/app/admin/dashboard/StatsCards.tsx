@@ -44,26 +44,26 @@ const StatsCards: React.FC = () => {
       bgColor: 'bg-amber-50',
       textColor: 'text-amber-600'
     },
-    {
-      title: 'Monthly Views',
-      value: '45.2K',
-      change: '+23%',
-      changeType: 'positive',
-      icon: Eye,
-      color: 'from-red-500 to-red-600',
-      bgColor: 'bg-red-50',
-      textColor: 'text-red-600'
-    },
-    {
-      title: 'Likes',
-      value: '12.8K',
-      change: '+18%',
-      changeType: 'positive',
-      icon: Heart,
-      color: 'from-pink-500 to-pink-600',
-      bgColor: 'bg-pink-50',
-      textColor: 'text-pink-600'
-    },
+    // {
+    //   title: 'Monthly Views',
+    //   value: '45.2K',
+    //   change: '+23%',
+    //   changeType: 'positive',
+    //   icon: Eye,
+    //   color: 'from-red-500 to-red-600',
+    //   bgColor: 'bg-red-50',
+    //   textColor: 'text-red-600'
+    // },
+    // {
+    //   title: 'Likes',
+    //   value: '12.8K',
+    //   change: '+18%',
+    //   changeType: 'positive',
+    //   icon: Heart,
+    //   color: 'from-pink-500 to-pink-600',
+    //   bgColor: 'bg-pink-50',
+    //   textColor: 'text-pink-600'
+    // },
     {
       title: 'Active Clients',
       value: '567',
@@ -74,16 +74,16 @@ const StatsCards: React.FC = () => {
       bgColor: 'bg-indigo-50',
       textColor: 'text-indigo-600'
     },
-    {
-      title: 'Growth Rate',
-      value: '24.5%',
-      change: '+3.2%',
-      changeType: 'positive',
-      icon: TrendingUp,
-      color: 'from-emerald-500 to-emerald-600',
-      bgColor: 'bg-emerald-50',
-      textColor: 'text-emerald-600'
-    }
+    // {
+    //   title: 'Growth Rate',
+    //   value: '24.5%',
+    //   change: '+3.2%',
+    //   changeType: 'positive',
+    //   icon: TrendingUp,
+    //   color: 'from-emerald-500 to-emerald-600',
+    //   bgColor: 'bg-emerald-50',
+    //   textColor: 'text-emerald-600'
+    // }
   ];
 
   const containerVariants = {
@@ -129,8 +129,8 @@ const StatsCards: React.FC = () => {
             <div className={`flex items-center space-x-1 text-sm font-medium ${
               stat.changeType === 'positive' ? 'text-green-600' : 'text-red-600'
             }`}>
-              <TrendingUp className="w-4 h-4" />
-              <span>{stat.change}</span>
+              {/* <TrendingUp className="w-4 h-4" />
+              <span>{stat.change}</span> */}
             </div>
           </div>
           

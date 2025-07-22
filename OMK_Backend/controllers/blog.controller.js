@@ -2,29 +2,39 @@ const Blog = require("../models/blog.model");
 
 // Create blog
 exports.createBlog = async (req, res) => {
-  const { title, content, category , status, tags } = req.body;
-  const imageUrl = req.file?.path; // Cloudinary URL
+  const { title, content, category, status, tags, youTubeLink } = req.body;
 
   try {
-    if (!title || !content || !imageUrl || !category || !status || !tags ) {
-      return res.status(400).json({ message: "All fields including image are required" });
+    // Ensure at least one image is uploaded
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "At least one image is required" });
+    }
+
+    const imageUrls = req.files.map((file) => file.path); // Cloudinary URLs
+
+    if (!title || !content || !category || !status || !tags) {
+      return res.status(400).json({ message: "All fields including images are required" });
     }
 
     const blog = await Blog.create({
       title,
       content,
       tags: tags ? tags.split(",") : [],
-      image: imageUrl,
+      image: imageUrls,
       category,
-      status
-
+      status,
+      youTubeLink
     });
 
-    res.status(201).json(blog);
+    res.status(201).json(blog, {
+      message: "Blog created successfully",
+    }
+    );
   } catch (err) {
     res.status(500).json({ message: "Blog creation failed", error: err.message });
   }
 };
+
 
 
 // Get all blogs (public)

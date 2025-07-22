@@ -8,6 +8,7 @@ import {
   CheckCircle, AlertCircle 
 } from 'lucide-react';
 import CreateModal from '@/components/CreateAlbumModal';
+import { toast } from 'sonner';
 
 const ClientsSection: React.FC = () => {
   const [clients, setClients] = useState<any[]>([]);
@@ -21,12 +22,15 @@ const ClientsSection: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get("/auth/all-user") // ⬅️ Adjust route as per your backend
+      .get("/auth/all-user")
       .then((res) => {
         setClients(res.data.users || []);
       })
       .catch((err) => {
-        console.error("Failed to fetch users:", err);
+        
+        toast.error("Failed to fetch clients. Please try again later.");
+        setClients([]);
+
       })
       .finally(() => setLoading(false));
   }, []);
@@ -308,20 +312,10 @@ const ClientsSection: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Stats */}
-                {/* <div className="grid grid-cols-2 gap-4 mb-4 text-center">
-                  <div>
-                    <p className="text-lg font-bold text-gray-900">{client.totalProjects}</p>
-                    <p className="text-xs text-gray-600">Projects</p>
-                  </div>
-                  <div>
-                    <p className="text-lg font-bold text-gray-900">${client.totalSpent.toLocaleString()}</p>
-                    <p className="text-xs text-gray-600">Total Spent</p>
-                  </div>
-                </div> */}
+                
 
                 {/* Rating */}
-                {client.rating > 0 && (
+                {/* {client.rating > 0 && (
                   <div className="flex items-center justify-center space-x-1 mb-4">
                     {[...Array(5)].map((_, i) => (
                       <Star
@@ -334,7 +328,7 @@ const ClientsSection: React.FC = () => {
                       />
                     ))}
                   </div>
-                )}
+                )} */}
 
                 {/* Actions */}
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100">
@@ -396,7 +390,7 @@ const ClientsSection: React.FC = () => {
                 />
 
                 {/* Info */}
-                <div className="flex-1 grid grid-cols-1 lg:grid-cols-6 gap-4">
+                {/* <div className="flex-1 grid grid-cols-1 lg:grid-cols-6 gap-4">
                   <div className="lg:col-span-2">
                     <h3 className="font-semibold text-gray-900">{client.name}</h3>
                     <p className="text-sm text-gray-600">{client.email}</p>
@@ -441,7 +435,7 @@ const ClientsSection: React.FC = () => {
                       </motion.button>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </motion.div>
             ))}
           </div>

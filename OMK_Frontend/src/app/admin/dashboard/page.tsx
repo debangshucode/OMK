@@ -206,8 +206,8 @@ const AdminDashboard: React.FC = () => {
         return <AlbumsSection />;
       case "reviews":
         return <ReviewsSection />;
-      case "analytics":
-        return <AnalyticsSection />;
+      // case "analytics":
+      //   return <AnalyticsSection />;
       case "clients":
         return <ClientsSection />;
       case "bookings":
