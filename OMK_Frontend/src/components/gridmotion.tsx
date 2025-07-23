@@ -1,10 +1,9 @@
 "use client";
-import SplashCursor from "./splashcurser";
 
 import { useEffect, useRef, FC } from "react";
 import { gsap } from "gsap";
 import type { GridItem } from "@/data";
-import HeroOverlay from "@/components/herooverlay";
+import HeroOverlay from "@/components/ui/herooverlay";
 import HeaderAction from "@/components/headeraction";
 
 interface GridMotionProps {
@@ -18,7 +17,6 @@ const GridMotion: FC<GridMotionProps> = ({
 }) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const mouseXRef = useRef<number>(0);
 
   const totalItems = 28;
 

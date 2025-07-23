@@ -194,7 +194,7 @@ const Book: React.FC = () => {
               >
                 {index === 0 || index === pages.length - 1 ? (
                   <div className="absolute inset-0 rounded-r-2xl bg-gradient-to-r from-red-600 to-red-700  flex items-center justify-center">
-                    <h2 className="text-white text-3xl font-bold">
+                    <h2 className="text-white text-center text-3xl font-bold">
                       {index === 0
                         ? "Welcome to the Album"
                         : "Thank You for Watching"}
@@ -213,7 +213,7 @@ const Book: React.FC = () => {
                 )}
 
                 <div
-                  className="absolute inset-0 bg-gradient-to-r from-red-70 via-red-60 to-amber-60 bg-clip-text text-transparent rounded-r-2xl p-8 border border-red-200"
+                  className="absolute inset-0 bg-gradient-to-r from-red-700 via-red-600 to-amber-600  rounded-r-2xl p-8 border border-red-200"
                   style={{
                     transform: "rotateY(180deg)",
                     backfaceVisibility: "hidden",

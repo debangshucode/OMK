@@ -43,15 +43,19 @@ const BookingAssistant = () => {
             <div className="bg-white text-red-600 text-center text-sm px-4 py-2 rounded-2xl shadow-md max-w-[200px]">
               Ready to book your shoot?
               <button
-              onClick={() =>
-                document
-                  .getElementById("contact")
-                  ?.scrollIntoView({ behavior: "smooth" })
-              }
-              className="ml-2 text-white bg-red-500 hover:bg-red-600 px-2 py-1 rounded text-xs hover:cursor-pointer"
-            >
-              Book Now
-            </button>
+                onClick={() => {
+                  const contactSection = document.getElementById("contact");
+                  if (contactSection) {
+                    contactSection.scrollIntoView({ behavior: "smooth" });
+                    setTimeout(() => {
+                      window.focusContactNameInput?.();
+                    }, 600); 
+                  }
+                }}
+                className="ml-2 text-white bg-red-500 hover:bg-red-600 px-2 py-1 rounded text-xs hover:cursor-pointer"
+              >
+                Book Now
+              </button>
             </div>
             <div className="absolute left-1/2 -bottom-2 w-3 h-3 bg-red-600 rotate-45 transform -translate-x-1/2"></div>
           </div>

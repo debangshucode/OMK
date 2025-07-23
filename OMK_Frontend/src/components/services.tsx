@@ -56,7 +56,7 @@ const Services = () => {
       buttonColor: "from-red-600/80 to-red-700/50",
       image:
         "https://images.pexels.com/photos/1264210/pexels-photo-1264210.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
-      price: "Starting at $299",
+      price: "Contact for pricing",
       duration: "2-4 hours",
     },
     {
@@ -90,7 +90,7 @@ const Services = () => {
       buttonColor: "from-red-600/80 to-red-700/50",
       image:
         "https://images.pexels.com/photos/3062541/pexels-photo-3062541.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
-      price: "Starting at $599",
+      price: "Contact for pricing",
       duration: "4-8 hours",
     },
     {
@@ -123,7 +123,7 @@ const Services = () => {
       buttonColor: "from-amber-500/80 to-amber-600/50",
       image:
         "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
-      price: "Starting at $399",
+      price: "Contact for pricing",
       duration: "3-5 hours",
     },
     {
@@ -157,7 +157,7 @@ const Services = () => {
       buttonColor: "from-slate-600/80 to-slate-700/50",
       image:
         "https://images.pexels.com/photos/3062541/pexels-photo-3062541.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
-      price: "Starting at $799",
+      price: "Contact for pricing",
       duration: "Full day",
     },
   ];
@@ -337,8 +337,8 @@ const Services = () => {
                     ))}
                   </div>
 
-                  <div className="flex items-center gap-2 justify-between pt-6 border-t border-gray-100">
-                    <div>
+                  <div className="flex items-center flex-wrap xl:flex-nowrap gap-2 justify-between pt-6 border-t border-gray-100">
+                    <div className="xl:w-full">
                       <p className="text-xl xl:text-2xl font-bold text-slate-800">
                         {services[activeService].price}
                       </p>
@@ -365,7 +365,7 @@ const Services = () => {
                           contactSection.scrollIntoView({ behavior: "smooth" });
                           setTimeout(() => {
                             window.focusContactNameInput?.();
-                          }, 600); // Wait for scroll animation to finish
+                          }, 600);
                         }
                       }}
                       className={`text-sm px-2 py-2 xl:px-6 xl:py-3 bg-gradient-to-r ${services[activeService].buttonColor} text-white rounded-full font-semibold shadow-lg transition-all duration-300 hover:cursor-pointer`}

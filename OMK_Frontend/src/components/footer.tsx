@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
-
+import { useRouter, usePathname } from "next/navigation";
+import { getQuickLinks } from "../data/index";
 import { motion } from "framer-motion";
 import {
   Camera,
@@ -24,6 +25,7 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
+import { link } from "fs";
 
 declare global {
   interface Window {
@@ -32,6 +34,16 @@ declare global {
 }
 
 const Footer = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const links = getQuickLinks(pathname, router, scrollToSection);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -53,7 +65,6 @@ const Footer = () => {
     "Videography",
     "Cinematography",
   ];
-  const service_types = ["Single Side", "Both Side"];
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -170,15 +181,6 @@ const Footer = () => {
     },
   ];
 
-  const quickLinks = [
-    "About Us",
-    "Services",
-    "Portfolio",
-    "Testimonials",
-    "Blog",
-    "Contact",
-  ];
-
   const nameInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -267,15 +269,15 @@ const Footer = () => {
                   <span>Quick Links</span>
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
-                  {quickLinks.map((link, index) => (
+                  {links.map((link, i) => (
                     <motion.a
-                      key={index}
-                      href="#"
+                      key={i}
+                      onClick={link.onClick}
                       whileHover={{ x: 5 }}
                       className="text-slate-300 hover:text-amber-400 transition-all duration-300 flex items-center space-x-2 hover:cursor-pointer"
                     >
                       <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                      <span>{link}</span>
+                      <span>{link.label}</span>
                     </motion.a>
                   ))}
                 </div>
@@ -557,7 +559,7 @@ const Footer = () => {
                 <Camera className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h4 className="font-bold text-lg">PhotoStudio</h4>
+                <h4 className="font-bold text-lg">Our Moments Kolkata</h4>
                 <p className="text-slate-400 text-sm">
                   Capturing Life's Beautiful Moments
                 </p>
@@ -565,22 +567,8 @@ const Footer = () => {
             </div>
 
             <div className="flex items-center space-x-6 text-slate-400 text-sm">
-              <span>© 2024 PhotoStudio. All rights reserved.</span>
-              <div className="flex items-center space-x-4">
-                <a
-                  href="#"
-                  className="hover:text-white transition-colors duration-300"
-                >
-                  Privacy Policy
-                </a>
-                <span>•</span>
-                <a
-                  href="#"
-                  className="hover:text-white transition-colors duration-300"
-                >
-                  Terms of Service
-                </a>
-              </div>
+              <span>Developed By</span>
+              <span>© 2025 DreamGuys</span>
             </div>
 
             <div className="flex items-center space-x-2 text-slate-400">

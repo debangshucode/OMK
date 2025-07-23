@@ -120,3 +120,44 @@ export const portfolioData = {
   },
   albums: generateAlbums()
 };
+
+import { QuickLink } from "../types/types";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime"
+
+export const getQuickLinks = (
+  pathname: string,
+  router: AppRouterInstance,
+  scrollToSection: (id: string) => void
+): QuickLink[] => [
+  {
+    label: "Home",
+    onClick: () =>
+      pathname === "/" ? scrollToSection("home") : router.push("/#home"),
+  },
+  {
+    label: "About",
+    onClick: () =>
+      pathname === "/" ? scrollToSection("about") : router.push("/#about"),
+  },
+  {
+    label: "Services",
+    onClick: () =>
+      pathname === "/" ? scrollToSection("services") : router.push("/#services"),
+  },
+  {
+    label: "Portfolio",
+    onClick: () => router.push("/portfolio"),
+  },
+  {
+    label: "Testimonials",
+    onClick: () =>
+      pathname === "/"
+        ? scrollToSection("testimonials")
+        : router.push("/#testimonials"),
+  },
+  {
+    label: "Contact",
+    onClick: () =>
+      pathname === "/" ? scrollToSection("contact") : router.push("/#contact"),
+  },
+]

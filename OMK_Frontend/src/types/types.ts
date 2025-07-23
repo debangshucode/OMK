@@ -20,7 +20,7 @@ export interface MediaItem {
   description: string;
   url: string;
   thumbnail?: string; // For videos and YouTube links
-  type: 'photo' | 'video' | 'youtube' | 'thumbnail';
+  type: 'photo' | 'video' | 'youtube' | 'thumbnail' | 'album' | 'MediaItem';
   category: string;
   date: string;
   tags: string[];
@@ -59,4 +59,9 @@ export interface testimonials {
   approved: boolean
   createdAt: string
   updatedAt: string
+}
+
+export interface QuickLink {
+  label: string
+  onClick: () => void
 }
