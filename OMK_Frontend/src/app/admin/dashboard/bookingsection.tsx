@@ -1,365 +1,439 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import axios from '@/utils/axios';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Users, Search, Plus, Eye, Edit, Mail, Phone, MapPin, 
-  CheckCircle, AlertCircle, Clock, UserPlus, Grid, List
-} from 'lucide-react';
-import { toast } from 'sonner';
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Calendar,
+  Search,
+  Filter,
+  Clock,
+  MapPin,
+  User,
+  Camera,
+  Video,
+  MessageSquare,
+  CheckCircle,
+  XCircle,
+  Eye,
+  Edit,
+  Phone,
+  Mail,
+  CalendarDays,
+  TrendingUp,
+  DollarSign,
+  X,
+  Download,
+  Trash2,
+  Archive,
+} from "lucide-react";
+import BookingDetailsModal from "./detailsBooking";
+import { Booking } from "@/types/types";
+import axios from "@/utils/axios";
+import { toast } from "sonner";
 
-interface Client {
-  _id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  location?: string;
-  avatar?: string;
-  status?: 'active' | 'inactive' | 'pending';
-  createdAt?: string;
-}
-
-const ClientsSection: React.FC = () => {
-  const [clients, setClients] = useState<Client[]>([]);
+const BookingsSection: React.FC = () => {
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    fetchClients();
+    axios
+      .get("/bookings")
+      .then((res) => {
+        setBookings(res.data || []);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch bookings:", err);
+        toast.error("Failed to fetch bookings");
+      })
+      .finally(() => setLoading(false));
   }, []);
 
-  const fetchClients = async () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+
+  // Updated to work with confirmed/cancelled status
+  const handleBookingAction = async (
+    bookingId: string,
+    action: "confirm" | "cancel" | "delete"
+  ) => {
     try {
-      const res = await axios.get("/auth/all-user");
-      setClients(res.data.users || []);
-    } catch (err) {
-      toast.error("Failed to fetch clients");
-      setClients([]);
-    } finally {
-      setLoading(false);
+      if (action === "delete") {
+        await axios.delete(`/bookings/${bookingId}`);
+        setBookings((prev) => prev.filter((booking) => booking._id !== bookingId));
+        toast.success("Booking deleted successfully");
+      } else {
+        const response = await axios.patch(`/bookings/${bookingId}`, {
+          status: action === "confirm" ? "confirmed" : "cancelled",
+        });
+
+        setBookings((prev) =>
+          prev.map((booking) =>
+            booking._id === bookingId
+              ? { ...booking, status: response.data.status }
+              : booking
+          )
+        );
+
+        toast.success(`Booking ${action}ed successfully`);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(`Something went wrong while ${action}ing the booking.`);
     }
   };
 
-  const getStatusInfo = (status: string = 'active') => {
-    const statusMap = {
-      active: { 
-        color: 'bg-emerald-50 text-emerald-700 border-emerald-200', 
-        icon: CheckCircle,
-        iconColor: 'text-emerald-600'
-      },
-      inactive: { 
-        color: 'bg-gray-50 text-gray-700 border-gray-200', 
-        icon: Clock,
-        iconColor: 'text-gray-600'
-      },
-      pending: { 
-        color: 'bg-amber-50 text-amber-700 border-amber-200', 
-        icon: AlertCircle,
-        iconColor: 'text-amber-600'
-      }
-    };
-    return statusMap[status as keyof typeof statusMap] || statusMap.active;
+  const handleViewBooking = (booking: Booking) => {
+    setSelectedBooking(booking);
+    setIsModalOpen(true);
   };
 
-  const filteredClients = clients.filter(client => {
-    const matchesSearch = client.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         client.email?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || client.status === statusFilter;
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedBooking(null);
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "confirmed":
+        return "bg-emerald-50 text-emerald-700 border-emerald-200";
+      case "cancelled":
+        return "bg-rose-50 text-rose-700 border-rose-200";
+      case "pending":
+        return "bg-amber-50 text-amber-700 border-amber-200";
+      default:
+        return "bg-slate-50 text-slate-700 border-slate-200";
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "confirmed":
+        return <CheckCircle className="w-4 h-4 text-emerald-600" />;
+      case "cancelled":
+        return <XCircle className="w-4 h-4 text-rose-600" />;
+      case "pending":
+        return <Clock className="w-4 h-4 text-amber-600" />;
+      default:
+        return <Clock className="w-4 h-4 text-slate-600" />;
+    }
+  };
+
+  const getServiceIcon = (serviceType: string) => {
+    switch (serviceType) {
+      case "photography":
+        return <Camera className="w-5 h-5 text-indigo-600" />;
+      case "videography":
+        return <Video className="w-5 h-5 text-purple-600" />;
+      case "both":
+        return (
+          <div className="flex space-x-1">
+            <Camera className="w-4 h-4 text-indigo-600" />
+            <Video className="w-4 h-4 text-purple-600" />
+          </div>
+        );
+      default:
+        return <Camera className="w-5 h-5 text-indigo-600" />;
+    }
+  };
+
+  // Filter bookings based on search and status
+  const filteredBookings = bookings.filter((booking) => {
+    const matchesSearch = booking.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         booking.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = filterStatus === "all" || booking.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
 
-  const stats = [
-    { 
-      label: 'Total Clients', 
-      value: clients.length, 
-      icon: Users, 
-      color: 'text-blue-600', 
-      bg: 'bg-blue-50' 
-    },
-    { 
-      label: 'Active', 
-      value: clients.filter(c => c.status === 'active').length, 
-      icon: CheckCircle, 
-      color: 'text-emerald-600', 
-      bg: 'bg-emerald-50' 
-    },
-    { 
-      label: 'Pending', 
-      value: clients.filter(c => c.status === 'pending').length, 
-      icon: AlertCircle, 
-      color: 'text-amber-600', 
-      bg: 'bg-amber-50' 
-    }
-  ];
+  const getStatusCounts = () => {
+    return {
+      all: bookings.length,
+      pending: bookings.filter(b => b.status === "pending").length,
+      confirmed: bookings.filter(b => b.status === "confirmed").length,
+      cancelled: bookings.filter(b => b.status === "cancelled").length,
+    };
+  };
+
+  const statusCounts = getStatusCounts();
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="min-h-[400px] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <p className="text-slate-600">Loading bookings...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-8">
-      {/* Header */}
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Clients</h1>
-        <p className="text-gray-600">Manage your client relationships</p>
+    <div className="space-y-8 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen p-6">
+      {/* Retro Header with Classic Typography */}
+      <div className="text-center mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative"
+        >
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-teal-600 bg-clip-text text-transparent mb-4">
+            Booking Management
+          </h1>
+          <div className="w-32 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 mx-auto rounded-full"></div>
+          <p className="text-slate-600 mt-6 text-lg font-medium tracking-wide">
+            Professional Photography & Videography Services
+          </p>
+        </motion.div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-6">
-        {stats.map((stat, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm"
-          >
-            <div className="flex items-center space-x-4">
-              <div className={`w-12 h-12 ${stat.bg} rounded-xl flex items-center justify-center`}>
-                <stat.icon className={`w-6 h-6 ${stat.color}`} />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                <p className="text-sm text-gray-600">{stat.label}</p>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+      {/* Status Filter Pills - Retro Style */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6"
+      >
+        <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+          <div className="flex flex-wrap gap-3">
+            {[
+              { key: "all", label: "All Bookings", count: statusCounts.all },
+              { key: "pending", label: "Pending", count: statusCounts.pending },
+              { key: "confirmed", label: "Confirmed", count: statusCounts.confirmed },
+              { key: "cancelled", label: "Cancelled", count: statusCounts.cancelled },
+            ].map((filter) => (
+              <motion.button
+                key={filter.key}
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setFilterStatus(filter.key)}
+                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-md ${
+                  filterStatus === filter.key
+                    ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg"
+                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                }`}
+              >
+                {filter.label} ({filter.count})
+              </motion.button>
+            ))}
+          </div>
 
-      {/* Controls */}
-      <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-          {/* Search */}
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+          {/* Search Bar - Retro Style */}
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Search clients..."
+              placeholder="Search bookings..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+              className="pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 w-64"
             />
           </div>
-
-          {/* Status Filter */}
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
-          >
-            <option value="all">All Status</option>
-            <option value="active">Active</option>
-            <option value="pending">Pending</option>
-            <option value="inactive">Inactive</option>
-          </select>
-
-          {/* View Mode */}
-          <div className="flex bg-gray-100 rounded-xl p-1">
-            <button
-              onClick={() => setViewMode('grid')}
-              className={`px-4 py-2 rounded-lg transition-all ${
-                viewMode === 'grid' 
-                  ? 'bg-white text-blue-600 shadow-sm' 
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <Grid className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => setViewMode('list')}
-              className={`px-4 py-2 rounded-lg transition-all ${
-                viewMode === 'list' 
-                  ? 'bg-white text-blue-600 shadow-sm' 
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <List className="w-5 h-5" />
-            </button>
-          </div>
-
-          {/* Add Client */}
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl flex items-center space-x-2 font-medium transition-colors shadow-sm"
-          >
-            <UserPlus className="w-5 h-5" />
-            <span>Add Client</span>
-          </motion.button>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Clients Display */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        {filteredClients.length === 0 ? (
-          <div className="text-center py-12">
-            <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600">No clients found</p>
-          </div>
-        ) : viewMode === 'grid' ? (
-          <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredClients.map((client, index) => {
-              const statusInfo = getStatusInfo(client.status);
-              const StatusIcon = statusInfo.icon;
-              
-              return (
-                <motion.div
-                  key={client._id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="border border-gray-200 rounded-xl p-6 hover:border-blue-200 hover:shadow-sm transition-all group"
-                >
-                  {/* Header */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                      <span className="text-white font-semibold text-lg">
-                        {client.name?.charAt(0).toUpperCase() || 'U'}
-                      </span>
+      {/* Bookings Grid - Enhanced Retro Cards */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8"
+      >
+        <AnimatePresence mode="popLayout">
+          {filteredBookings.map((booking, index) => (
+            <motion.div
+              key={booking._id}
+              layout
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: -20 }}
+              transition={{ delay: index * 0.1, type: "spring", damping: 15 }}
+              className="group bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer"
+              onClick={() => handleViewBooking(booking)}
+            >
+              {/* Card Header with Gradient */}
+              <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-teal-500 p-6 text-white">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                      <User className="w-6 h-6 text-white" />
                     </div>
-                    <div className={`px-3 py-1 rounded-lg border flex items-center space-x-1 ${statusInfo.color}`}>
-                      <StatusIcon className={`w-4 h-4 ${statusInfo.iconColor}`} />
-                      <span className="text-sm font-medium capitalize">{client.status || 'active'}</span>
-                    </div>
-                  </div>
-
-                  {/* Client Info */}
-                  <div className="space-y-3 mb-6">
-                    <h3 className="font-semibold text-gray-900 text-lg">{client.name}</h3>
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-3 text-gray-600">
-                        <Mail className="w-4 h-4" />
-                        <span className="text-sm truncate">{client.email}</span>
-                      </div>
-                      {client.phone && (
-                        <div className="flex items-center space-x-3 text-gray-600">
-                          <Phone className="w-4 h-4" />
-                          <span className="text-sm">{client.phone}</span>
-                        </div>
-                      )}
-                      {client.location && (
-                        <div className="flex items-center space-x-3 text-gray-600">
-                          <MapPin className="w-4 h-4" />
-                          <span className="text-sm">{client.location}</span>
-                        </div>
-                      )}
+                    <div>
+                      <h3 className="font-bold text-xl">{booking.name}</h3>
+                      <p className="text-white/80 text-sm font-medium">
+                        {booking.serviceType === "both" ? "Photo + Video" : 
+                         booking.serviceType.charAt(0).toUpperCase() + booking.serviceType.slice(1)}
+                      </p>
                     </div>
                   </div>
+                  <span
+                    className={`px-3 py-1 rounded-xl text-xs font-bold border-2 ${getStatusColor(booking.status)}`}
+                  >
+                    <div className="flex items-center space-x-1">
+                      {getStatusIcon(booking.status)}
+                      <span className="uppercase tracking-wide">{booking.status}</span>
+                    </div>
+                  </span>
+                </div>
 
-                  {/* Actions */}
-                  <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                {/* Service Badge */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center text-white/90 space-x-2 bg-white/10 px-4 py-2 rounded-lg backdrop-blur-sm">
+                    {getServiceIcon(booking.serviceType)}
+                    <span className="text-sm font-semibold">
+                      {booking.serviceType === "both" ? "Full Service" : 
+                       booking.serviceType.charAt(0).toUpperCase() + booking.serviceType.slice(1)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card Body */}
+              <div className="p-6 space-y-4">
+                {/* Event Details */}
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl">
+                    <CalendarDays className="w-5 h-5 text-indigo-600" />
+                    <div>
+                      <p className="font-semibold text-slate-900">{new Date(booking.date).toLocaleDateString()}</p>
+                      <p className="text-sm text-slate-600">Event Date</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl">
+                    <Clock className="w-5 h-5 text-purple-600" />
+                    <div>
+                      <p className="font-semibold text-slate-900">{booking.timeSlot}</p>
+                      <p className="text-sm text-slate-600">Time Slot</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Message Preview */}
+                <div className="bg-gradient-to-r from-slate-50 to-indigo-50 p-4 rounded-xl border border-slate-200">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <MessageSquare className="w-4 h-4 text-slate-600" />
+                    <span className="text-sm font-semibold text-slate-700">Message</span>
+                  </div>
+                  <p className="text-sm text-slate-600 line-clamp-2 leading-relaxed">
+                    {booking.message}
+                  </p>
+                </div>
+
+                {/* Contact Info */}
+                <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                  <div className="flex space-x-2">
+                    <div className="flex items-center space-x-1 text-xs text-slate-600 bg-slate-100 px-3 py-1 rounded-lg">
+                      <Mail className="w-3 h-3" />
+                      <span className="truncate max-w-[120px]">{booking.email}</span>
+                    </div>
+                  </div>
+                  <div className="text-xs text-slate-500 font-medium">
+                    {new Date(booking.createdAt).toLocaleDateString()}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="px-6 pb-6">
+                {booking.status === "pending" ? (
+                  <div className="grid grid-cols-3 gap-2">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-3 rounded-lg flex items-center justify-center space-x-2 text-sm font-medium transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleBookingAction(booking._id, "confirm");
+                      }}
+                      className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white px-4 py-3 rounded-xl text-sm font-bold flex items-center justify-center space-x-1 shadow-lg transition-all duration-300"
+                    >
+                      <CheckCircle className="w-4 h-4" />
+                      <span>Accept</span>
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleBookingAction(booking._id, "cancel");
+                      }}
+                      className="bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white px-4 py-3 rounded-xl text-sm font-bold flex items-center justify-center space-x-1 shadow-lg transition-all duration-300"
+                    >
+                      <XCircle className="w-4 h-4" />
+                      <span>Decline</span>
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (confirm("Are you sure you want to delete this booking?")) {
+                          handleBookingAction(booking._id, "delete");
+                        }
+                      }}
+                      className="bg-gradient-to-r from-slate-500 to-slate-600 hover:from-slate-600 hover:to-slate-700 text-white px-4 py-3 rounded-xl text-sm font-bold flex items-center justify-center space-x-1 shadow-lg transition-all duration-300"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span>Delete</span>
+                    </motion.button>
+                  </div>
+                ) : (
+                  <div className="flex space-x-2">
+                    <motion.button
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleViewBooking(booking);
+                      }}
+                      className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-4 py-3 rounded-xl text-sm font-bold flex items-center justify-center space-x-2 shadow-lg transition-all duration-300"
                     >
                       <Eye className="w-4 h-4" />
-                      <span>View</span>
+                      <span>View Details</span>
                     </motion.button>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 py-2 px-3 rounded-lg flex items-center justify-center space-x-2 text-sm font-medium transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (confirm("Are you sure you want to delete this booking?")) {
+                          handleBookingAction(booking._id, "delete");
+                        }
+                      }}
+                      className="bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white px-4 py-3 rounded-xl text-sm font-bold flex items-center justify-center shadow-lg transition-all duration-300"
                     >
-                      <Mail className="w-4 h-4" />
-                      <span>Email</span>
+                      <Trash2 className="w-4 h-4" />
                     </motion.button>
                   </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="divide-y divide-gray-100">
-            {filteredClients.map((client, index) => {
-              const statusInfo = getStatusInfo(client.status);
-              const StatusIcon = statusInfo.icon;
-              
-              return (
-                <motion.div
-                  key={client._id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="p-6 hover:bg-gray-50 transition-colors group"
-                >
-                  <div className="flex items-center space-x-4">
-                    {/* Avatar */}
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <span className="text-white font-semibold">
-                        {client.name?.charAt(0).toUpperCase() || 'U'}
-                      </span>
-                    </div>
+                )}
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
 
-                    {/* Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-3 mb-1">
-                        <h3 className="font-semibold text-gray-900">{client.name}</h3>
-                        <div className={`px-2 py-1 rounded-md border flex items-center space-x-1 ${statusInfo.color}`}>
-                          <StatusIcon className={`w-3 h-3 ${statusInfo.iconColor}`} />
-                          <span className="text-xs font-medium capitalize">{client.status || 'active'}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-6 text-sm text-gray-600">
-                        <span className="flex items-center space-x-2">
-                          <Mail className="w-4 h-4" />
-                          <span className="truncate">{client.email}</span>
-                        </span>
-                        {client.phone && (
-                          <span className="flex items-center space-x-2">
-                            <Phone className="w-4 h-4" />
-                            <span>{client.phone}</span>
-                          </span>
-                        )}
-                        {client.location && (
-                          <span className="flex items-center space-x-2">
-                            <MapPin className="w-4 h-4" />
-                            <span>{client.location}</span>
-                          </span>
-                        )}
-                      </div>
-                    </div>
+      {/* Empty State */}
+      {filteredBookings.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center py-16 bg-white rounded-2xl shadow-lg border border-slate-200"
+        >
+          <Archive className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+          <h3 className="text-xl font-semibold text-slate-700 mb-2">No bookings found</h3>
+          <p className="text-slate-500">
+            {searchTerm ? "Try adjusting your search terms" : "No bookings match the current filter"}
+          </p>
+        </motion.div>
+      )}
 
-                    {/* Actions */}
-                    <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      >
-                        <Mail className="w-4 h-4" />
-                      </motion.button>
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        )}
-      </div>
+      {/* Modal */}
+      <BookingDetailsModal
+        booking={selectedBooking}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onAccept={(bookingId: string) => handleBookingAction(bookingId, "confirm")}
+        onReject={(bookingId: string) => handleBookingAction(bookingId, "cancel")}
+        onDelete={(bookingId: string) => handleBookingAction(bookingId, "delete")}
+      />
     </div>
   );
 };
 
-export default ClientsSection;
+export default BookingsSection;
