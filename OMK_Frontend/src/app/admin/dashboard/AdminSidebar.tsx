@@ -33,6 +33,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     { id: 'albums', label: 'Albums', icon: FolderOpen },
     { id: 'blogs', label: 'Blogs', icon: BookOpen },
     { id: 'reviews', label: 'Reviews', icon: Star },
+    { id: 'recentpost', label: 'Recent Post', icon: BarChart3 },
     // { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'clients', label: 'Clients', icon: Users },
     { id: 'bookings', label: 'Bookings', icon: BookOpen },

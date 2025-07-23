@@ -9,6 +9,7 @@ import PhotosSection from "./PhotosSection";
 import VideosSection from "./VideosSection";
 import AlbumsSection from "./AlbumsSection";
 import ReviewsSection from "./ReviewsSection";
+import RecentPost from "./RecentPost";
 import AnalyticsSection from "./AnalyticsSection";
 import ClientsSection from "./ClientsSection";
 import BlogsSection from "./BlogsSection";
@@ -208,6 +209,8 @@ const AdminDashboard: React.FC = () => {
         return <ReviewsSection />;
       // case "analytics":
       //   return <AnalyticsSection />;
+      case "recentpost":
+        return <RecentPost />;
       case "clients":
         return <ClientsSection />;
       case "bookings":
