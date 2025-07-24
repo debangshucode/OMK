@@ -6,7 +6,7 @@ const {
 } = require("../controllers/user.controller");
 const { protect, authorizeRoles } = require("../middlewares/auth.middleware");
 const upload = require("../middlewares/upload.middleware.js");
-router.patch(
+router.put(
   "/adminsettings",
   protect,
   authorizeRoles("admin"),
