@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { Camera, User, Mail, Lock, ArrowRight, X, Router } from "lucide-react";
+import { Camera, User, Mail, Lock, ArrowRight, X, EyeOff,Eye } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -14,19 +14,20 @@ interface LoginModalProps {
   // setUser: (user: any) => void;
 }
 
-export default function LoginModal({ onClose, onSuccess,  }: LoginModalProps) {
+export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
   const [loading, setLoading] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
-  const { setAuthState, user, isAuthenticated, setUser} = useAuth(); // ⬅️ Add this
+  const { setAuthState, user, isAuthenticated, setUser } = useAuth(); // ⬅️ Add this
   const router = useRouter();
-  
+  const [showPassword, setShowPassword] = useState(false);
+
   // Form states
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [otp, setOTP] = useState("");
-  
+
   const sliderRef = useRef<HTMLDivElement>(null);
   const thumbRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -34,8 +35,7 @@ export default function LoginModal({ onClose, onSuccess,  }: LoginModalProps) {
   const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const validatePhone = (phone: string) =>
-    /^[0-9]{10}$/.test(phone);
+  const validatePhone = (phone: string) => /^[0-9]{10}$/.test(phone);
 
   const resetForm = () => {
     setEmail("");
@@ -60,7 +60,7 @@ export default function LoginModal({ onClose, onSuccess,  }: LoginModalProps) {
     }
 
     setLoading(true);
-    
+
     try {
       const response = await axios.post(
         "http://localhost:4000/api/auth/login",
@@ -70,7 +70,7 @@ export default function LoginModal({ onClose, onSuccess,  }: LoginModalProps) {
           headers: { "Content-Type": "application/json" },
         }
       );
-      
+
       toast.success(response.data.message);
       // setIsAuthenticated(true);
       // setAuthState(response.data.user);
@@ -78,12 +78,9 @@ export default function LoginModal({ onClose, onSuccess,  }: LoginModalProps) {
       onSuccess(response.data.user);
       if (response.data.user.role === "admin") {
         router.push("/admin/dashboard"); // Redirect to admin dashboard
-      }
-      else  {
+      } else {
         router.push("/client/dashboard"); // Redirect to photographer dashboard
       }
-       
-
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Login failed");
       // setIsAuthenticated(false);
@@ -102,7 +99,7 @@ export default function LoginModal({ onClose, onSuccess,  }: LoginModalProps) {
     }
 
     setLoading(true);
-    
+
     try {
       const response = await axios.post(
         "http://localhost:4000/api/auth/register",
@@ -112,7 +109,7 @@ export default function LoginModal({ onClose, onSuccess,  }: LoginModalProps) {
           headers: { "Content-Type": "application/json" },
         }
       );
-      
+
       toast.success(response.data.message);
       setShowOTP(true);
     } catch (error: any) {
@@ -131,7 +128,7 @@ export default function LoginModal({ onClose, onSuccess,  }: LoginModalProps) {
     }
 
     setLoading(true);
-    
+
     try {
       const response = await axios.post(
         "http://localhost:4000/api/auth/otp-verification",
@@ -141,7 +138,7 @@ export default function LoginModal({ onClose, onSuccess,  }: LoginModalProps) {
           headers: { "Content-Type": "application/json" },
         }
       );
-      
+
       toast.success(response.data.message);
       // setIsAuthenticated(true);
       setUser(response.data.user);
@@ -182,13 +179,13 @@ export default function LoginModal({ onClose, onSuccess,  }: LoginModalProps) {
   // Handle keyboard events
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         onClose();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
   useEffect(() => {
@@ -258,11 +255,11 @@ export default function LoginModal({ onClose, onSuccess,  }: LoginModalProps) {
   }, [email, password, name, otp, isSignup, showOTP]);
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-[999] bg-black/50 flex items-center justify-center"
       onClick={handleBackdropClick}
     >
-      <div 
+      <div
         ref={modalRef}
         className="relative z-10 bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl p-10 rounded-2xl max-w-md w-[90%] xl:w-full text-center text-white"
         onClick={(e) => e.stopPropagation()}
@@ -278,7 +275,11 @@ export default function LoginModal({ onClose, onSuccess,  }: LoginModalProps) {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold mb-2">
-            {showOTP ? "Verify OTP" : isSignup ? "Create Account" : "Photographer Login"}
+            {showOTP
+              ? "Verify OTP"
+              : isSignup
+              ? "Create Account"
+              : "Photographer Login"}
           </h1>
           {showOTP && (
             <p className="text-sm text-white/70">
@@ -296,7 +297,9 @@ export default function LoginModal({ onClose, onSuccess,  }: LoginModalProps) {
                 placeholder="Enter 6-digit OTP"
                 className="w-full px-4 py-3 pl-12 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-red-500"
                 value={otp}
-                onChange={(e) => setOTP(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                onChange={(e) =>
+                  setOTP(e.target.value.replace(/\D/g, "").slice(0, 6))
+                }
                 maxLength={6}
                 disabled={loading}
               />
@@ -329,20 +332,27 @@ export default function LoginModal({ onClose, onSuccess,  }: LoginModalProps) {
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
                 />
-                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/50" />
+                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-700" />
               </div>
 
               {/* Password field */}
               <div className="relative">
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Password"
-                  className="w-full px-4 py-3 pl-12 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-4 py-3 pl-12 pr-10 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-red-500"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={loading}
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                 />
-                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/50" />
+                <Lock className="absolute text-gray-700 left-4 top-1/2 transform -translate-y-1/2 w-5 h-5" />
+                <div
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-700"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </div>
               </div>
             </>
           )}
@@ -350,17 +360,25 @@ export default function LoginModal({ onClose, onSuccess,  }: LoginModalProps) {
           {/* Slide to submit */}
           <div
             ref={sliderRef}
-            className={`relative w-full h-14 mt-6 bg-white/10 border border-white/20 rounded-full overflow-hidden select-none ${loading ? 'opacity-50' : ''}`}
+            className={`relative w-full h-14 mt-6 bg-white/10 border border-white/20 rounded-full overflow-hidden select-none ${
+              loading ? "opacity-50" : ""
+            }`}
           >
             {/* Slider Track Text */}
             <div className="absolute inset-0 flex items-center justify-center text-sm text-white opacity-60">
-              {showOTP ? "Slide to Verify →" : isSignup ? "Slide to Sign Up →" : "Slide to Login →"}
+              {showOTP
+                ? "Slide to Verify →"
+                : isSignup
+                ? "Slide to Sign Up →"
+                : "Slide to Login →"}
             </div>
 
             {/* Sliding Thumb */}
             <div
               ref={thumbRef}
-              className={`absolute left-0 top-0 w-14 h-14 bg-gradient-to-r from-red-600 to-amber-500 rounded-full shadow-lg z-10 flex items-center justify-center transition-transform duration-300 select-none ${loading ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+              className={`absolute left-0 top-0 w-14 h-14 bg-gradient-to-r from-red-600 to-amber-500 rounded-full shadow-lg z-10 flex items-center justify-center transition-transform duration-300 select-none ${
+                loading ? "cursor-not-allowed" : "cursor-pointer"
+              }`}
             >
               {loading ? (
                 <div className="relative w-6 h-6">
@@ -371,12 +389,10 @@ export default function LoginModal({ onClose, onSuccess,  }: LoginModalProps) {
                   )}
                   <div className="absolute inset-0 animate-spin rounded-full border-2 border-white border-t-transparent" />
                 </div>
+              ) : showOTP ? (
+                <ArrowRight className="w-6 h-6 text-white" />
               ) : (
-                showOTP ? (
-                  <ArrowRight className="w-6 h-6 text-white" />
-                ) : (
-                  <Camera className="w-6 h-6 text-white" />
-                )
+                <Camera className="w-6 h-6 text-white" />
               )}
             </div>
           </div>

@@ -66,7 +66,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
         {/* Left Scroll Button */}
         <button
           onClick={scrollLeft}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 opacity-80 group-hover:opacity-100 transition-opacity duration-200 hover:bg-gray-50"
+          className="absolute z-999 left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 opacity-80 group-hover:opacity-100 transition-opacity duration-200 hover:bg-gray-50"
         >
           <ChevronLeft className="w-5 h-5 text-gray-600" />
         </button>
@@ -74,7 +74,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
         {/* Right Scroll Button */}
         <button
           onClick={scrollRight}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 opacity-80 group-hover:opacity-100 transition-opacity duration-200 hover:bg-gray-50"
+          className="absolute z-999 right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 opacity-80 group-hover:opacity-100 transition-opacity duration-200 hover:bg-gray-50"
         >
           <ChevronRight className="w-5 h-5 text-gray-600" />
         </button>

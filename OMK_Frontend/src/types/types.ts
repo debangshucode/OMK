@@ -20,6 +20,7 @@ export interface MediaItem {
   description: string;
   url: string;
   thumbnail?: string; // For videos and YouTube links
+  coverImage?: string; // For albums
   type: 'photo' | 'video' | 'youtube' | 'thumbnail' | 'album' | 'MediaItem';
   category: string;
   date: string;
