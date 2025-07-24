@@ -109,52 +109,51 @@ const FaceSearch: React.FC = () => {
     }
   };
 
-  const handleSearch = async () => {
-    if (!uploadedImage) return;
+const handleSearch = async () => {
+  if (!uploadedImage) return;
 
-    setIsSearching(true);
-    setSearchResults([]);
+  setIsSearching(true);
+  setSearchResults([]);
 
-    try {
-      const blob = await fetch(uploadedImage).then((r) => r.blob());
-      const file = new File([blob], "uploaded.jpg", { type: blob.type });
+  try {
+    const blob = await fetch(uploadedImage).then((r) => r.blob());
+    const file = new File([blob], "uploaded.jpg", { type: blob.type });
 
-      const formData = new FormData();
-      formData.append("image", file);
-      formData.append("folder", "uploaded_pictures");
+    const formData = new FormData();
+    formData.append("image", file);
 
-      if (albumId.trim() !== "") {
-        formData.append("album_id", albumId); // 🔑 send albumId to backend
-      }
-
-      const res = await fetch("http://localhost:4000/api/match/find", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-
-      if (!Array.isArray(data)) {
-        throw new Error(data.error || "Unknown error");
-      }
-
-      const formattedResults = data.map((url: string, index: number) => ({
-        id: index + 1,
-        image: url,
-        confidence: Math.floor(85 + Math.random() * 10),
-        event: "Unknown",
-        date: new Date().toISOString().split("T")[0],
-        album: albumId || "Auto-match",
-      }));
-
-      setSearchResults(formattedResults);
-    } catch (err) {
-      console.error("Face search failed:", err);
-      alert("Face match failed. See console for details.");
-    } finally {
-      setIsSearching(false);
+    if (albumId.trim() !== "") {
+      formData.append("albumId", albumId); // send albumId to backend
     }
-  };
+
+    const res = await fetch("http://localhost:4000/api/match/find", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+    const matchedFiles = data.images || [];
+
+    const baseUrl = "http://localhost:4000/uploads"; 
+
+    const formattedResults = matchedFiles.map((filename : String, index : number) => ({
+      id: index + 1,
+      image: `${baseUrl}/${filename}`, // ✅ Full image URL
+      confidence: Math.floor(85 + Math.random() * 10),
+      event: "Unknown",
+      date: new Date().toISOString().split("T")[0],
+      album: albumId || "Auto-match",
+    }));
+
+    setSearchResults(formattedResults);
+  } catch (err) {
+    console.error("Face search failed:", err);
+    alert("Face match failed. See console for details.");
+  } finally {
+    setIsSearching(false);
+  }
+};
+
 
   const clearUpload = () => {
     setUploadedImage(null);

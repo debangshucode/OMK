@@ -8,8 +8,13 @@ import shutil
 from flask import Flask
 from pathlib import Path
 from dotenv import load_dotenv
-app = Flask(__name__)
+from flask import send_from_directory
+from flask_cors import CORS
 
+
+
+app = Flask(__name__,static_url_path='/uploads', static_folder='uploads')
+CORS(app) 
 load_dotenv()
 
 MONGO_URI = os.getenv("PYTHON_MONGO_URI")
@@ -17,6 +22,10 @@ client = MongoClient(MONGO_URI)
 db = client["test"]
 collection = db["albums"]
 
+
+@app.route('/uploads/<path:filename>')
+def serve_uploaded_file(filename):
+    return send_from_directory('uploads', filename)
 
 @app.route('/find', methods=['POST'])
 def match_face():
@@ -72,21 +81,23 @@ def match_face():
     matches = result[0].to_dict(orient='records')
     matched_filenames = {os.path.basename(m['identity']) for m in matches}
 
-    # Filter media files that matched
-    matched_media = [
-        media for media in media_files
-        if os.path.basename(media.get("filePath", "")) in matched_filenames
-    ]
+    return jsonify({"matchedFiles": list(matched_filenames)})
 
-    matched_response = {
-    "matchedMedia": [
-        {
-            "filePath": str(UPLOAD_BASE_PATH / media.get("filePath").lstrip("/\\"))
-        }
-        for media in matched_media
-        ]
-    }
-    return jsonify(matched_response)   
+    # Filter media files that matched
+    # matched_media = [
+    #     media for media in media_files
+    #     if os.path.basename(media.get("filePath", "")) in matched_filenames
+    # ]
+
+    # matched_response = {
+    # "matchedMedia": [
+    #     {
+    #         "filePath": str(UPLOAD_BASE_PATH / media.get("filePath").lstrip("/\\"))
+    #     }
+    #     for media in matched_media
+    #     ]
+    # }
+    # return jsonify(matched_response)   
 
 #     return jsonify({
 #     "matchedMedia": [

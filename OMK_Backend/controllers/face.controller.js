@@ -70,16 +70,17 @@ exports.findMatchingFaces = async (req, res) => {
     });
 
     // Flask response example: { matchedMedia: [{ filePath: "media/album1/img1.jpg" }, ...] }
-    const matches = response.data.matchedMedia || [];
-
+    const matches = response.data.matchedFiles;
+    console.log(matches);
     // Assuming your frontend needs full URLs for each image
-    const baseUrl = "http://localhost:5000"; // change to your actual Flask domain
-    const urls = matches.map((match) => `${match.filePath}`);
+    // const baseUrl = "/uploads"; // change to your actual Flask domain
+    const urls = matches.map((filename) => `${albumId}/${filename}`);
+    console.log(urls);
 
     // Cleanup uploaded image
     fs.unlinkSync(image);
 
-    return res.json(urls);
+    return res.json({ images: urls });
   } catch (error) {
     const errMessage = error.response?.data || error.message;
     console.error("❌ Face match error:", errMessage);
