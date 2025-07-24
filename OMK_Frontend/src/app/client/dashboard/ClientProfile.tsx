@@ -111,7 +111,7 @@ const handleSave = async () => {
       { withCredentials: true }
     );
 
-    const updatedUser = response?.data?.updatedUser;
+    const updatedUser = response?.data?.user;
     if (!updatedUser || !updatedUser.name) {
       throw new Error("Invalid response from server");
     }

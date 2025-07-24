@@ -201,13 +201,18 @@ const Book: React.FC = () => {
                     </h2>
                   </div>
                 ) : (
-                  <div className="absolute inset-0 p-2 rounded-r-2xl flex flex-col items-center justify-center gap-4">
+                  <div className="absolute inset-0 p-2 rounded-r-2xl flex flex-col items-end justify-end gap-2">
                     {page.image && (
-                      <img
-                        src={page.image}
-                        alt={page.label}
-                        className="w-full h-full object-cover rounded-xl"
-                      />
+                      <>
+                        <img
+                          src={page.image}
+                          alt={page.label}
+                          className="w-full h-full object-cover rounded-xl"
+                        />
+                        <div className="absolute bottom-4 left-4 right-4 bg-amber-700/60 text-white font-semibold text-center py-2 rounded-md text-md">
+                          {page.label || "Captured Moment"}
+                        </div>
+                      </>
                     )}
                   </div>
                 )}
@@ -221,8 +226,8 @@ const Book: React.FC = () => {
                 >
                   <div className="h-full flex items-center justify-center">
                     <div className="text-center">
-                      <BookOpen className="w-16 h-16 text-amber-400 mx-auto mb-4" />
-                      <p className="text-amber-700 text-xl italic font-light">
+                      <BookOpen className="w-16 h-16 text-white mx-auto mb-4" />
+                      <p className="text-white text-xl italic font-light">
                         "Flip to uncover moments."
                       </p>
                     </div>
@@ -234,9 +239,7 @@ const Book: React.FC = () => {
             <div className="absolute -bottom-24 left-1/2 transform -translate-x-1/2">
               <div className="flex items-center space-x-4 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg border border-red-200">
                 <span className="text-sm text-red-700 font-medium">
-                  {isDragging
-                    ? "Drag to turn pages"
-                    : "Scroll or drag to explore"}
+                  Scroll or drag to explore
                 </span>
                 <div className="w-48 h-3 bg-red-100 rounded-full overflow-hidden shadow-inner">
                   <div
@@ -248,6 +251,16 @@ const Book: React.FC = () => {
                   {currentPage + 1}/{totalPages}
                 </span>
               </div>
+            </div>
+            <div className="absolute -bottom-64 left-1/2 transform -translate-x-1/2">
+              <button
+                onClick={() => {
+                  containerRef.current?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="mt-12 mb-24 px-6 py-3 bg-red-700 text-white font-semibold rounded-full shadow-lg hover:bg-red-800 transition"
+              >
+                Skip to Top
+              </button>
             </div>
           </div>
         </div>

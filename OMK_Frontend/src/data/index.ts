@@ -7,11 +7,11 @@ export interface GridItem {
 
 export const customItems: GridItem[] = [
   { label: "Hire Us" },
-  { image: "/images/weadingHome.jpg", label: "Nature" },
-  { image: "/images/weadingHome1.jpg", label: "Tech" },
-  { image: "/images/weadingHome.jpg", label: "Nature" },
-  { image: "/images/weadingHome3.jpg", label: "Tech" },
-  { image: "/images/weadingHome2.jpg", label: "Nature" },
+  { image: "/images/weadingHome.jpg", label: "Golden Hour" },
+  { image: "/images/weadingHome1.jpg", label: "Candid Moment" },
+  { image: "/images/weadingHome.jpg", label: "Behind the Scenes" },
+  { image: "/images/weadingHome3.jpg", label: "Perfect Shot" },
+  { image: "/images/weadingHome2.jpg", label: "Captured Beauty" },
   { label: "Photography" },
   { image: "/images/weadingHome6.jpg", label: "City" },
   { image: "/images/weadingHome5.jpg", label: "Nature" },
