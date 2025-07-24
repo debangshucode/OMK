@@ -42,18 +42,25 @@ const path = require("path");
 //   }
 // };
 
+// const fs = require("fs");
+// const FormData = require("form-data");
+// const axios = require("axios");
+// const path = require("path");
+
 exports.findMatchingFaces = async (req, res) => {
   try {
-    const imagePath = req.file?.path;
-    const albumId = req.body.albumId || req.query.albumId; // 👈 allow dynamic input
+    const image = req.file?.path;
+    const albumId = req.body.albumId || req.query.albumId;
 
-    if (!imagePath || !albumId) {
+    if (!image || !albumId) {
       return res.status(400).json({ error: "Image and albumId are required." });
     }
 
     const form = new FormData();
-    form.append("image", fs.createReadStream(imagePath)); // must match backend field
-    form.append("folder", albumId); // 👈 dynamic folder name
+    form.append("image", fs.createReadStream(image)); // must match Flask's `request.files["image"]`
+    form.append("albumId", albumId); // must match Flask's `request.form["folder"]`
+
+    // console.log("🔁 Sending to Flask:", { image, albumId });
 
     const response = await axios.post("http://localhost:5000/find", form, {
       headers: {
@@ -62,15 +69,19 @@ exports.findMatchingFaces = async (req, res) => {
       maxBodyLength: Infinity,
     });
 
-    fs.unlinkSync(imagePath); // optional: cleanup uploaded image
+    // Flask response example: { matchedMedia: [{ filePath: "media/album1/img1.jpg" }, ...] }
+    const matches = response.data.matchedMedia || [];
 
-    const matches = response.data;
-    const urls = matches.map((match) => match.url);
+    // Assuming your frontend needs full URLs for each image
+    const baseUrl = "http://localhost:5000"; // change to your actual Flask domain
+    const urls = matches.map((match) => `${match.filePath}`);
+
+    // Cleanup uploaded image
+    fs.unlinkSync(image);
+
     return res.json(urls);
   } catch (error) {
     const errMessage = error.response?.data || error.message;
-    console.log(error.response?.data);
-    console.log(error.response?.message);
     console.error("❌ Face match error:", errMessage);
     return res.status(500).json({
       error: "Face matching failed",
