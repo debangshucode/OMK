@@ -7,9 +7,13 @@ from bson.json_util import dumps
 import shutil
 from flask import Flask
 from pathlib import Path
+from dotenv import load_dotenv
 app = Flask(__name__)
 
-client = MongoClient("mongodb+srv://pdrock5678:omk123@cluster0.xdlgfby.mongodb.net/?retryWrites=true&w=majority")
+load_dotenv()
+
+MONGO_URI = os.getenv("PYTHON_MONGO_URI")
+client = MongoClient(MONGO_URI)
 db = client["test"]
 collection = db["albums"]
 
