@@ -3,7 +3,7 @@ import CountUp from "react-countup";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, Easing } from "framer-motion";
 import { Award, Users, Clock, Sparkles } from "lucide-react";
-
+import Book from "./book";
 const AboutUs = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -104,6 +104,7 @@ const AboutUs = () => {
 
   return (
     <div id="about" className="min-h-screen bg-gradient-to-br from-white to-red-50">
+      <Book />
       {/* Hero Section */}
       <motion.section
         id="about"

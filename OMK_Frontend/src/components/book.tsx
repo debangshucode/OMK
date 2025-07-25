@@ -168,7 +168,7 @@ const Book: React.FC = () => {
       >
         <div className="sticky top-[15vh]">
           <div
-            className="relative w-[300px] xl:w-[800px] h-[500px] mx-auto transform-gpu"
+            className="relative w-[300px] lg:w-[800px] h-[500px] mx-auto transform-gpu"
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}

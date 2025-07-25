@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import Quickbook from "./quickbook";
 import { useRouter } from "next/navigation";
-import Book from "./book";
+
 const Services = () => {
   const [activeService, setActiveService] = useState(0);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
@@ -204,6 +204,7 @@ const Services = () => {
       id="services"
       className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50 py-20"
     >
+     
       {/* Header Section */}
       <motion.section
         className="px-6 mb-20"
@@ -380,7 +381,7 @@ const Services = () => {
         </div>
       </motion.section>
 
-      <Book />
+      
 
       {/* Service Cards Grid */}
       <motion.section

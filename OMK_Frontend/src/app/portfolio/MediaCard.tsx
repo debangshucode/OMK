@@ -56,7 +56,7 @@ const MediaCard: React.FC<MediaCardProps> = ({
       />
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex flex-col justify-between p-4 text-white">
+      <div className="absolute inset-0 bg-black/60 opacity-0 hover:opacity-100 transition-opacity duration-300 z-10 flex flex-col justify-between p-4 text-white">
         <div className="flex justify-end">
           <div className="bg-white/20 p-1.5 rounded-full backdrop-blur-sm">
             {isAlbum ? (
