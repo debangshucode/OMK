@@ -138,7 +138,7 @@ const BlogsSection: React.FC = () => {
     setBlogForm({
       title: blog.title,
       content: blog.content,
-      featuredImageFile: blog.featuredImageFile || null,
+      featuredImageFile: null,
       category: blog.category,
       tags: blog.tags.join(', '),
       status: blog.status,
@@ -392,7 +392,7 @@ const BlogsSection: React.FC = () => {
                 {/* Featured Image */}
                 <div className="relative aspect-[16/9]">
                   <img
-                    src={blog?.image }
+                    src={blog?.images && blog.images.length > 0 ? blog.images[0] : ""}
                     alt={blog?.title}
                     className="w-full h-full object-cover"
                   />
@@ -499,7 +499,7 @@ const BlogsSection: React.FC = () => {
 
                 {/* Thumbnail */}
                 <img
-                  src={blog?.image}
+                  src={blog?.images && blog.images.length > 0 ? blog.images[0] : ""}
                   alt={blog.title}
                   className="w-20 h-16 object-cover rounded-lg"
                 />

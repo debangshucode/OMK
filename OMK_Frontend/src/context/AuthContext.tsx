@@ -4,6 +4,7 @@ import axios from "../utils/axios";
 import { useRouter } from "next/navigation";
 
 type User = {
+  avatar: string | Blob | undefined;
   id: string;
   name: string;
   email: string;

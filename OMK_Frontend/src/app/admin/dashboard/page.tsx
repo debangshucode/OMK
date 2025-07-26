@@ -10,7 +10,6 @@ import VideosSection from "./VideosSection";
 import AlbumsSection from "./AlbumsSection";
 import ReviewsSection from "./ReviewsSection";
 import RecentPost from "./RecentPost";
-import AnalyticsSection from "./AnalyticsSection";
 import ClientsSection from "./ClientsSection";
 import BlogsSection from "./BlogsSection";
 import BookingSection from "./bookingsection";

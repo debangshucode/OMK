@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, easeOut } from 'framer-motion';
 import { Camera, Video, FolderOpen, Star, TrendingUp, Eye, Heart, Users } from 'lucide-react';
 
 const StatsCards: React.FC = () => {
@@ -103,7 +103,7 @@ const StatsCards: React.FC = () => {
       opacity: 1,
       transition: {
         duration: 0.5,
-        ease: "easeOut"
+        ease: easeOut
       }
     }
   };

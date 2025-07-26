@@ -136,7 +136,7 @@ const handleSearch = async () => {
 
     const baseUrl = "http://localhost:4000/uploads"; 
 
-    const formattedResults = matchedFiles.map((filename : String, index : number) => ({
+    const formattedResults = matchedFiles.map((filename : string, index : number) => ({
       id: index + 1,
       image: `${baseUrl}/${filename}`, // ✅ Full image URL
       confidence: Math.floor(85 + Math.random() * 10),
