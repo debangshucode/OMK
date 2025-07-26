@@ -10,6 +10,7 @@ import {
   Heart,
   Camera,
 } from "lucide-react";
+import Image from "next/image";
 import axios from "axios";
 
 const Testimonials = () => {
@@ -82,31 +83,17 @@ const Testimonials = () => {
   const teamMembers = [
     {
       id: 1,
-      name: "Arjun Mehta",
-      position: "Creative Director",
+      name: "Sayani Pradhan",
+      position: "Founder",
       image: "/images/weadingHome1.jpg",
       bio: "Oversees the creative process and ensures your story is told in the most captivating way.",
     },
     {
       id: 2,
-      name: "Sana Kapoor",
-      position: "Lead Photographer",
+      name: "Koushik Samanta",
+      position: "Co-Founder",
       image: "/images/weadingHome2.jpg",
       bio: "Captures timeless moments with a keen eye for detail and emotion.",
-    },
-    {
-      id: 3,
-      name: "Ravi Singh",
-      position: "Cinematographer",
-      image: "/images/weadingHome3.jpg",
-      bio: "Brings cinematic flair to every frame with technical mastery and passion.",
-    },
-    {
-      id: 4,
-      name: "Ravi Singh",
-      position: "Cinematographer",
-      image: "/images/weadingHome.jpg",
-      bio: "Brings cinematic flair to every frame with technical mastery and passion.",
     },
   ];
 
@@ -326,44 +313,60 @@ const Testimonials = () => {
       )}
 
       {/* Team Section */}
-      <motion.section
-        className="px-6"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={containerVariants}
-      >
-        <div className="max-w-7xl mx-auto">
-          <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-4">
-              Meet <span className="text-red-600">Our Team</span>
-            </h2>
-            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Passionate professionals delivering visual excellence.
-            </p>
-          </motion.div>
+       <motion.section
+      className="px-6 py-16 bg-[#fffaf3]"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={containerVariants}
+    >
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
+        {/* Left - Images */}
+        <motion.div
+  className="relative flex justify-center md:w-1/2"
+  variants={itemVariants}
+>
+  {/* First Image (top layer) */}
+  <div className="relative w-40 h-56 md:w-56 md:h-80 z-10">
+    <Image
+      src="/images/koushik.jpg"
+      alt="Koushik"
+      fill
+      className="object-cover rounded-lg shadow-lg"
+    />
+  </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-10 justify-items-center">
-            {teamMembers.map((member) => (
-              <motion.div
-                key={member.id}
-                variants={itemVariants}
-                whileHover={{ scale: 1.05 }}
-                className="text-center"
-              >
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover border-4 border-red-100 shadow-md mx-auto mb-3"
-                />
-                <h4 className="text-base font-semibold text-slate-800">
-                  {member.name}
-                </h4>
-                <p className="text-sm text-red-600">{member.position}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+  {/* Second Image (behind and slightly shifted) */}
+  <div className="relative w-40 h-56 md:w-56 md:h-80 -ml-10 md:-ml-16 mt-12 md:mt-16 z-0">
+    <Image
+      src="/images/sayani.jpg"
+      alt="Sayani"
+      fill
+      className="object-cover rounded-lg shadow-lg"
+    />
+  </div>
+</motion.div>
+
+        {/* Right - Text */}
+        <motion.div className="md:w-1/2" variants={itemVariants}>
+          <h2 className="text-4xl font-bold text-slate-800 mb-4">
+            Celebrating Love <br />
+            <span className="italic underline text-red-600">with Every Frame</span>
+          </h2>
+          <p className="text-slate-700 mb-4">
+            When we started KnotsbyAMP in 2014, it was more than just about clicking pictures—
+            it was about capturing love, joy, and everything in between. Back then, <strong>Soumi</strong> was
+            a lawyer and MBA, and Anupam, a BITS Pilani grad, had other plans. Our shared passion
+            for storytelling brought us together, and the rest, as they say, is history.
+          </p>
+          <p className="text-slate-700">
+            Our journey has been nothing short of magical. Inspired by travel, street photography,
+            and our love for experimenting with light, we’ve crafted a unique style—a mix of candid
+            moments, fine art, and fashion vibes. It’s not just photography for us; it’s weaving
+            stories that couples cherish forever.
+          </p>
+        </motion.div>
+      </div>
       </motion.section>
     </div>
   );
