@@ -60,6 +60,7 @@ export interface testimonials {
   approved: boolean
   createdAt: string
   updatedAt: string
+  image: string
 }
 
 export interface QuickLink {

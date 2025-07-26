@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import {
   LayoutDashboard,
   Camera,
-  Video,
   FolderOpen,
   Star,
   BarChart3,
