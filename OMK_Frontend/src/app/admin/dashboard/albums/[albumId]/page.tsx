@@ -212,13 +212,13 @@ export default function AlbumDetailPage() {
 
   const UploadModal = () => (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white border border-stone-200 max-w-lg w-full">
+      <div className="bg-white border border-blue-200 max-w-lg w-full">
         <div className="p-8">
-          <h2 className="text-2xl font-light text-stone-800 mb-8 tracking-wide">
+          <h2 className="text-2xl font-light text-blue-800 mb-8 tracking-wide">
             Upload Files
           </h2>
           <div className="space-y-6">
-            <div className="border-2 border-dashed border-stone-300 p-8 text-center">
+            <div className="border-2 border-dashed border-blue-300 p-8 text-center">
               <input
                 type="file"
                 multiple
@@ -228,20 +228,20 @@ export default function AlbumDetailPage() {
                 accept="image/*,video/*"
               />
               <label htmlFor="file-upload" className="cursor-pointer">
-                <div className="text-4xl text-stone-400 mb-4">📁</div>
-                <p className="text-stone-600 mb-2">Click to select files</p>
-                <p className="text-xs text-stone-500">Or drag and drop your images and videos here</p>
+                <div className="text-4xl text-blue-400 mb-4">📁</div>
+                <p className="text-blue-600 mb-2">Click to select files</p>
+                <p className="text-xs text-blue-500">Or drag and drop your images and videos here</p>
               </label>
             </div>
             
             {files.length > 0 && (
-              <div className="bg-stone-50 p-4 rounded">
-                <h3 className="text-sm font-medium text-stone-700 mb-3">Selected Files:</h3>
+              <div className="bg-blue-50 p-4 rounded">
+                <h3 className="text-sm font-medium text-blue-700 mb-3">Selected Files:</h3>
                 <ul className="space-y-1">
                   {files.map((file, index) => (
-                    <li key={index} className="text-xs text-stone-600 flex justify-between">
+                    <li key={index} className="text-xs text-blue-600 flex justify-between">
                       <span className="truncate">{file.name}</span>
-                      <span className="text-stone-400">
+                      <span className="text-blue-400">
                         {(file.size / 1024 / 1024).toFixed(1)}MB
                       </span>
                     </li>
@@ -256,7 +256,7 @@ export default function AlbumDetailPage() {
                   setUploadModalOpen(false);
                   setFiles([]);
                 }}
-                className="flex-1 border border-stone-300 text-stone-600 py-3 font-light tracking-wide hover:bg-stone-50 transition-colors"
+                className="flex-1 border border-blue-300 text-blue-600 py-3 font-light tracking-wide hover:bg-blue-50 transition-colors"
                 disabled={uploading}
               >
                 CANCEL
@@ -264,7 +264,7 @@ export default function AlbumDetailPage() {
               <button
                 onClick={handleUpload}
                 disabled={uploading || !files.length}
-                className="flex-1 bg-stone-800 text-white py-3 font-light tracking-wide hover:bg-stone-700 transition-colors disabled:bg-stone-400"
+                className="flex-1 bg-blue-800 text-white py-3 font-light tracking-wide hover:bg-blue-700 transition-colors disabled:bg-blue-400"
               >
                 {uploading ? 'UPLOADING...' : 'UPLOAD FILES'}
               </button>
@@ -277,22 +277,22 @@ export default function AlbumDetailPage() {
 
   const AssignModal = () => (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white border border-stone-200 max-w-md w-full">
+      <div className="bg-white border border-blue-200 max-w-md w-full">
         <div className="p-8">
-          <h2 className="text-2xl font-light text-stone-800 mb-8 tracking-wide">
+          <h2 className="text-2xl font-light text-blue-800 mb-8 tracking-wide">
             Assign Album
           </h2>
           <div className="space-y-6">
             <div>
-              <label className="block text-sm text-stone-600 mb-3">Select User:</label>
+              <label className="block text-sm text-blue-600 mb-3">Select User:</label>
               <select
                 value={selectedUserId}
                 onChange={(e) => setSelectedUserId(e.target.value)}
-                className="w-full border-b border-stone-300 pb-2 text-stone-700 bg-transparent focus:border-stone-500 focus:outline-none transition-colors"
+                className="w-full border-b border-blue-300 pb-2 text-blue-700 bg-transparent focus:border-blue-500 focus:outline-none transition-colors"
               >
                 <option value="">Choose a user...</option>
                 {users.map((user: any) => (
-                  <option key={user._id} value={user._id} className="text-stone-800">
+                  <option key={user._id} value={user._id} className="text-blue-800">
                     {user.name} ({user.email})
                   </option>
                 ))}
@@ -305,14 +305,14 @@ export default function AlbumDetailPage() {
                   setAssignModalOpen(false);
                   setSelectedUserId('');
                 }}
-                className="flex-1 border border-stone-300 text-stone-600 py-3 font-light tracking-wide hover:bg-stone-50 transition-colors"
+                className="flex-1 border border-blue-300 text-blue-600 py-3 font-light tracking-wide hover:bg-blue-50 transition-colors"
               >
                 CANCEL
               </button>
               <button
                 onClick={handleAssign}
                 disabled={!selectedUserId}
-                className="flex-1 bg-stone-800 text-white py-3 font-light tracking-wide hover:bg-stone-700 transition-colors disabled:bg-stone-400"
+                className="flex-1 bg-blue-800 text-white py-3 font-light tracking-wide hover:bg-blue-700 transition-colors disabled:bg-blue-400"
               >
                 ASSIGN
               </button>
@@ -325,10 +325,10 @@ export default function AlbumDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-stone-50 flex items-center justify-center">
+      <div className="min-h-screen bg-blue-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-4xl text-stone-400 mb-4">⏳</div>
-          <p className="text-stone-600 font-light tracking-wide">Loading album...</p>
+          <div className="text-4xl text-blue-400 mb-4">⏳</div>
+          <p className="text-blue-600 font-light tracking-wide">Loading album...</p>
         </div>
       </div>
     );
@@ -336,7 +336,7 @@ export default function AlbumDetailPage() {
 
   if (!album) {
     return (
-      <div className="min-h-screen bg-stone-50 flex items-center justify-center">
+      <div className="min-h-screen bg-blue-50 flex items-center justify-center">
         <div className="text-center">
           <div className="text-4xl text-red-400 mb-4">❌</div>
           <p className="text-red-600 font-light tracking-wide">Album not found</p>
@@ -346,16 +346,16 @@ export default function AlbumDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen bg-gradient-to-b from-white via-blue-200 to-blue-400">
       {/* Header Section */}
-      <div className="bg-white border-b border-stone-200">
+      <div className="border-b border-stone-200">
         <div className="max-w-6xl mx-auto p-8">
           {/* Breadcrumb */}
           {album.parentAlbumId && (
             <div className="mb-6">
               <Link 
                 href={`/admin/dashboard/albums/${album.parentAlbumId}`} 
-                className="text-sm text-stone-500 hover:text-stone-700 transition-colors flex items-center"
+                className="text-sm text-blue-500 hover:text-blue-700 transition-colors flex items-center"
               >
                 ← Back to parent album
               </Link>
@@ -366,13 +366,13 @@ export default function AlbumDetailPage() {
           <div className="flex justify-between items-start mb-6">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-3">
-                <h1 className="text-4xl font-light text-stone-800 tracking-wide">{album.title}</h1>
-                <span className="px-3 py-1 bg-stone-100 text-stone-600 text-xs uppercase tracking-wider rounded-full">
+                <h1 className="text-4xl font-semibold text-blue-800 tracking-wide">{album.title}</h1>
+                <span className="px-3 py-1 bg-stone-500 text-white text-xs uppercase tracking-wider rounded-full">
                   {album.category}
                 </span>
               </div>
               {album.description && (
-                <p className="text-stone-600 text-lg font-light mb-4">{album.description}</p>
+                <p className="text-blue-600 text-lg font-light mb-4">{album.description}</p>
               )}
               <p className="text-sm text-stone-500">
                 Created {new Date(album.createdAt).toLocaleDateString('en-US', { 
@@ -385,27 +385,27 @@ export default function AlbumDetailPage() {
           </div>
 
           {/* Assignment Status */}
-          <div className="bg-stone-50 border border-stone-200 p-6 mb-6">
-            <h3 className="text-sm font-medium text-stone-700 mb-3 uppercase tracking-wider">Assignment Status</h3>
+          <div className="bg-blue-50 border border-stone-800 p-6 mb-6">
+            <h3 className="text-md font-semibold text-green-600 mb-3 uppercase tracking-wider">Assignment Status</h3>
             {album.assignedTo ? (
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-stone-800 font-medium">{album.assignedTo.name}</p>
+                  <p className="text-stone-800 font-semibold">{album.assignedTo.name}</p>
                   <p className="text-stone-600 text-sm">{album.assignedTo.email}</p>
                 </div>
                 <button
                   onClick={() => setAssignModalOpen(true)}
-                  className="bg-stone-800 text-white px-4 py-2 text-sm font-light tracking-wide hover:bg-stone-700 transition-colors"
+                  className="bg-blue-800 text-white rounded-3xl px-4 py-2 text-sm font-light tracking-wide hover:bg-blue-700 transition-colors"
                 >
                   REASSIGN
                 </button>
               </div>
             ) : (
               <div className="flex items-center justify-between">
-                <p className="text-stone-500">Not assigned to any user yet</p>
+                <p className="text-blue-500">Not assigned to any user yet</p>
                 <button
                   onClick={() => setAssignModalOpen(true)}
-                  className="bg-stone-800 text-white px-4 py-2 text-sm font-light tracking-wide hover:bg-stone-700 transition-colors"
+                  className="bg-blue-800 rounded-3xl text-white px-4 py-2 text-sm font-light tracking-wide hover:bg-blue-700 transition-colors"
                 >
                   ASSIGN
                 </button>
@@ -417,13 +417,13 @@ export default function AlbumDetailPage() {
           <div className="flex gap-3">
             <button
               onClick={() => setUploadModalOpen(true)}
-              className="bg-stone-800 text-white px-6 py-3 font-light tracking-wide hover:bg-stone-700 transition-colors"
+              className="bg-blue-800 rounded-3xl text-white px-6 py-3 font-light tracking-wide hover:bg-blue-700 transition-colors"
             >
               UPLOAD FILES
             </button>
             <button
               onClick={handleDelete}
-              className="border border-red-300 text-red-600 px-6 py-3 font-light tracking-wide hover:bg-red-50 transition-colors"
+              className=" bg-red-700 rounded-3xl border border-red-300 text-white px-6 py-3 font-light tracking-wide hover:bg-red-500 transition-colors"
             >
               DELETE ALBUM
             </button>
@@ -436,30 +436,30 @@ export default function AlbumDetailPage() {
         {/* Sub Albums */}
         {childAlbums.length > 0 && (
           <div className="mb-12">
-            <h2 className="text-2xl font-light text-stone-800 mb-6 tracking-wide">Sub Albums</h2>
+            <h2 className="text-2xl font-light text-blue-800 mb-6 tracking-wide">Sub Albums</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {childAlbums.map((childAlbum: any) => (
                 <Link key={childAlbum._id} href={`/admin/dashboard/albums/${childAlbum._id}`}>
                   <div className="group cursor-pointer">
-                    <div className="bg-white border border-stone-200 overflow-hidden hover:shadow-md transition-shadow duration-300">
-                      <div className="aspect-[4/3] bg-stone-100 flex items-center justify-center border-b border-stone-200">
+                    <div className="bg-white border border-blue-200 overflow-hidden hover:shadow-md transition-shadow duration-300">
+                      <div className="aspect-[4/3] bg-blue-100 flex items-center justify-center border-b border-blue-200">
                         <div className="text-center">
-                          <div className="text-2xl text-stone-400 mb-1">📁</div>
-                          <p className="text-xs text-stone-500 uppercase tracking-wider">
+                          <div className="text-2xl text-blue-400 mb-1">📁</div>
+                          <p className="text-xs text-blue-500 uppercase tracking-wider">
                             {childAlbum.category}
                           </p>
                         </div>
                       </div>
                       <div className="p-4">
-                        <h3 className="font-light text-sm text-stone-800 mb-1 tracking-wide truncate">
+                        <h3 className="font-light text-sm text-blue-800 mb-1 tracking-wide truncate">
                           {childAlbum.title}
                         </h3>
                         {childAlbum.description && (
-                          <p className="text-xs text-stone-600 mb-2 line-clamp-1">
+                          <p className="text-xs text-blue-600 mb-2 line-clamp-1">
                             {childAlbum.description}
                           </p>
                         )}
-                        <div className="text-xs text-stone-500">
+                        <div className="text-xs text-blue-500">
                           {new Date(childAlbum.createdAt).toLocaleDateString('en-US', { 
                             month: 'short', 
                             day: 'numeric' 
@@ -477,7 +477,7 @@ export default function AlbumDetailPage() {
         {/* Media Files */}
         <div>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-light text-stone-800 tracking-wide">
+            <h2 className="text-2xl font-light text-blue-800 tracking-wide">
               Media Files 
               <span className="text-lg text-stone-500 ml-3">
                 ({album.mediaFiles?.length || 0} files)
@@ -490,26 +490,26 @@ export default function AlbumDetailPage() {
                   <>
                     <button
                       onClick={selectAllFiles}
-                      className="text-sm text-stone-600 hover:text-stone-800 transition-colors"
+                      className="text-sm rounded-3xl text-blue-600 hover:text-blue-800 transition-colors"
                     >
                       {selectedFiles.length === album.mediaFiles?.length ? 'Deselect All' : 'Select All'}
                     </button>
                     
                     {selectedFiles.length > 0 && (
                       <>
-                        <span className="text-sm text-stone-500">
+                        <span className="text-sm text-blue-500">
                           {selectedFiles.length} selected
                         </span>
                         <button
                           onClick={handleBatchDownload}
-                          className="bg-blue-600 text-white px-4 py-2 text-sm font-light tracking-wide hover:bg-blue-700 transition-colors"
+                          className="bg-blue-600 rounded-3xl text-white px-4 py-2 text-sm font-light tracking-wide hover:bg-blue-700 transition-colors"
                         >
                           DOWNLOAD ({selectedFiles.length})
                         </button>
                         <button
                           onClick={handleBatchDelete}
                           disabled={deleting === 'batch'}
-                          className="bg-red-600 text-white px-4 py-2 text-sm font-light tracking-wide hover:bg-red-700 transition-colors disabled:bg-red-400"
+                          className="bg-red-600 rounded-3xl text-white px-4 py-2 text-sm font-light tracking-wide hover:bg-red-700 transition-colors disabled:bg-red-400"
                         >
                           {deleting === 'batch' ? 'DELETING...' : `DELETE (${selectedFiles.length})`}
                         </button>
@@ -520,10 +520,10 @@ export default function AlbumDetailPage() {
                 
                 <button
                   onClick={toggleSelectMode}
-                  className={`px-4 py-2 text-sm font-light tracking-wide transition-colors ${
+                  className={`px-4 py-2 text-sm font-light tracking-wide transition-colors rounded-3xl ${
                     selectMode 
-                      ? 'bg-stone-200 text-stone-700 hover:bg-stone-300' 
-                      : 'bg-stone-800 text-white hover:bg-stone-700'
+                      ? 'bg-blue-200 text-blue-700 hover:bg-blue-300' 
+                      : 'bg-blue-800 text-white hover:bg-blue-700'
                   }`}
                 >
                   {selectMode ? 'CANCEL' : 'SELECT'}
@@ -534,13 +534,13 @@ export default function AlbumDetailPage() {
           
           {!album.mediaFiles || album.mediaFiles.length === 0 ? (
             <div className="text-center py-16">
-              <div className="bg-white border border-stone-200 p-12 inline-block">
-                <div className="text-6xl text-stone-300 mb-6">📷</div>
-                <h3 className="text-xl font-light text-stone-600 mb-4 tracking-wide">No Media Files</h3>
-                <p className="text-stone-500 text-sm mb-6">Upload your first images or videos to get started</p>
+              <div className="bg-white border border-blue-200 p-12 inline-block">
+                <div className="text-6xl text-blue-300 mb-6">📷</div>
+                <h3 className="text-xl font-light text-blue-600 mb-4 tracking-wide">No Media Files</h3>
+                <p className="text-blue-500 text-sm mb-6">Upload your first images or videos to get started</p>
                 <button
                   onClick={() => setUploadModalOpen(true)}
-                  className="bg-stone-800 text-white px-8 py-3 font-light tracking-wide hover:bg-stone-700 transition-colors"
+                  className="bg-blue-800 rounded-3xl text-white px-8 py-3 font-light tracking-wide hover:bg-blue-700 transition-colors"
                 >
                   UPLOAD FILES
                 </button>
@@ -550,7 +550,7 @@ export default function AlbumDetailPage() {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {album.mediaFiles.map((file: any, i: number) => (
                 <div key={i} className="group">
-                  <div className="bg-white border border-stone-200 overflow-hidden hover:shadow-md transition-shadow duration-300">
+                  <div className="bg-gradient-to-b from-blue-500 to-stone-800 border-5 border-stone-800 rounded-tr-2xl overflow-hidden hover:shadow-md transition-shadow duration-300">
                     <div className="aspect-square overflow-hidden">
                       {file.fileType === 'image' ? (
                         <img
@@ -567,13 +567,13 @@ export default function AlbumDetailPage() {
                       )}
                     </div>
                     <div className="p-3">
-                      <p className="text-xs text-stone-700 truncate mb-2 font-light">
+                      <p className="text-xs text-white font-semibold truncate mb-2 font-light">
                         {file.originalName}
                       </p>
                       <a
                         href={`http://localhost:4000${file.filePath}`}
                         download
-                        className="text-stone-500 text-xs uppercase tracking-wider hover:text-stone-700 transition-colors"
+                        className="text-white font-semibold text-xs uppercase tracking-wider hover:text-blue-700 transition-colors"
                       >
                         Download
                       </a>

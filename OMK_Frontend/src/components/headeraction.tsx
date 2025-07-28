@@ -1,16 +1,22 @@
 "use client";
 import { useContext, useState, useRef, useEffect } from "react";
 import { UserPlus, LogIn, LogOut, User, Settings, BarChart3, ChevronDown } from "lucide-react";
+import { usePathname } from "next/navigation"
 import LoginModal from "./loginModal"; // adjust path
 import { useAuth } from "@/context/AuthContext";
 import { CgSpinnerAlt } from "react-icons/cg";
 
 const HeaderActions = () => {
+  
+  const pathname = usePathname()
   const [showModal, setShowModal] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, isAuthenticated, logout, loading } = useAuth();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+   if (pathname.startsWith("/admin") || pathname.startsWith("/clients")) {
+    return null
+  }
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
