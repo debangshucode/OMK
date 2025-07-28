@@ -253,7 +253,7 @@ const Book: React.FC = () => {
             ))}
 
             <div className="absolute -bottom-24 left-1/2 transform -translate-x-1/2">
-              <div className="flex items-center space-x-4 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg border border-red-200">
+              <div className="flex items-center space-x-4 bg-white/80 backdrop-blur-sm px-3 xl:px-6 py-3 rounded-full shadow-lg border border-red-200">
                 <span className="text-sm text-red-700 font-medium">
                   Scroll or drag to explore
                 </span>

@@ -58,17 +58,17 @@ export default function Dock({ items, className = "" }: DockProps) {
 
   return (
     <nav
-      className={`relative flex items-center justify-center gap-4 sm:gap-6 font-medium text-sm sm:text-base text-black ${className}`}
+      className={`relative flex items-center justify-center xl:gap-4 gap-0 font-medium text-sm sm:text-base text-black ${className}`}
       role="navigation"
       aria-label="Main navigation"
     >
-      <div className="relative flex gap-4 sm:gap-6 overflow-x-auto no-scrollbar">
+      <div className="relative flex gap-0 xl:gap-4 overflow-x-auto no-scrollbar">
         {items.map((item) => (
           <div
             key={item.id}
             ref={(el) => { refs.current[item.id] = el; }}
             onClick={item.onClick}
-            className={`cursor-pointer px-3 py-1.5 rounded-md whitespace-nowrap transition-colors duration-200 ${
+            className={`cursor-pointer xl:px-3 px-1.5 py-1.5 rounded-md whitespace-nowrap transition-colors duration-200 ${
               activeId === item.id
                 ? "text-black"
                 : "text-black/70 hover:text-red-600"
