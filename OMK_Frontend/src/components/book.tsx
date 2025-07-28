@@ -193,13 +193,29 @@ const Book: React.FC = () => {
                 }}
               >
                 {index === 0 || index === pages.length - 1 ? (
-                  <div className="absolute inset-0 rounded-r-2xl bg-gradient-to-r from-red-600 to-red-700  flex items-center justify-center">
-                    <h2 className="text-white text-center text-3xl font-bold">
-                      {index === 0
-                        ? "Welcome to the Album"
-                        : "Thank You for Watching"}
-                    </h2>
+                  <div className="absolute inset-0 rounded-r-2xl bg-gradient-to-r from-red-600 to-red-700 border-l-20 border-l-red-700 flex items-center justify-center">
+                    <img
+                      src={
+                        index === 0
+                          ? "/images/albumcover_lg.png"
+                          : "/images/albumcover.png"
+                      }
+                      alt={index === 0 ? "Welcome" : "Thank You"}
+                      className="w-full h-full object-cover rounded-r-2xl hidden md:block"
+                    />
+                    {/*mobile view*/}
+                    <img
+                      src={
+                        index === 0
+                          ? "/images/albumcover.png"
+                          : "/images/albumcover.png"
+                      }
+                      alt={index === 0 ? "Welcome" : "Thank You"}
+                      className="w-full h-full object-cover rounded-r-2xl md:hidden"
+                    />
+                  
                   </div>
+                  
                 ) : (
                   <div className="absolute inset-0 p-2 rounded-r-2xl flex flex-col items-end justify-end gap-2">
                     {page.image && (
