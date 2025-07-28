@@ -339,7 +339,7 @@ const Services = () => {
                   </div>
 
                   <div className="flex items-center flex-wrap xl:flex-nowrap gap-2 justify-between pt-6 border-t border-gray-100">
-                    <div className="xl:w-full">
+                    <div className="w-full">
                       <p className="text-xl xl:text-2xl font-bold text-slate-800">
                         {services[activeService].price}
                       </p>
