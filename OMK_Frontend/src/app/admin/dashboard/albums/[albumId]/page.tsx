@@ -385,7 +385,7 @@ export default function AlbumDetailPage() {
           </div>
 
           {/* Assignment Status */}
-          <div className="bg-blue-50 border border-stone-800 p-6 mb-6">
+          <div className="bg-stone-100 rounded-tr-xl border border-stone-200 p-6 mb-6">
             <h3 className="text-md font-semibold text-green-600 mb-3 uppercase tracking-wider">Assignment Status</h3>
             {album.assignedTo ? (
               <div className="flex items-center justify-between">
