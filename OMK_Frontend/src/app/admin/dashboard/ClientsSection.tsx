@@ -97,7 +97,10 @@ const ClientsSection: React.FC = () => {
 
   const handleRegister = async () => {
     try {
-      const res = await axios.post("/auth/register", formData);
+      const res = await axios.post("/auth/create-user", formData,{
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" },
+      });
       setUserId(res.data.userId); // depends on your API response
       setOtpStage(true);
       toast.success("OTP sent to user");
@@ -116,7 +119,7 @@ const ClientsSection: React.FC = () => {
 
     try {
       const response = await axios.post(
-        "/auth/otp-verification",
+        "/auth/email-verification",
         { email: formData.email, otp },
         {
           

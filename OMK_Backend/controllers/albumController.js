@@ -37,14 +37,14 @@ class AlbumController {
   async assignAlbumToClient(req, res, next) {
     try {
       const { albumId, clientId } = req.body;
-      console.log('BODY:', req.body);
+      
 
 
       const album = await Album.findById(albumId);
       const client = await User.findById(clientId);
       if (!album || !client) return res.status(404).json({ success: false, message: 'Album or Client not found' });
 
-      album. assignedTo= clientId;
+      album.assignedTo= clientId;
       await album.save();
 
       return res.json({ success: true, message: `Album assigned to ${client.name}`, data: album });
@@ -153,6 +153,7 @@ async getAlbumById(req, res, next) {
 
     await Album.findByIdAndDelete(albumId);
   }
+  
   // Remove file from album
   async removeFile(req, res, next) {
     try {
@@ -204,6 +205,24 @@ async getAlbumById(req, res, next) {
       next(error);
     }
   }
+
+  // GET /api/albums/client/:clientId
+  async getAlbumsByClient(req, res,next) {
+    try {
+      const clientId = req.params.clientId;
+
+      const albums = await Album.find({ assignedTo: clientId })
+        .sort({ createdAt: -1 })
+        // .select('-mediaFiles') // optional: if you want to skip heavy mediaFiles
+        .populate('assignedTo', 'name email');
+
+      res.json(albums);
+    } catch (err) {
+      next(err);
+    }
+  }
+
 }
+
 
 module.exports = new AlbumController();

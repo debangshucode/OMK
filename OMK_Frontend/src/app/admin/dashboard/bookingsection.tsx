@@ -160,7 +160,7 @@ const BookingsSection: React.FC = () => {
     return (
       <div className="min-h-[400px] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
           <p className="text-slate-600">Loading bookings...</p>
         </div>
       </div>
@@ -176,10 +176,10 @@ const BookingsSection: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           className="relative"
         >
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-teal-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-red-600 via-red-600 to-read-600 bg-clip-text text-transparent mb-4">
             Booking Management
           </h1>
-          <div className="w-32 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 mx-auto rounded-full"></div>
+          <div className="w-32 h-1 bg-gradient-to-r from-black to-black mx-auto rounded-full"></div>
           <p className="text-slate-600 mt-6 text-lg font-medium tracking-wide">
             Professional Photography & Videography Services
           </p>
@@ -207,7 +207,7 @@ const BookingsSection: React.FC = () => {
                 onClick={() => setFilterStatus(filter.key)}
                 className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-md ${
                   filterStatus === filter.key
-                    ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg"
+                    ? "bg-gradient-to-r from-red-500 to-red-700 text-white shadow-lg"
                     : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                 }`}
               >
@@ -245,11 +245,11 @@ const BookingsSection: React.FC = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8, y: -20 }}
               transition={{ delay: index * 0.1, type: "spring", damping: 15 }}
-              className="group bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer"
+              className="group bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 cursor-pointer"
               onClick={() => handleViewBooking(booking)}
             >
               {/* Card Header with Gradient */}
-              <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-teal-500 p-6 text-white">
+              <div className="bg-gradient-to-r from-black via-black to-black p-6 text-white">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
@@ -290,14 +290,14 @@ const BookingsSection: React.FC = () => {
                 {/* Event Details */}
                 <div className="space-y-3">
                   <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl">
-                    <CalendarDays className="w-5 h-5 text-indigo-600" />
+                    <CalendarDays className="w-5 h-5 text-red-600" />
                     <div>
                       <p className="font-semibold text-slate-900">{new Date(booking.date).toLocaleDateString()}</p>
                       <p className="text-sm text-slate-600">Event Date</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl">
-                    <Clock className="w-5 h-5 text-purple-600" />
+                    <Clock className="w-5 h-5 text-red-600" />
                     <div>
                       <p className="font-semibold text-slate-900">{booking.timeSlot}</p>
                       <p className="text-sm text-slate-600">Time Slot</p>

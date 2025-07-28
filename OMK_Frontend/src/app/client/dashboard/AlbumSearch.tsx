@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Search, 
@@ -11,295 +11,47 @@ import {
   AlertCircle,
   CheckCircle,
   Camera,
-  Video
+  Video,
+  File,
+  Album
 } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { albumService } from '@/services/albumService';
+import Folder from '@/components/ui/folder';
+import { useRouter } from 'next/navigation';
 
 const AlbumSearch: React.FC = () => {
   const [albumId, setAlbumId] = useState('');
   const [searchResult, setSearchResult] = useState<any>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState('');
+  const {user} = useAuth();
 
-  // Mock album data
-  const mockAlbums = {
-    'WED-2024-001': {
-      id: 'WED-2024-001',
-      title: 'Sarah & Michael Wedding',
-      type: 'Wedding',
-      date: '2024-01-15',
-      location: 'Central Park, NY',
-      photoCount: 245,
-      videoCount: 8,
-      status: 'Ready',
-      thumbnail: '/images/weadingHome1.jpg',
-      description: 'Complete wedding photography and videography package'
-    },
-    'PRE-2024-002': {
-      id: 'PRE-2024-002',
-      title: 'Emma & David Pre-Wedding',
-      type: 'Pre-Wedding',
-      date: '2024-01-12',
-      location: 'Malibu Beach, CA',
-      photoCount: 89,
-      videoCount: 3,
-      status: 'Ready',
-      thumbnail: '/images/weadingHome2.jpg',
-      description: 'Romantic pre-wedding shoot by the ocean'
-    },
-    'COR-2024-003': {
-      id: 'COR-2024-003',
-      title: 'TechCorp Annual Event',
-      type: 'Corporate',
-      date: '2024-01-10',
-      location: 'San Francisco, CA',
-      photoCount: 156,
-      videoCount: 5,
-      status: 'Processing',
-      thumbnail: '/images/weadingHome3.jpg',
-      description: 'Corporate event photography and team photos'
-    }
-  };
-
-  // Existing albums for the current user
-  const userAlbums = [
-    {
-      id: 'WED-2024-001',
-      title: 'Sarah & Michael Wedding',
-      type: 'Wedding',
-      date: '2024-01-15',
-      location: 'Central Park, NY',
-      photoCount: 245,
-      videoCount: 8,
-      status: 'Ready',
-      thumbnail: '/images/weadingHome1.jpg'
-    },
-    {
-      id: 'PRE-2024-004',
-      title: 'Engagement Session',
-      type: 'Engagement',
-      date: '2024-01-05',
-      location: 'Brooklyn Bridge, NY',
-      photoCount: 67,
-      videoCount: 2,
-      status: 'Ready',
-      thumbnail: '/images/weadingHome4.jpg'
-    },
-    {
-      id: 'FAM-2024-005',
-      title: 'Family Portraits',
-      type: 'Family',
-      date: '2023-12-20',
-      location: 'Central Park, NY',
-      photoCount: 34,
-      videoCount: 1,
-      status: 'Ready',
-      thumbnail: '/images/weadingHome5.jpg'
-    }
-  ];
-
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!albumId.trim()) return;
-
-    setIsSearching(true);
-    setError('');
-    setSearchResult(null);
-
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    const album = mockAlbums[albumId.toUpperCase() as keyof typeof mockAlbums];
+  const [albums,setAlbums] = useState([]);
+  const router = useRouter()
+  
+  useEffect(()=>{
+    const fetchAlbums = async () => {
+      try {
+        console.log(user)
+        const res = await albumService.getClientAlbums(user.id);
+        console.log("album",res)
+        setAlbums(res);
+      } catch (err) {
+        console.error('Error fetching client albums:', err);
+      }
+    };
     
-    if (album) {
-      setSearchResult(album);
-    } else {
-      setError('Album not found. Please check the Album ID and try again.');
-    }
-
-    setIsSearching(false);
-  };
+     fetchAlbums();
+  },[user])
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
         <h2 className="text-2xl font-bold text-gray-900">Albums</h2>
-        <p className="text-gray-600">Search for albums using Album ID or browse your existing albums</p>
+        <p className="text-gray-600">Browse your assigned albums</p>
       </div>
-
-      {/* Search Form */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="bg-white rounded-xl p-6 shadow-lg border border-gray-100"
-      >
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Search by Album ID</h3>
-        <form onSubmit={handleSearch} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Album ID
-            </label>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                value={albumId}
-                onChange={(e) => setAlbumId(e.target.value)}
-                placeholder="Enter Album ID (e.g., WED-2024-001)"
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-                required
-              />
-            </div>
-            <p className="text-xs text-gray-500 mt-1">
-              Album ID format: XXX-YYYY-NNN (e.g., WED-2024-001, PRE-2024-002)
-            </p>
-          </div>
-
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            type="submit"
-            disabled={isSearching}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-3 rounded-lg font-semibold flex items-center justify-center space-x-2 cursor-pointer"
-          >
-            {isSearching ? (
-              <>
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                  className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
-                />
-                <span>Searching...</span>
-              </>
-            ) : (
-              <>
-                <Search className="w-5 h-5" />
-                <span>Search Album</span>
-              </>
-            )}
-          </motion.button>
-        </form>
-
-        {/* Sample Album IDs */}
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-          <h4 className="text-sm font-medium text-blue-900 mb-2">Sample Album IDs to try:</h4>
-          <div className="flex flex-wrap gap-2">
-            {Object.keys(mockAlbums).map((id) => (
-              <motion.button
-                key={id}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setAlbumId(id)}
-                className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium hover:bg-blue-200 cursor-pointer"
-              >
-                {id}
-              </motion.button>
-            ))}
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Error Message */}
-      {error && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center space-x-3"
-        >
-          <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
-          <p className="text-red-700">{error}</p>
-        </motion.div>
-      )}
-
-      {/* Search Result */}
-      {searchResult && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="bg-white rounded-xl p-6 shadow-lg border border-gray-100"
-        >
-          <div className="flex items-center space-x-3 mb-4">
-            <CheckCircle className="w-6 h-6 text-green-500" />
-            <h3 className="text-lg font-semibold text-gray-900">Album Found!</h3>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-6">
-            {/* Album Image */}
-            <div className="relative aspect-[4/3] rounded-lg overflow-hidden">
-              <img
-                src={searchResult.thumbnail}
-                alt={searchResult.title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-              <div className="absolute bottom-4 left-4 text-white">
-                <div className="flex items-center space-x-2 mb-2">
-                  <FolderOpen className="w-5 h-5" />
-                  <span className="font-medium">{searchResult.type}</span>
-                </div>
-              </div>
-              <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-medium ${
-                searchResult.status === 'Ready' 
-                  ? 'bg-green-500 text-white' 
-                  : 'bg-yellow-500 text-white'
-              }`}>
-                {searchResult.status}
-              </div>
-            </div>
-
-            {/* Album Details */}
-            <div className="space-y-4">
-              <div>
-                <h4 className="text-xl font-bold text-gray-900 mb-2">{searchResult.title}</h4>
-                <p className="text-gray-600">{searchResult.description}</p>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center space-x-3 text-sm text-gray-600">
-                  <Calendar className="w-4 h-4" />
-                  <span>{searchResult.date}</span>
-                </div>
-                <div className="flex items-center space-x-3 text-sm text-gray-600">
-                  <MapPin className="w-4 h-4" />
-                  <span>{searchResult.location}</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 py-4">
-                <div className="text-center p-3 bg-blue-50 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">{searchResult.photoCount}</div>
-                  <div className="text-sm text-blue-600">Photos</div>
-                </div>
-                <div className="text-center p-3 bg-purple-50 rounded-lg">
-                  <div className="text-2xl font-bold text-purple-600">{searchResult.videoCount}</div>
-                  <div className="text-sm text-purple-600">Videos</div>
-                </div>
-              </div>
-
-              <div className="flex space-x-3 pt-4">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold flex items-center justify-center space-x-2 cursor-pointer"
-                >
-                  <Eye className="w-4 h-4" />
-                  <span>View Album</span>
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold flex items-center justify-center space-x-2 cursor-pointer"
-                >
-                  <Download className="w-4 h-4" />
-                  <span>Download</span>
-                </motion.button>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
 
       {/* Your Albums */}
       <motion.div
@@ -309,86 +61,78 @@ const AlbumSearch: React.FC = () => {
         className="bg-white rounded-xl p-6 shadow-lg border border-gray-100"
       >
         <h3 className="text-lg font-semibold text-gray-900 mb-6">Your Albums</h3>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {userAlbums.map((album, index) => (
-            <motion.div
-              key={album.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.3 }}
-              className="group relative bg-gray-50 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer"
-            >
-              <div className="relative aspect-[4/3]">
-                <img
-                  src={album.thumbnail}
-                  alt={album.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                />
-                
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition-all duration-200 flex items-center justify-center">
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-2">
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg cursor-pointer"
-                    >
-                      <Eye className="w-5 h-5 text-gray-700" />
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg cursor-pointer"
-                    >
-                      <Download className="w-5 h-5 text-gray-700" />
-                    </motion.button>
+        
+        {albums.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="bg-gradient-to-br from-slate-100 to-blue-100 rounded-2xl p-12 inline-block">
+              <div className="text-6xl mb-6">📁</div>
+              <h3 className="text-xl font-semibold text-slate-700 mb-4">No Albums Found</h3>
+              <p className="text-slate-500 mb-6 max-w-md">You don't have any albums assigned yet. Check back later or contact your administrator.</p>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
+            {albums.map((album: any, index: number) => (
+              <motion.div
+                key={album._id}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.05 }}
+                // whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => router.push(`/client/dashboard/albums/${album._id}`)}
+                className="group cursor-pointer bg-gradient-to-br from-slate-50 to-blue-50 rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300 overflow-hidden"
+              >
+                {/* Folder Icon Section */}
+                <div className="p-6 flex justify-center items-center">
+                  <div className="group-hover:scale-110 transition-transform duration-300">
+                    <Album size={48} color="#5227FF" />
                   </div>
                 </div>
 
-                {/* Status Badge */}
-                <div className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-medium ${
-                  album.status === 'Ready' 
-                    ? 'bg-green-500 text-white' 
-                    : 'bg-yellow-500 text-white'
-                }`}>
-                  {album.status}
-                </div>
-
-                {/* Content Count */}
-                <div className="absolute bottom-3 left-3 flex space-x-2">
-                  <div className="bg-black/75 text-white px-2 py-1 rounded text-xs font-medium flex items-center space-x-1">
-                    <Camera className="w-3 h-3" />
-                    <span>{album.photoCount}</span>
-                  </div>
-                  {album.videoCount > 0 && (
-                    <div className="bg-black/75 text-white px-2 py-1 rounded text-xs font-medium flex items-center space-x-1">
-                      <Video className="w-3 h-3" />
-                      <span>{album.videoCount}</span>
-                    </div>
+                {/* Album Info Section */}
+                <div className="px-4 pb-4 text-center">
+                  <h3 className="font-semibold text-sm text-slate-800 mb-1 tracking-wide truncate group-hover:text-blue-600 transition-colors">
+                    {album.title}
+                  </h3>
+                  <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">
+                    {album.category}
+                  </p>
+                  
+                  {album.description && (
+                    <p className="text-xs text-slate-600 mb-3 line-clamp-2 min-h-[2rem]">
+                      {album.description}
+                    </p>
                   )}
-                </div>
-              </div>
 
-              <div className="p-4">
-                <h4 className="font-semibold text-gray-900 mb-1 truncate">{album.title}</h4>
-                <p className="text-sm text-blue-600 mb-2">{album.type}</p>
-                <div className="flex items-center justify-between text-xs text-gray-500">
-                  <span className="flex items-center space-x-1">
-                    <MapPin className="w-3 h-3" />
-                    <span>{album.location}</span>
-                  </span>
-                  <span className="flex items-center space-x-1">
-                    <Calendar className="w-3 h-3" />
-                    <span>{album.date}</span>
-                  </span>
+                  {/* Media count */}
+                  <div className="flex justify-center items-center space-x-3 text-xs text-slate-500 mb-2">
+                    <div className="flex items-center space-x-1">
+                      <Camera className="w-3 h-3" />
+                      <span>{album.mediaFiles?.filter((f: any) => f.fileType === 'image').length || 0}</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <Video className="w-3 h-3" />
+                      <span>{album.mediaFiles?.filter((f: any) => f.fileType === 'video').length || 0}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between items-center text-xs text-slate-500">
+                    <span>
+                      {new Date(album.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </span>
+                    <span className="text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                      View →
+                    </span>
+                  </div>
                 </div>
-                <div className="mt-2 text-xs text-gray-600 font-mono bg-gray-100 px-2 py-1 rounded">
-                  ID: {album.id}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </motion.div>
     </div>
   );

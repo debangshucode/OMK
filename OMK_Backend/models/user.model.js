@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema({
   verificationCodeExpire: Date,
   resetPasswordToken: String,
   resetPasswordExpire: Date,
+  
   //for update purpose
   phone: { type: String }, // optional
   partnerName: { type: String }, // optional

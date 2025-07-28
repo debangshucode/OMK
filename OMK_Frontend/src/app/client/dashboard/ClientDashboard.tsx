@@ -16,6 +16,7 @@ import {
   Clock
 } from 'lucide-react';
 import axios from 'axios';
+import { useAuth } from '@/context/AuthContext';
 
 interface ClientDashboardProps {
   setActiveTab: (tab: string) => void;
@@ -133,16 +134,17 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({ setActiveTab }) => {
 
   //fetching the user
   const [userData, setUserData] = useState<any>(null);
+  const {user } = useAuth()
 
   useEffect(() => {
       const fetchUser = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/settings/get-user", {
-        withCredentials: true,
-      });
-      const data = res.data;
-      console.log("User data:", data);
-      setUserData(res.data);
+      // const res = await axios.get("http://localhost:4000/api/settings/get-user", {
+      //   withCredentials: true,
+      // });
+      // const data = res.data;
+      console.log(user);
+      // setUserData(res.data);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -161,9 +163,9 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({ setActiveTab }) => {
       >
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <div>
-            {userData ? (
+            {user ? (
             <h2 className="text-2xl lg:text-3xl font-bold mb-2">
-              Welcome back, {userData.name}
+              Welcome back, {user.name}
             </h2>
           ) : (
             <p>Loading user info...</p>

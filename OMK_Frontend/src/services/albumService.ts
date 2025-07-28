@@ -70,7 +70,9 @@ class AlbumService {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+
       },
+      credentials: 'include',
       
            
     });
@@ -147,6 +149,16 @@ class AlbumService {
     return this.request(`/albums/${albumId}/files/${filename}`, {
       method: 'DELETE',
     });
+  }
+
+  getAlbumByClientId(clientId:string){
+    return this.request(`/albums/client/${clientId}`,{
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+    })
   }
 
   

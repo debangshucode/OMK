@@ -1,5 +1,5 @@
 const express = require("express");
-const { register, login, verifyOTP, logout, getUser, forgotPassword, resetPassword, getAllUsers } = require("../controllers/auth.controller.js");
+const { register, login, verifyOTP, logout, getUser, forgotPassword, resetPassword, getAllUsers, createUser, accountVerification } = require("../controllers/auth.controller.js");
 const { googleLogin } = require("../controllers/auth.controller.js");
 const { protect, authorizeRoles } = require("../middlewares/auth.middleware.js");
 
@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post("/register", register);
 router.post("/otp-verification", verifyOTP);
+router.post("/email-verification", accountVerification);
 router.post("/login",login);
 router.get("/logout", protect,logout)
 router.get("/getuser",protect,getUser);
@@ -25,7 +26,7 @@ router.get("/verify-session", protect, (req, res) => {
   });
 });
 
-
+router.post("/create-user",protect,authorizeRoles("admin"),createUser)
 
 router.post("/google-login", googleLogin);
 

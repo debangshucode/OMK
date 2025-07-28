@@ -49,4 +49,7 @@ router.get('/:albumId/download/:filename', async (req, res) => {
   });
 });
 
+router.get('/client/:clientId', albumController.getAlbumsByClient);
+
+
 module.exports = router;

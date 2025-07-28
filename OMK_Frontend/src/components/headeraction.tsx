@@ -8,7 +8,7 @@ import { CgSpinnerAlt } from "react-icons/cg";
 const HeaderActions = () => {
   const [showModal, setShowModal] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { user, isAuthenticated, logout, loading } = useAuth();
+  const { user, authenticated, logout, loading } = useAuth();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -91,7 +91,7 @@ const HeaderActions = () => {
             <CgSpinnerAlt size={18} className="mr-2 animate-spin" />
             Loading...
           </button>
-        ) : isAuthenticated ? (
+        ) : authenticated ? (
           <div className="relative" ref={dropdownRef}>
             {/* User Button */}
             <button
