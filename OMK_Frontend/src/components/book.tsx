@@ -198,7 +198,7 @@ const Book: React.FC = () => {
                       src={
                         index === 0
                           ? "/images/albumcover_lg.png"
-                          : "/images/albumcover.png"
+                          : "/images/albumend_lg.png"
                       }
                       alt={index === 0 ? "Welcome" : "Thank You"}
                       className="w-full h-full object-cover rounded-r-2xl hidden md:block"
@@ -208,7 +208,7 @@ const Book: React.FC = () => {
                       src={
                         index === 0
                           ? "/images/albumcover.png"
-                          : "/images/albumcover.png"
+                          : "/images/albumend.png"
                       }
                       alt={index === 0 ? "Welcome" : "Thank You"}
                       className="w-full h-full object-cover rounded-r-2xl md:hidden"
