@@ -7,16 +7,12 @@ import { useAuth } from "@/context/AuthContext";
 import { CgSpinnerAlt } from "react-icons/cg";
 
 const HeaderActions = () => {
-  
   const pathname = usePathname()
   const [showModal, setShowModal] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, isAuthenticated, logout, loading } = useAuth();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-   if (pathname.startsWith("/admin") || pathname.startsWith("/clients")) {
-    return null
-  }
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -28,6 +24,10 @@ const HeaderActions = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+   if (pathname.startsWith("/admin") || pathname.startsWith("/clients")) {
+    return null
+  }
 
   // Get user initials for avatar fallback
   const getUserInitials = (name: string) => {
