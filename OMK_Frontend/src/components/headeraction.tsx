@@ -1,11 +1,13 @@
 "use client";
 import { useContext, useState, useRef, useEffect } from "react";
 import { UserPlus, LogIn, LogOut, User, Settings, BarChart3, ChevronDown } from "lucide-react";
+import { usePathname } from "next/navigation"
 import LoginModal from "./loginModal"; // adjust path
 import { useAuth } from "@/context/AuthContext";
 import { CgSpinnerAlt } from "react-icons/cg";
 
 const HeaderActions = () => {
+  const pathname = usePathname()
   const [showModal, setShowModal] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, authenticated, logout, loading } = useAuth();
@@ -22,6 +24,10 @@ const HeaderActions = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+   if (pathname.startsWith("/admin") || pathname.startsWith("/clients")) {
+    return null
+  }
 
   // Get user initials for avatar fallback
   const getUserInitials = (name: string) => {

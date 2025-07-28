@@ -193,13 +193,29 @@ const Book: React.FC = () => {
                 }}
               >
                 {index === 0 || index === pages.length - 1 ? (
-                  <div className="absolute inset-0 rounded-r-2xl bg-gradient-to-r from-red-600 to-red-700  flex items-center justify-center">
-                    <h2 className="text-white text-center text-3xl font-bold">
-                      {index === 0
-                        ? "Welcome to the Album"
-                        : "Thank You for Watching"}
-                    </h2>
+                  <div className="absolute inset-0 rounded-r-2xl bg-gradient-to-r from-red-600 to-red-700 border-l-20 border-l-red-700 flex items-center justify-center">
+                    <img
+                      src={
+                        index === 0
+                          ? "/images/albumcover_lg.png"
+                          : "/images/albumend_lg.png"
+                      }
+                      alt={index === 0 ? "Welcome" : "Thank You"}
+                      className="w-full h-full object-cover rounded-r-2xl hidden md:block"
+                    />
+                    {/*mobile view*/}
+                    <img
+                      src={
+                        index === 0
+                          ? "/images/albumcover.png"
+                          : "/images/albumend.png"
+                      }
+                      alt={index === 0 ? "Welcome" : "Thank You"}
+                      className="w-full h-full object-cover rounded-r-2xl md:hidden"
+                    />
+                  
                   </div>
+                  
                 ) : (
                   <div className="absolute inset-0 p-2 rounded-r-2xl flex flex-col items-end justify-end gap-2">
                     {page.image && (
@@ -237,7 +253,7 @@ const Book: React.FC = () => {
             ))}
 
             <div className="absolute -bottom-24 left-1/2 transform -translate-x-1/2">
-              <div className="flex items-center space-x-4 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg border border-red-200">
+              <div className="flex items-center space-x-4 bg-white/80 backdrop-blur-sm px-3 xl:px-6 py-3 rounded-full shadow-lg border border-red-200">
                 <span className="text-sm text-red-700 font-medium">
                   Scroll or drag to explore
                 </span>

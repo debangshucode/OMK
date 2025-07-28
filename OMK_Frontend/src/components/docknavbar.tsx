@@ -40,11 +40,7 @@ const DockNavbar = () => {
   }
 
   const navItems = [
-    {
-      label: "Home",
-      id: "home",
-      onClick: () => pathname === "/" ? scrollToSection("home") : router.push("/#home"),
-    },
+    
     {
       label: "About",
       id: "about",
@@ -74,7 +70,7 @@ const DockNavbar = () => {
 
   return (
     <div
-      className={`fixed top-0 left-1/2 -translate-x-1/2 z-[999] transition-all duration-300 ease-out
+      className={` fixed top-0 left-1/2 -translate-x-1/2 z-[999] transition-all duration-300 ease-out
         ${isVisible ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none -translate-y-4"}`}
     >
       <Dock
