@@ -70,7 +70,7 @@ const DockNavbar = () => {
 
   return (
     <div
-      className={` fixed top-0 left-1/2 -translate-x-1/2 z-[999] transition-all duration-300 ease-out  hide-scrollbar
+      className={` fixed top-0 left-1/2 -translate-x-1/2 z-[999] transition-all duration-300 ease-out
         ${isVisible ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none -translate-y-4"}`}
     >
       <Dock
@@ -78,7 +78,7 @@ const DockNavbar = () => {
         className={`
           fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-[999]
           px-4 sm:px-6 py-2
-          rounded-xl shadow-xl backdrop-blur-xl border whitespace-nowrap no-scrollbar
+          rounded-xl shadow-xl backdrop-blur-xl border
           transition-all duration-300 ease-out
           ${
             isScrolled
