@@ -143,8 +143,8 @@ const RecentWorks = () => {
                       </div>
                     </div>
                     <div className="flex-1 flex flex-col justify-center text-center space-y-1">
-                      <p className="text-sm font-medium">{work.category}</p>
-                      <h3 className="text-md font-semibold leading-tight">
+                      <p className="text-sm font-medium  line-clamp-2">{work.category}</p>
+                      <h3 className="text-md font-semibold leading-tight line-clamp-2">
                         {work.title}
                       </h3>
                     </div>
