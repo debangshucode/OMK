@@ -23,6 +23,7 @@ export default function Dock({ items, className = "" }: DockProps) {
   const width = useSpring(indicatorWidth, spring);
   const refs = useRef<Record<string, HTMLDivElement | null>>({});
   const containerRef = useRef<HTMLDivElement>(null);
+  const isLastItem = items[items.length - 1]?.id === activeId;
 
   useEffect(() => {
     const onScroll = () => {
@@ -55,10 +56,14 @@ export default function Dock({ items, className = "" }: DockProps) {
 
       const offsetLeft =
         elRect.left - containerRect.left + container.scrollLeft;
-      indicatorX.set(offsetLeft + el.offsetWidth / 2);
+
+      const isLastItem = items[items.length - 1]?.id === activeId;
+
+      // Apply extra right shift (e.g., 10px) if it's the last item
+      indicatorX.set(offsetLeft + el.offsetWidth / 2 + (isLastItem ? 5 : 0));
       indicatorWidth.set(el.offsetWidth);
     }
-  }, [activeId, indicatorX, indicatorWidth]);
+  }, [activeId, indicatorX, indicatorWidth, items]);
 
   return (
     <nav
@@ -68,7 +73,7 @@ export default function Dock({ items, className = "" }: DockProps) {
     >
       <div
         ref={containerRef}
-        className="relative flex gap-0 xl:gap-4 overflow-x-auto no-scrollbar"
+        className="relative flex gap-0 xl:gap-4 overflow-x-auto whitespace-nowrap no-scrollbar hide-scrollbar"
       >
         {items.map((item) => (
           <div
