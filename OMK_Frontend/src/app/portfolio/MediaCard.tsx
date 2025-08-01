@@ -27,7 +27,7 @@ const MediaCard: React.FC<MediaCardProps> = ({
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
       viewport={{ once: true }}
-      className={`group relative w-[170px] min-w-[170px] h-[260px] rounded-lg overflow-hidden bg-black shadow-md hover:shadow-lg transition-all duration-300 flex-shrink-0 ${className}`}
+      className={`group relative w-[170px] min-w-[170px] h-[260px] hover:scale-105 rounded-lg overflow-hidden bg-black shadow-md hover:shadow-lg transition-all duration-300 flex-shrink-0 ${className}`}
       onClick={onClick}
     >
       {/* Background image */}
@@ -48,7 +48,7 @@ const MediaCard: React.FC<MediaCardProps> = ({
             : item.thumbnail || item.url
         }
         alt={item.title}
-        className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 ${
+        className={`w-full h-full object-cover  transition-transform duration-300 ${
           !imageLoaded ? "opacity-0" : "opacity-100"
         }`}
         onLoad={() => setImageLoaded(true)}

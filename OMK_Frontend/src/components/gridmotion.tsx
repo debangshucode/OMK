@@ -56,14 +56,15 @@ const GridMotion: FC<GridMotionProps> = ({
   return (
     <div ref={gridRef} className="h-full w-full overflow-hidden">
       {/* <SplashCursor /> */}
-     
-      <section id="home"
+
+      <section
+        id="home"
         className="w-full h-screen overflow-hidden relative flex items-center justify-center"
         style={{
           background: `radial-gradient(circle, ${gradientColor} 0%, transparent 100%)`,
         }}
       >
-         <HeaderAction />
+        <HeaderAction />
         <div className="absolute inset-0 bg-black/50 z-[3] pointer-events-none"></div>
         <div className="absolute inset-0 pointer-events-none z-[4] bg-[length:250px]"></div>
         <div className="gap-4 flex-none relative w-[310vw] h-[110vh] grid grid-rows-4 grid-cols-1 rotate-[-15deg] origin-center z-[2] xl:w-[150vw] xl:h-[150vh]">

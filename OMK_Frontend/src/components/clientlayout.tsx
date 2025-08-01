@@ -3,6 +3,7 @@
 
 import { usePathname } from "next/navigation";
 import DockNavbar from "./docknavbar";
+import Footer from "./footer";
 
 export default function ClientLayout({
   children,
@@ -24,6 +25,7 @@ export default function ClientLayout({
   return (
     <>
       {children}
+      <Footer />
       {!hideDock && <DockNavbar />}
     </>
   );

@@ -25,7 +25,7 @@ const HeaderActions = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-   if (pathname.startsWith("/admin") || pathname.startsWith("/clients") || pathname.startsWith("/portfolio") || pathname.startsWith("/blog")) {
+   if (pathname.startsWith("/admin") || pathname.startsWith("/client") || pathname.startsWith("/portfolio") || pathname.startsWith("/blog")) {
     return null
   }
 

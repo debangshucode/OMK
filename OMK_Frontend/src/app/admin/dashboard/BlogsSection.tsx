@@ -85,7 +85,7 @@ const BlogsSection: React.FC = () => {
     useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs`, {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/blogs`, {
           withCredentials: true
         }
         );
@@ -161,7 +161,7 @@ const BlogsSection: React.FC = () => {
       formData.append("image", blogForm.featuredImageFile); // 👈 Important for Cloudinary
     }
     try {
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs`, formData, {
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/blogs`, formData, {
       withCredentials: true,
       headers: {
         "Content-Type": "multipart/form-data"

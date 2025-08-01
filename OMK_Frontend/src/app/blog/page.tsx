@@ -197,91 +197,40 @@ const Blog: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50">
-      {/* Hero Section */}
-      {/* <section className="py-20 px-6 bg-gradient-to-r from-red-600 to-red-700 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-20 w-32 h-32 bg-white rounded-full"></div>
-          <div className="absolute top-40 right-32 w-24 h-24 bg-amber-300 rounded-full"></div>
-          <div className="absolute bottom-32 left-40 w-20 h-20 bg-white rounded-full"></div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50 pt-16">
+      {/* Header */}
+      <div className="text-center py-5 xl:py-16  bg-gradient-to-br from-slate-50 to-white">
+        <span className="inline-block px-4 py-2 bg-red-100 text-red-700 rounded-full text-sm font-medium mb-6">
+          Blog & Insights
+        </span>
+        <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-red-700 via-red-600 to-amber-600 bg-clip-text text-transparent">
+          Read Our <br />
+          <span className="text-slate-800">Recent Blogs </span>
+        </h1>
+        <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+          blog is a platform where we share our latest insights, tips, and
+          stories from the world of photography. Whether you're a professional
+          photographer or just starting out, you'll find valuable information to
+          help you grow your skills and stay updated with the latest trends.
+        </p>
+        <div className="mt-6 flex justify-center">
+          <BookOpen className="w-12 h-12 text-red-600" />
         </div>
-
-        <motion.div
-          className="relative z-10 max-w-7xl mx-auto text-center"
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-        >
-          <motion.div variants={itemVariants}>
-            <div className="flex justify-center">
-              <div className=" w-20 h-20 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center mb-8 shadow-2xl">
-                <BookOpen className="w-10 h-10 text-white" />
-              </div>
-            </div>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              Photography
-              <br />
-              <span className="text-amber-300">Blog</span>
-            </h1>
-            <p className="text-xl text-red-100 max-w-3xl mx-auto leading-relaxed mb-8">
-              Explore our collection of photography tips, tutorials,
-              behind-the-scenes stories, and creative inspiration from
-              professional photographers.
-            </p>
-            <div className="flex items-center justify-center space-x-6 text-red-200">
-              <span className="flex items-center space-x-2">
-                <BookOpen className="w-5 h-5" />
-                <span>{blogPosts.length} Articles</span>
-              </span>
-              <span>•</span>
-              <span className="flex items-center space-x-2">
-                <Eye className="w-5 h-5" />
-                <span>
-                  {blogPosts
-                    .reduce((sum, post) => sum + post.views, 0)
-                    .toLocaleString()}{" "}
-                  Views
-                </span>
-              </span>
-              <span>•</span>
-              <span className="flex items-center space-x-2">
-                <Heart className="w-5 h-5" />
-                <span>
-                  {blogPosts.reduce((sum, post) => sum + post.likes, 0)} Likes
-                </span>
-              </span>
-            </div>
-          </motion.div>
-        </motion.div>
-      </section> */}
+      </div>
 
       {/* Search and Filters */}
       <section className="py-12 px-6">
         <div className="max-w-7xl mx-auto">
-          
-          {/* <motion.div
+          <motion.div
             initial="visible"
             whileInView="visible"
             viewport={{ once: true }}
             variants={containerVariants}
             className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 mb-12"
-          > */}
-            {/* <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"> */}
-              {/* Search */}
-              {/* <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search blog posts..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300 text-gray-900"
-                />
-              </div> */}
-
-              {/* Filter Button */}
-              {/* <motion.button */}
-                {/* whileHover={{ scale: 1.05 }}
+          >
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowFilters(!showFilters)}
                 className={`flex items-center space-x-2 px-6 py-3 rounded-xl border transition-all duration-300 cursor-pointer ${
@@ -293,10 +242,9 @@ const Blog: React.FC = () => {
                 <Filter className="w-5 h-5" />
                 <span>Categories</span>
               </motion.button>
-            </div> */}
+            </div>
 
-            {/* Category Filters */}
-            {/* {showFilters && (
+            {showFilters && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
@@ -332,74 +280,75 @@ const Blog: React.FC = () => {
                 </div>
               </motion.div>
             )}
-          </motion.div> */}
+          </motion.div>
           {/* Blog Posts Grid */}
           <motion.div
-  key={selectedCategory + searchTerm}
-  initial="hidden"
-  whileInView="visible"
-  variants={containerVariants}
-  className="grid md:grid-cols-2 gap-12"
->
-  {filteredPosts.map((post) => (
-    <motion.article
-      key={post.id}
-      variants={itemVariants}
-      whileHover={{ y: -5 }}
-      className="bg-[#f8f6f2] rounded-lg overflow-hidden shadow-md transition-all duration-500"
-    >
-      {/* Image */}
-      <div className="w-full aspect-[3/2] overflow-hidden">
-        <img
-          src={post.featuredImage}
-          alt={post.title}
-          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-        />
-      </div>
+            key={selectedCategory + searchTerm}
+            initial="hidden"
+            whileInView="visible"
+            variants={containerVariants}
+            className="grid md:grid-cols-2 gap-12"
+          >
+            {filteredPosts.map((post) => (
+              <motion.article
+                key={post.id}
+                variants={itemVariants}
+                whileHover={{ y: -5 }}
+                className="bg-[#f8f6f2] rounded-lg overflow-hidden shadow-md transition-all duration-500"
+              >
+                {/* Image */}
+                <div className="w-full aspect-[3/2] overflow-hidden">
+                  <img
+                    src={post.featuredImage}
+                    alt={post.title}
+                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                  />
+                </div>
 
-      {/* Content */}
-      <div className="p-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-3">
-          {post.title}
-        </h2>
-        <p className="text-gray-700 mb-4 leading-relaxed">
-          {post.excerpt}
-        </p>
+                {/* Content */}
+                <div className="p-6">
+                  <h2 className="text-lg font-semibold text-gray-800 mb-3">
+                    {post.title}
+                  </h2>
+                  <p className="text-gray-700 mb-4 leading-relaxed">
+                    {post.excerpt}
+                  </p>
 
-        {/* Read More */}
-        <Link
-          href={`/blog/${post.slug}`}
-          className="text-sm text-red-500 font-medium flex items-center gap-1 hover:underline"
-        >
-          Read More →
-        </Link>
+                  {/* Read More */}
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    className="text-sm text-red-500 font-medium flex items-center gap-1 hover:underline"
+                  >
+                    Read More →
+                  </Link>
 
-        {/* Date */}
-        <p className="text-xs text-gray-500 mt-3">{post.publishDate}</p>
-      </div>
-    </motion.article>
-  ))}
-</motion.div>
+                  {/* Date */}
+                  <p className="text-xs text-gray-500 mt-3">
+                    {post.publishDate}
+                  </p>
+                </div>
+              </motion.article>
+            ))}
+          </motion.div>
 
-{/* Load More */}
-{filteredPosts.length > 0 && (
-  <motion.div
-    initial="hidden"
-    whileInView="visible"
-    viewport={{ once: true }}
-    variants={itemVariants}
-    className="text-center mt-16"
-  >
-    <motion.button
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      className="bg-red-800 hover:bg-red-900 text-white px-8 py-4 rounded-full text-lg font-medium shadow-md transition-all duration-300"
-    >
-      Load More Posts
-    </motion.button>
-  </motion.div>
-)}
-
+          {/* Load More */}
+          {filteredPosts.length > 0 && (
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={itemVariants}
+              className="text-center mt-16"
+            >
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-red-800 hover:bg-red-900 text-white px-8 py-4 rounded-full text-lg font-medium shadow-md transition-all duration-300"
+              >
+                Load More Posts
+              </motion.button>
+            </motion.div>
+          )}
 
           {/* No Results */}
           {filteredPosts.length === 0 && (

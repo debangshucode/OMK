@@ -54,69 +54,7 @@ const Book: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [totalPages]);
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    setDragStartX(e.clientX);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    const dragDistance = e.clientX - dragStartX;
-    const maxDrag = 200;
-    setDragProgress(Math.max(-1, Math.min(1, dragDistance / maxDrag)));
-  };
-
-  const handleMouseUp = () => {
-    if (!isDragging) return;
-    setIsDragging(false);
-
-    if (Math.abs(dragProgress) > 0.3) {
-      const direction = dragProgress > 0 ? -1 : 1;
-      const newPage = Math.max(
-        0,
-        Math.min(totalPages - 1, currentPage + direction)
-      );
-
-      if (containerRef.current) {
-        const container = containerRef.current;
-        const targetProgress = newPage / (totalPages - 1);
-        const scrollDistance = container.offsetHeight - window.innerHeight;
-        const targetScroll =
-          container.offsetTop +
-          targetProgress * scrollDistance -
-          window.innerHeight * 0.5;
-
-        window.scrollTo({ top: targetScroll, behavior: "smooth" });
-      }
-    }
-
-    setDragProgress(0);
-  };
-
-  useEffect(() => {
-    const handleGlobalMouseMove = (e: MouseEvent) => {
-      if (!isDragging) return;
-      const dragDistance = e.clientX - dragStartX;
-      const maxDrag = 200;
-      setDragProgress(Math.max(-1, Math.min(1, dragDistance / maxDrag)));
-    };
-
-    const handleGlobalMouseUp = () => {
-      if (!isDragging) return;
-      handleMouseUp();
-    };
-
-    if (isDragging) {
-      document.addEventListener("mousemove", handleGlobalMouseMove);
-      document.addEventListener("mouseup", handleGlobalMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener("mousemove", handleGlobalMouseMove);
-      document.removeEventListener("mouseup", handleGlobalMouseUp);
-    };
-  }, [isDragging, dragStartX, dragProgress, currentPage, totalPages]);
-
+  
   const getPageTransform = (pageIndex: number) => {
     const pageProgress = scrollProgress * (totalPages - 1);
     let dragEffect = 0;
@@ -169,9 +107,7 @@ const Book: React.FC = () => {
         <div className="sticky top-[15vh]">
           <div
             className="relative w-[300px] lg:w-[800px] h-[500px] mx-auto transform-gpu"
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
+          
             style={{
               perspective: "1400px",
               transformStyle: "preserve-3d",
