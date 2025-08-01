@@ -133,23 +133,64 @@ const BlogHome: React.FC = () => {
             inspiration from our team of professional photographers.
           </p>
         </motion.div>
+        <motion.div
+  variants={itemVariants}
+  className="mb-16 grid grid-cols-1 md:grid-cols-3 gap-8"
+>
+  {recentBlogs.map((post) => (
+    <div
+      key={post.id}
+      className="bg-[#F8F1E9] rounded-lg shadow-md overflow-hidden flex flex-col"
+    >
+      {/* Image */}
+      <img
+        src={post.featuredImage}
+        alt={post.title}
+        className="w-full h-56 object-cover"
+      />
+
+      {/* Content */}
+      <div className="p-6 flex flex-col flex-grow">
+        {/* Category & Date */}
+        <div className="text-sm text-gray-500 mb-2">
+          {post.category} • {new Date(post.publishDate).toLocaleDateString()}
+        </div>
+
+        {/* Title */}
+        <h2 className="text-xl font-semibold mb-4 text-gray-900">
+          {post.title}
+        </h2>
+
+        {/* Excerpt */}
+        <p className="text-gray-700 mb-6 flex-grow">{post.excerpt}</p>
+
+        {/* Read More Button */}
+        <button
+          onClick={ () => router.push("/blog")}
+          className="mt-auto bg-red-500 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-800">
+          Read More
+        </button>
+      </div>
+    </div>
+  ))}
+</motion.div>
 
         {/* Featured Blog */}
-        <motion.div variants={itemVariants} className="mb-16">
+        {/* <motion.div variants={itemVariants} className="mb-16">
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="grid lg:grid-cols-2 gap-0">
+            <div className="grid lg:grid-cols-2 gap-0"> */}
               {/* Image */}
-              <div className="relative aspect-[4/3] lg:aspect-auto">
+              {/* <div className="relative aspect-[4/3] lg:aspect-auto">
                 <img
                   src={recentBlogs[0].featuredImage}
                   alt={recentBlogs[0].title}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div> */}
 
                 {/* Badges */}
-                <div className="absolute top-4 left-4 flex space-x-2">
-                  <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1">
+                {/* <div className="absolute top-4 left-4 flex space-x-2"> */}
+                  {/* <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1">
                     <Star className="w-3 h-3 fill-current" />
                     <span>Featured</span>
                   </span>
@@ -158,10 +199,10 @@ const BlogHome: React.FC = () => {
                       <Youtube className="w-3 h-3" />
                     </span>
                   )}
-                </div>
+                </div> */}
 
                 {/* Stats Overlay */}
-                <div className="absolute bottom-4 left-4 flex space-x-4 text-white text-sm">
+                {/* <div className="absolute bottom-4 left-4 flex space-x-4 text-white text-sm">
                   <span className="flex items-center space-x-1">
                     <Eye className="w-4 h-4" />
                     <span>{recentBlogs[0].views}</span>
@@ -175,10 +216,10 @@ const BlogHome: React.FC = () => {
                     <span>{recentBlogs[0].comments}</span>
                   </span>
                 </div>
-              </div>
+              </div> */}
 
               {/* Content */}
-              <div className="p-8 lg:p-12 flex flex-col justify-center">
+              {/* <div className="p-8 lg:p-12 flex flex-col justify-center">
                 <div className="flex items-center space-x-2 mb-4">
                   <span className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-medium">
                     {recentBlogs[0].category}
@@ -211,9 +252,9 @@ const BlogHome: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                </div>
+                </div> */}
 
-                <motion.button
+                {/* <motion.button
                   onClick={() => router.push("/blog")}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -225,19 +266,19 @@ const BlogHome: React.FC = () => {
               </div>
             </div>
           </div>
-        </motion.div>
+        </motion.div> */}
 
         {/* Recent Blog Posts Grid */}
-        <div className="grid md:grid-cols-2 gap-8 mb-16">
+        {/* <div className="grid md:grid-cols-2 gap-8 mb-16">
           {recentBlogs.slice(1).map((blog, index) => (
             <motion.div
               key={blog.id}
               variants={itemVariants}
               whileHover={{ y: -10 }}
               className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden cursor-pointer"
-            >
+            > */}
               {/* Image */}
-              <div className="relative aspect-[16/9]">
+              {/* <div className="relative aspect-[16/9]">
                 <img
                   src={blog.featuredImage}
                   alt={blog.title}
@@ -251,9 +292,9 @@ const BlogHome: React.FC = () => {
                       <Youtube className="w-4 h-4" />
                     </div>
                   </div>
-                )}
+                )} */}
 
-                <div className="absolute bottom-3 left-3 flex space-x-3 text-white text-sm">
+                {/* <div className="absolute bottom-3 left-3 flex space-x-3 text-white text-sm">
                   <span className="flex items-center space-x-1">
                     <Eye className="w-3 h-3" />
                     <span>{blog.views}</span>
@@ -263,10 +304,10 @@ const BlogHome: React.FC = () => {
                     <span>{blog.likes}</span>
                   </span>
                 </div>
-              </div>
+              </div> */}
 
               {/* Content */}
-              <div className="p-6">
+              {/* <div className="p-6">
                 <div className="flex items-center justify-between mb-3">
                   <span className="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs font-medium">
                     {blog.category}
@@ -298,9 +339,9 @@ const BlogHome: React.FC = () => {
                         {blog.publishDate}
                       </p>
                     </div>
-                  </div>
+                  </div> */}
 
-                  <motion.button
+                  {/* <motion.button
                     onClick={() => router.push("/blog")}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -312,10 +353,10 @@ const BlogHome: React.FC = () => {
               </div>
             </motion.div>
           ))}
-        </div>
+        </div> */}
 
         {/* Blog Stats */}
-        <motion.div
+        {/* <motion.div
           variants={itemVariants}
           className="bg-white rounded-2xl p-8 shadow-lg mb-16"
         >
@@ -349,7 +390,7 @@ const BlogHome: React.FC = () => {
               <p className="text-slate-600 text-sm">Comments</p>
             </div>
           </div>
-        </motion.div>
+        </motion.div> */}
 
         {/* Call to Action */}
         <motion.div variants={itemVariants} className="text-center">
