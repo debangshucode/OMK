@@ -195,7 +195,7 @@ const BlogPost: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50">
       {/* Hero Section */}
-      <section className="relative py-20 px-6 bg-gradient-to-r from-red-600 to-red-700 text-white overflow-hidden">
+      {/* <section className="relative py-20 px-6 bg-gradient-to-r from-red-600 to-red-700 text-white overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-20 w-32 h-32 bg-white rounded-full"></div>
           <div className="absolute bottom-20 right-20 w-24 h-24 bg-amber-300 rounded-full"></div>
@@ -273,7 +273,7 @@ const BlogPost: React.FC = () => {
             </div>
           </motion.div>
         </motion.div>
-      </section>
+      </section> */}
 
       {/* Main Content */}
       <section className="py-16 px-6">
@@ -284,6 +284,15 @@ const BlogPost: React.FC = () => {
             viewport={{ once: true }}
             variants={containerVariants}
           >
+           {/* Blog Heading */}
+          <motion.div
+            variants={itemVariants}
+            className="mb-12 text-center"
+          >
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-900 mb-6">
+              {blogPost.title}
+            </h1>
+          </motion.div>
             {/* Featured Image */}
             <motion.div variants={itemVariants} className="mb-12">
               <img
