@@ -18,7 +18,7 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
   const [loading, setLoading] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
-  const { setAuthState, user, isAuthenticated, setUser , authenticated} = useAuth(); // ⬅️ Add this
+  const { setAuthState, user, isAuthenticated, setUser , authenticated , setAuthenticated} = useAuth(); // ⬅️ Add this
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -74,6 +74,7 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
       toast.success(response.data.message);
       // setIsAuthenticated(true);
       // setAuthState(response.data.user);
+      setAuthenticated(true);
       setUser(response.data.user);
       onSuccess(response.data.user);
       if (response.data.user.role === "admin") {
