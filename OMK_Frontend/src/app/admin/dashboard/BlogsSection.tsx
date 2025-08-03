@@ -109,7 +109,6 @@ const BlogsSection: React.FC = () => {
       setLoading(false);
     }
   };
-  useEffect(() => {
 
   useEffect(() => {
     fetchBlogs();
