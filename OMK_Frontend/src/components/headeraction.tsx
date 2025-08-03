@@ -25,12 +25,15 @@ const HeaderActions = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+
   // Close dropdown when authentication state changes
   useEffect(() => {
     setIsDropdownOpen(false);
   }, [authenticated]);
 
-   if (pathname.startsWith("/admin") || pathname.startsWith("/client")) {
+
+   if (pathname.startsWith("/admin") || pathname.startsWith("/client") || pathname.startsWith("/portfolio") || pathname.startsWith("/blog")) {
+
     return null
   }
 

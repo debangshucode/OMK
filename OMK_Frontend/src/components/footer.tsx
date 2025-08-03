@@ -53,6 +53,8 @@ const Footer = () => {
     timeSlot: "",
     message: "",
   });
+
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -188,6 +190,10 @@ const Footer = () => {
       nameInputRef.current?.focus();
     };
   }, []);
+
+   if (pathname.startsWith("/admin") || pathname.startsWith("/client")) {
+    return null
+  }
 
   return (
     <footer

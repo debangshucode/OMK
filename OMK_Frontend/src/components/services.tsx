@@ -1,219 +1,140 @@
 "use client";
-import React, { useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Camera,
-  Video,
-  Heart,
-  Film,
-  ArrowRight,
-  Images,
-  Star,
-  Search,
-  ScanFace,
-  Eye,
-  Truck,
-  Clock,
-  Zap,
-} from "lucide-react";
-import Quickbook from "./quickbook";
-import { useRouter } from "next/navigation";
+import React, { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Phone, Camera, Video, Heart, Film } from "lucide-react";
 
 const Services = () => {
   const [activeService, setActiveService] = useState(0);
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
-  const quickbookRef = useRef<{ scrollToForm: () => void }>(null);
+  const detailRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const imageSectionRef = useRef<HTMLDivElement>(null);
 
   const services = [
     {
       id: 0,
       icon: Camera,
-      icon2: Camera,
       title: "Photography",
       subtitle: "Capturing Timeless Moments",
-      title2: "Cinematography & Photography",
-      subtitle2:
-        "We capture moments with stunning cinematic style and creativity.",
-      description:
-        "Professional photography that tells your unique story through stunning visuals and artistic composition.",
-      features: [
-        "Portrait Sessions",
-        "Event Coverage",
-        "Commercial Shoots",
-        "Fine Art Photography",
-      ],
-
-      features2: [
-        "Wedding Films",
-        "Couple & Engagement Shoots",
-        "Event Videography",
-        "Cinematic Edits",
-      ],
-
       color: "from-red-500 to-red-600",
       bgColor: "bg-red-50",
       textColor: "red-600",
-      buttonColor: "from-red-600/80 to-red-700/50",
-      image:
-        "https://images.pexels.com/photos/1264210/pexels-photo-1264210.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
-      price: "Contact for pricing",
-      duration: "2-4 hours",
+      subServices: [
+        {
+          name: "Wedding Photography",
+          images: [
+            "/images/weadingHome1.jpg",
+            "/images/weadingHome2.jpg",
+            "/images/weadingHome.jpg",
+            "/images/weadingHome3.jpg",
+          ],
+        },
+        {
+          name: "Baby Photography",
+          images: [
+            "/images/weadingHome1.jpg",
+            "/images/weadingHome2.jpg",
+            "/images/weadingHome.jpg",
+            "/images/weadingHome3.jpg",
+          ],
+        },
+      ],
     },
     {
       id: 1,
       icon: Video,
-      icon2: Images,
       title: "Videography",
       subtitle: "Dynamic Visual Storytelling",
-      title2: "Personalized albums crafted with moments",
-      subtitle2:
-        "We prioritize your vision and satisfaction, ensuring each project exceeds expectations.",
-      description:
-        "Cinematic videography that brings your vision to life with professional equipment and creative direction.",
-      features: [
-        "Event Videography",
-        "Corporate Videos",
-        "Promotional Content",
-        "Documentary Style",
+      color: "from-blue-500 to-blue-600",
+      bgColor: "bg-blue-50",
+      textColor: "blue-600",
+      subServices: [
+        {
+          name: "Event Videography",
+          images: [
+            "/images/weadingHome1.jpg",
+            "/images/weadingHome2.jpg",
+            "/images/weadingHome.jpg",
+            "/images/weadingHome3.jpg",
+          ],
+        },
+        {
+          name: "Cinematic Wedding Film",
+          images: [
+            "/images/weadingHome1.jpg",
+            "/images/weadingHome2.jpg",
+            "/images/weadingHome.jpg",
+            "/images/weadingHome3.jpg",
+          ],
+        },
       ],
-
-      features2: [
-        "Customized Album Design",
-        "Digital Album Options",
-        "Premium Photo Printing",
-        "Craft Memories",
-      ],
-
-      color: "from-red-600 to-red-700",
-      bgColor: "bg-red-100",
-      textColor: "red-700",
-      buttonColor: "from-red-600/80 to-red-700/50",
-      image:
-        "https://images.pexels.com/photos/3062541/pexels-photo-3062541.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
-      price: "Contact for pricing",
-      duration: "4-8 hours",
     },
     {
       id: 2,
       icon: Heart,
-      icon2: ScanFace,
       title: "Pre-Wedding",
       subtitle: "Romance in Every Frame",
-      title2: " Smart Face Search in Albums",
-      subtitle2: "Easily find faces and moments with smart album search tools",
-      description:
-        "Romantic pre-wedding sessions that capture the essence of your love story in beautiful locations.",
-      features: [
-        "Couple Sessions",
-        "Engagement Shoots",
-        "Save-the-Date",
-        "Romantic Portraits",
+      color: "from-pink-500 to-pink-600",
+      bgColor: "bg-pink-50",
+      textColor: "pink-600",
+      subServices: [
+        {
+          name: "Couple Shoot",
+          images: [
+            "/images/weadingHome4.jpg",
+            "/images/weadingHome5.jpg",
+            "/images/weadingHome6.jpg",
+            "/images/weadingHome3.jpg",
+          ],
+        },
       ],
-
-      features2: [
-        "Wedding & Event Albums",
-        "Large Family or Group Events",
-        "Easy search by faces",
-        "Corporate Portfolios",
-      ],
-
-      color: "from-amber-500 to-amber-600",
-      bgColor: "bg-amber-50",
-      textColor: "amber-500",
-      buttonColor: "from-amber-500/80 to-amber-600/50",
-      image:
-        "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
-      price: "Contact for pricing",
-      duration: "3-5 hours",
     },
     {
       id: 3,
       icon: Film,
-      icon2: Truck,
       title: "Cinematography",
       subtitle: "Cinematic Excellence",
-      title2: "Timely Delivery & Reliable Service",
-      subtitle2:
-        "On-time, high-quality delivery you can always count on , to track your delivery progress and get updates.",
-      description:
-        "Professional cinematography with cutting-edge equipment and artistic vision for your special moments.",
-      features: [
-        "Wedding Films",
-        "Short Films",
-        "Music Videos",
-        "Cinematic Edits",
-      ],
-
-      features2: [
-        "Fast Turnaround Times",
-        "Online Previews & Delivery",
-        "Dedicated Support",
-        "Track Delivery Progress",
-      ],
-
-      color: "from-slate-600 to-slate-700",
+      color: "from-slate-500 to-slate-600",
       bgColor: "bg-slate-50",
       textColor: "slate-600",
-      buttonColor: "from-slate-600/80 to-slate-700/50",
-      image:
-        "https://images.pexels.com/photos/3062541/pexels-photo-3062541.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
-      price: "Contact for pricing",
-      duration: "Full day",
+      subServices: [
+        {
+          name: "Music Videos",
+          images: [
+            "/images/albumcover_lg.png",
+            "/images/weadingHome2.jpg",
+            "/images/weadingHome.jpg",
+            "/images/weadingHome3.jpg",
+          ],
+        },
+      ],
     },
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.1,
-      },
-    },
-  };
+  const active = services[activeService];
 
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut" as const,
-      },
-    },
-  };
+  useEffect(() => {
+    const scroll = () => {
+      if (!carouselRef.current) return;
+      const container = carouselRef.current;
+      const scrollAmount = container.clientWidth;
 
-  const cardVariants = {
-    hidden: { scale: 0.8, opacity: 0 },
-    visible: {
-      scale: 1,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut" as const,
-      },
-    },
-  };
-  const router = useRouter();
+      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
 
-  const detailRef = useRef<HTMLDivElement>(null);
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      if (container.scrollLeft + scrollAmount >= maxScroll) {
+        container.scrollTo({ left: 0, behavior: "smooth" });
+      }
+    };
+
+    const interval = setInterval(scroll, 3000);
+    return () => clearInterval(interval);
+  }, [activeService]);
+
   return (
-    <div
-      id="services"
-      className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50 py-20"
-    >
-     
-      {/* Header Section */}
-      <motion.section
-        className="px-6 mb-20"
-        initial="hidden"
-        animate="visible"
-        variants={containerVariants}
-      >
+    <section className="min-h-screen py-5 xl:py-15 bg-gradient-to-br from-slate-50 to-red-50 px-6">
+      <motion.section className="px-6 mb-20" initial="hidden" animate="visible">
         <div className="max-w-7xl mx-auto text-center">
-          <motion.div variants={itemVariants}>
+          <motion.div>
             <span className="inline-block px-4 py-2 bg-red-100 text-red-700 rounded-full text-sm font-medium mb-6">
               Our Services
             </span>
@@ -230,19 +151,16 @@ const Services = () => {
           </motion.div>
         </div>
       </motion.section>
-
-      {/* Interactive Service Showcase */}
       <motion.section
-        className="px-6 mb-20"
+        className="px-3 xl:px-6  mb-20"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        variants={containerVariants}
       >
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left Side - Service Navigation */}
-            <motion.div variants={itemVariants} className="space-y-4">
+          <div className="grid lg:grid-cols-2 gap-12">
+            {/* Left Side - Service List */}
+            <motion.div className="space-y-4 ">
               {services.map((service, index) => (
                 <motion.div
                   key={service.id}
@@ -253,9 +171,12 @@ const Services = () => {
                   }`}
                   onClick={() => {
                     setActiveService(index);
-                    if (window.innerWidth < 1024 && detailRef.current) {
-                      detailRef.current.scrollIntoView({ behavior: "smooth" });
-                    }
+                    setTimeout(() => {
+                      imageSectionRef.current?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                      });
+                    }, 100); // allow state update to finish
                   }}
                   whileHover={{ x: 10 }}
                   whileTap={{ scale: 0.98 }}
@@ -268,7 +189,7 @@ const Services = () => {
                     </div>
                     <div className="flex-1">
                       <h3
-                        className={`text-xl font-bold text-${service.textColor} transition-colors duration-300`}
+                        className={`text-xl font-bold text-${service.textColor}`}
                       >
                         {service.title}
                       </h3>
@@ -276,246 +197,73 @@ const Services = () => {
                         {service.subtitle}
                       </p>
                     </div>
-                    <ArrowRight
-                      className={`w-5 h-5 transition-all duration-300 ${
-                        activeService === index
-                          ? `${service.textColor} translate-x-2`
-                          : "text-slate-400"
-                      }`}
-                    />
                   </div>
+
+                  {/* Sub-services for active service */}
+                  {activeService === index && (
+                    <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {service.subServices.map((sub, idx) => (
+                        <div
+                          key={idx}
+                          className="rounded-xl flex overflow-hidden bg-white shadow"
+                        >
+                          <p className="p-4 text-center font-medium text-slate-700">
+                            {sub.name}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </motion.div>
               ))}
             </motion.div>
 
-            {/* Right Side - Active Service Details */}
-            <motion.div
-              variants={itemVariants}
-              className="relative"
-              ref={detailRef}
+            {/* Right Side - Active Details */}
+            <div
+              className="relative overflow-hidden rounded-2xl shadow-xl border border-gray-200 p-5 h-full"
+              ref={imageSectionRef}
             >
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeService}
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -50 }}
-                  transition={{ duration: 0.5 }}
-                  className="bg-white rounded-3xl p-8 shadow-2xl"
-                >
-                  <div className="relative mb-6 rounded-2xl overflow-hidden">
-                    <img
-                      src={services[activeService].image}
-                      alt={services[activeService].title}
-                      className="w-full h-64 object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                    <div className="absolute bottom-4 left-4 text-white">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                        <span className="text-sm font-medium">
-                          Premium Service
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <h3 className="text-3xl font-bold text-slate-800 mb-3">
-                    {services[activeService].title}
-                  </h3>
-                  <p className="text-slate-600 mb-6 leading-relaxed">
-                    {services[activeService].description}
-                  </p>
-
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    {services[activeService].features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
-                        <span className="text-sm text-slate-600">
-                          {feature}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center flex-wrap xl:flex-nowrap gap-2 justify-between pt-6 border-t border-gray-100">
-                    <div className="w-full">
-                      <p className="text-xl xl:text-2xl font-bold text-slate-800">
-                        {services[activeService].price}
-                      </p>
-                      <p className="text-sm text-slate-500">
-                        {services[activeService].duration}
+              <div
+                className="flex overflow-x-auto hide-scrollbar scroll-smooth snap-x snap-mandatory h-full"
+                ref={carouselRef}
+              >
+                {services[activeService].subServices.flatMap((sub, idx) =>
+                  sub.images.map((img, i) => (
+                    <div
+                      key={`${idx}-${i}`}
+                      className="min-w-full snap-start flex flex-col items-center"
+                    >
+                      <img
+                        src={img}
+                        alt={sub.name}
+                        className="w-full h-[500px] object-cover"
+                      />
+                      <p className="mt-2 text-center text-xl font-semibold text-slate-700">
+                        {sub.name}
                       </p>
                     </div>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => router.push("/portfolio")}
-                      className={`text-sm px-2 py-2 xl:px-6 xl:py-3  bg-white border text-${services[activeService].textColor} border-${services[activeService].textColor} rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:cursor-pointer`}
-                    >
-                      Our Works
-                    </motion.button>
-
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => {
-                        const contactSection =
-                          document.getElementById("contact");
-                        if (contactSection) {
-                          contactSection.scrollIntoView({ behavior: "smooth" });
-                          setTimeout(() => {
-                            window.focusContactNameInput?.();
-                          }, 600);
-                        }
-                      }}
-                      className={`text-sm px-2 py-2 xl:px-6 xl:py-3 bg-gradient-to-r ${services[activeService].buttonColor} text-white rounded-full font-semibold shadow-lg transition-all duration-300 hover:cursor-pointer`}
-                    >
-                      Book Now
-                    </motion.button>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </motion.div>
-          </div>
-        </div>
-      </motion.section>
-
-      
-
-      {/* Service Cards Grid */}
-      <motion.section
-        className="px-6 mb-20"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={containerVariants}
-      >
-        <div className="max-w-7xl mx-auto">
-          <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-4">
-              Why Choose <span className="text-red-600">Our Services</span>
-            </h2>
-            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Professional quality, creative vision, and personalized service
-              for every project.
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {services.map((service, index) => (
+                  ))
+                )}
+              </div>
               <motion.div
-                key={service.id}
-                variants={cardVariants}
-                whileHover={{
-                  y: -10,
-                  transition: { duration: 0.3 },
+                animate={{ y: [0, -10, 0], rotate: [0, 5, 0] }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
                 }}
-                onHoverStart={() => setHoveredCard(index)}
-                onHoverEnd={() => setHoveredCard(null)}
-                className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden"
+                style={{ zIndex: 99 }}
+                className="absolute z-50 top-4 left-4 w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg"
               >
-                {/* Background Pattern */}
-                <div className="absolute inset-0 opacity-5">
-                  <div
-                    className={`w-full h-full bg-gradient-to-br ${service.color}`}
-                  ></div>
-                </div>
-
-                {/* Floating Icon */}
-                <motion.div
-                  animate={
-                    hoveredCard === index
-                      ? {
-                          rotate: [0, -10, 10, 0],
-                          scale: [1, 1.1, 1],
-                        }
-                      : {}
-                  }
-                  transition={{ duration: 0.6 }}
-                  className={`w-16 h-16 bg-gradient-to-br ${service.color} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:shadow-xl transition-shadow duration-300`}
-                >
-                  <service.icon2 className="w-8 h-8 text-white" />
-                </motion.div>
-
-                <h3 className="text-xl font-bold text-slate-800 mb-2 group-hover:text-red-600 transition-colors duration-300">
-                  {service.title2}
-                </h3>
-                <p className="text-slate-600 text-sm mb-4 leading-relaxed h-[20%]">
-                  {service.subtitle2}
-                </p>
-
-                {/* Feature List */}
-                <div className="space-y-2 mb-6">
-                  {service.features2.slice(0, 2).map((feature, idx) => (
-                    <div key={idx} className="flex items-center space-x-2">
-                      <Eye className="w-3 h-3 text-amber-500" />
-                      <span className="text-xs text-slate-600">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <motion.div
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={
-                    hoveredCard === index
-                      ? { scale: 1, opacity: 1 }
-                      : { scale: 0, opacity: 0 }
-                  }
-                  className="absolute top-4 right-4"
-                >
-                  <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center">
-                    <Zap className="w-4 h-4 text-white" />
-                  </div>
-                </motion.div>
+                <a href="tel:+916291176902" title="Call Now">
+                  <Phone className="w-5 h-5" />
+                </a>
               </motion.div>
-            ))}
+            </div>
           </div>
         </div>
       </motion.section>
-
-      {/* Call to Action */}
-      {/* <motion.section
-        className="px-6"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={containerVariants}
-      >
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            variants={itemVariants}
-            className="bg-gradient-to-r from-red-600 to-red-700 rounded-3xl p-12 text-center shadow-2xl"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Ready to Create Something
-              <br />
-              <span className="text-amber-300">Amazing Together?</span>
-            </h2>
-            <p className="text-xl text-red-100 mb-8 leading-relaxed">
-              Let's discuss your vision and bring your story to life through our
-              creative lens.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-white text-red-600 px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:cursor-pointer hover:shadow-xl transition-all duration-300"
-              >
-                View Portfolio
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:cursor-pointer"
-              >
-                Get Quote
-              </motion.button>
-            </div>
-          </motion.div>
-        </div>
-      </motion.section> */}
-    </div>
+    </section>
   );
 };
 

@@ -47,9 +47,9 @@ const DockNavbar = () => {
       onClick: () => pathname === "/" ? scrollToSection("about") : router.push("/#about"),
     },
     {
-      label: "Services",
-      id: "services",
-      onClick: () => pathname === "/" ? scrollToSection("services") : router.push("/#services"),
+      label: "Blog",
+      id: "blog",
+      onClick: () => router.push("/blog"),
     },
     {
       label: "Portfolio",

@@ -53,16 +53,19 @@ const RecentWorks = () => {
 
   useEffect(() => {
     const container = scrollRef.current;
+    if (!container) return;
+
     const startAutoScroll = () => {
       autoScrollInterval.current = setInterval(() => {
-        if (container) {
-          if (container.scrollLeft >= container.scrollWidth / 2) {
-            container.scrollLeft = 0;
-          } else {
-            container.scrollLeft += 1;
-          }
+        if (!container) return;
+
+        container.scrollLeft += 1;
+
+        // Reset to start when half-scrolled (due to duplication)
+        if (container.scrollLeft >= container.scrollWidth / 2) {
+          container.scrollLeft = 0;
         }
-      }, 16);
+      }, 10); // Increase speed here if needed
     };
 
     const stopAutoScroll = () => {
@@ -70,20 +73,20 @@ const RecentWorks = () => {
     };
 
     startAutoScroll();
-    container?.addEventListener("mouseenter", stopAutoScroll);
-    container?.addEventListener("mouseleave", startAutoScroll);
+
+    container.addEventListener("mouseenter", stopAutoScroll);
+    container.addEventListener("mouseleave", startAutoScroll);
 
     return () => {
       stopAutoScroll();
-      container?.removeEventListener("mouseenter", stopAutoScroll);
-      container?.removeEventListener("mouseleave", startAutoScroll);
+      container.removeEventListener("mouseenter", stopAutoScroll);
+      container.removeEventListener("mouseleave", startAutoScroll);
     };
-  }, []);
+  }, [recentWorks]); // run scroll effect when data is available
 
   return (
     <section className="py-16 bg-gradient-to-br from-red-50 to-red-100 relative">
       <div className="max-w-7xl mx-auto px-6">
-        {/* Header */}
         <div className="flex flex-col mb-12 gap-4">
           <div className="w-full flex items-center justify-between flex-wrap gap-4">
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
@@ -104,9 +107,10 @@ const RecentWorks = () => {
           </p>
         </div>
 
-        {/* Loader / Error State */}
         {loading ? (
-          <div className="text-center text-gray-500">Loading recent works...</div>
+          <div className="text-center text-gray-500">
+            Loading recent works...
+          </div>
         ) : error ? (
           <div className="text-center text-red-500">Error: {error}</div>
         ) : (
@@ -114,25 +118,24 @@ const RecentWorks = () => {
             ref={scrollRef}
             className="flex gap-6 overflow-x-auto scroll-smooth hide-scrollbar pb-4 px-2 whitespace-nowrap"
           >
-            {[...recentWorks].map((work) => {
+            {[...recentWorks, ...recentWorks].map((work, index) => {
               const TypeIcon = getTypeIcon(work.type);
+              console.log("work.link", work.link);
+
               return (
                 <motion.div
-                onClick={() => window.open(work.link, "_blank")}
-                  key={work._id}
+                  onClick={() => window.open(work.link, "_blank")}
+                  key={work._id + "-" + index}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4 }}
-                  className="group relative w-[170px] min-w-[170px] h-[260px] rounded-lg overflow-hidden bg-black shadow-md hover:shadow-lg transition-all duration-300 flex-shrink-0"
+                  className="group relative w-[180px] min-w-[180px] h-[260px] rounded-lg overflow-hidden bg-black shadow-md hover:shadow-lg transition-all duration-300 flex-shrink-0"
                 >
-                  {/* Background Image */}
                   <img
                     src={work.image || "/images/fallback.jpg"}
                     alt={work.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
-
-                  {/* Overlay */}
                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex flex-col justify-between p-4 text-white">
                     <div className="flex justify-end">
                       <div className="bg-white/20 p-1.5 rounded-full backdrop-blur-sm">
@@ -140,12 +143,16 @@ const RecentWorks = () => {
                       </div>
                     </div>
                     <div className="flex-1 flex flex-col justify-center text-center space-y-1">
-                      <p className="text-sm font-medium">{work.category}</p>
-                      <h3 className="text-md font-semibold leading-tight">{work.title}</h3>
+                      <p className="text-sm font-medium  line-clamp-2">{work.category}</p>
+                      <h3 className="text-md font-semibold leading-tight line-clamp-2">
+                        {work.title}
+                      </h3>
                     </div>
                     <div className="text-center">
                       <a
-                        href={work.link}
+                        href={`https://${work.link
+                          .replace(/^https?:\/\//, "")
+                          .replace(/^\/+/, "")}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-block bg-red-600 hover:bg-red-700 text-white text-xs px-4 py-1.5 rounded-full font-medium shadow-md transition-all duration-300"

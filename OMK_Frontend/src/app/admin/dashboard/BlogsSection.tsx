@@ -1,15 +1,15 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Grid3X3, 
-  List, 
-  Eye, 
-  EyeOff, 
-  Edit, 
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Plus,
+  Search,
+  Filter,
+  Grid3X3,
+  List,
+  Eye,
+  EyeOff,
+  Edit,
   Trash2,
   Calendar,
   User,
@@ -33,13 +33,13 @@ import {
   Share2,
   BookOpen,
   FileText,
-  Camera
-} from 'lucide-react';
-import axios from 'axios';
-import { toast } from 'sonner';
+  Camera,
+} from "lucide-react";
+import axios from "axios";
+import { toast } from "sonner";
 
 interface Blog {
-  id: number;
+  _id: number;
   title: string;
   slug: string;
   content: string;
@@ -48,7 +48,7 @@ interface Blog {
   author: string;
   category: string;
   tags: string[];
-  status: 'draft' | 'published' | 'scheduled';
+  status: "draft" | "published" | "scheduled";
   publishDate: string;
   views: number;
   likes: number;
@@ -64,30 +64,32 @@ const BlogsSection: React.FC = () => {
   const [error, setError] = useState("");
   const [selectedBlogs, setSelectedBlogs] = useState<number[]>([]);
   const [showFilters, setShowFilters] = useState(false);
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [filterCategory, setFilterCategory] = useState('all');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterCategory, setFilterCategory] = useState("all");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
 
   // Blog form state
   const [blogForm, setBlogForm] = useState({
-    title: '',
-    content: '',
+    title: "",
+    content: "",
     featuredImageFile: null as File | null,
-    category: '',
-    tags: '',
-    status: 'draft' as 'draft' | 'published' | 'scheduled',
-    publishDate: '',
-    youtubeUrl: '',
-    images: [] as string[]
+    category: "",
+    tags: "",
+    status: "draft" as "draft" | "published" | "scheduled",
+    publishDate: "",
+    youtubeUrl: "",
+    images: [] as string[],
   });
-    useEffect(() => {
+  useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs`, {
-          withCredentials: true
-        }
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/blogs`,
+          {
+            withCredentials: true,
+          }
         );
         console.log("Response data:", res.data);
         setBlogs(res.data);
@@ -104,31 +106,36 @@ const BlogsSection: React.FC = () => {
   }, []);
   if (loading) return <p className="text-gray-600">Loading blogs...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
- 
 
-  const categories = ['all', 'Wedding Photography', 'Corporate Photography', 'Pre-Wedding', 'Portrait', 'Event Photography'];
-  const statuses = ['all', 'published', 'draft', 'scheduled'];
-
+  const categories = [
+    "all",
+    "Wedding Photography",
+    "Corporate Photography",
+    "Pre-Wedding",
+    "Portrait",
+    "Event Photography",
+  ];
+  const status = ["all", "published", "draft", "scheduled"];
 
   const toggleBlogSelection = (blogId: number) => {
-    setSelectedBlogs(prev => 
-      prev.includes(blogId) 
-        ? prev.filter(id => id !== blogId)
+    setSelectedBlogs((prev) =>
+      prev.includes(blogId)
+        ? prev.filter((id) => id !== blogId)
         : [...prev, blogId]
     );
   };
 
   const handleCreateBlog = () => {
     setBlogForm({
-      title: '',
-      content: '',
+      title: "",
+      content: "",
       featuredImageFile: null,
-      category: '',
-      tags: '',
-      status: 'draft',
-      publishDate: '',
-      youtubeUrl: '',
-      images: []
+      category: "",
+      tags: "",
+      status: "draft",
+      publishDate: "",
+      youtubeUrl: "",
+      images: [],
     });
     setEditingBlog(null);
     setShowCreateModal(true);
@@ -140,11 +147,11 @@ const BlogsSection: React.FC = () => {
       content: blog.content,
       featuredImageFile: null,
       category: blog.category,
-      tags: blog.tags.join(', '),
+      tags: blog.tags.join(", "),
       status: blog.status,
       publishDate: blog.publishDate,
-      youtubeUrl: blog.youtubeUrl || '',
-      images: blog.images
+      youtubeUrl: blog.youtubeUrl || "",
+      images: blog.images,
     });
     setEditingBlog(blog);
     setShowCreateModal(true);
@@ -161,65 +168,70 @@ const BlogsSection: React.FC = () => {
       formData.append("image", blogForm.featuredImageFile); // 👈 Important for Cloudinary
     }
     try {
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs`, formData, {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "multipart/form-data"
-      }
-    });
-    toast.success("Blog created successfully");
-    setShowCreateModal(false);
-    setEditingBlog(null);
-  } catch (error: any) {
-    toast.error(error.response?.data?.message || "Blog creation failed");
-  }
-};
-
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/blogs`,
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      toast.success("Blog created successfully");
+      setShowCreateModal(false);
+      setEditingBlog(null);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Blog creation failed");
+    }
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       // Simulate image upload
       const imageUrl = URL.createObjectURL(file);
-      setBlogForm(prev => ({
+      setBlogForm((prev) => ({
         ...prev,
-        images: [...prev.images, imageUrl]
+        images: [...prev.images, imageUrl],
       }));
     }
   };
 
-  const handleFeaturedImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
-  if (file) {
-    const imageUrl = URL.createObjectURL(file);
-    setBlogForm(prev => ({
-      ...prev,
-      featuredImage: imageUrl,
-      featuredImageFile: file // 👈 store actual file for FormData
-    }));
-  }
-};
+  const handleFeaturedImageUpload = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setBlogForm((prev) => ({
+        ...prev,
+        featuredImage: imageUrl,
+        featuredImageFile: file, // 👈 store actual file for FormData
+      }));
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'published':
-        return 'bg-green-100 text-green-700';
-      case 'draft':
-        return 'bg-gray-100 text-gray-700';
-      case 'scheduled':
-        return 'bg-blue-100 text-blue-700';
+      case "published":
+        return "bg-green-100 text-green-700";
+      case "draft":
+        return "bg-gray-100 text-gray-700";
+      case "scheduled":
+        return "bg-blue-100 text-blue-700";
       default:
-        return 'bg-gray-100 text-gray-700';
+        return "bg-gray-100 text-gray-700";
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'published':
+      case "published":
         return <Eye className="w-4 h-4" />;
-      case 'draft':
+      case "draft":
         return <FileText className="w-4 h-4" />;
-      case 'scheduled':
+      case "scheduled":
         return <Clock className="w-4 h-4" />;
       default:
         return <FileText className="w-4 h-4" />;
@@ -232,7 +244,9 @@ const BlogsSection: React.FC = () => {
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Blog Management</h2>
-          <p className="text-gray-600">Create, edit, and manage your blog content</p>
+          <p className="text-gray-600">
+            Create, edit, and manage your blog content
+          </p>
         </div>
         <motion.button
           whileHover={{ scale: 1.05 }}
@@ -264,9 +278,9 @@ const BlogsSection: React.FC = () => {
             whileTap={{ scale: 0.95 }}
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center space-x-2 px-4 py-2 rounded-lg border transition-colors duration-200 cursor-pointer ${
-              showFilters 
-                ? 'bg-green-50 border-green-200 text-green-600' 
-                : 'border-gray-300 text-gray-600 hover:bg-gray-50'
+              showFilters
+                ? "bg-green-50 border-green-200 text-green-600"
+                : "border-gray-300 text-gray-600 hover:bg-gray-50"
             }`}
           >
             <Filter className="w-4 h-4" />
@@ -276,9 +290,15 @@ const BlogsSection: React.FC = () => {
           {selectedBlogs.length > 0 && (
             <div className="flex items-center space-x-2 text-sm text-gray-600">
               <span>{selectedBlogs.length} selected</span>
-              <button className="text-green-600 hover:text-green-700 cursor-pointer">Publish</button>
-              <button className="text-gray-600 hover:text-gray-700 cursor-pointer">Draft</button>
-              <button className="text-red-600 hover:text-red-700 cursor-pointer">Delete</button>
+              <button className="text-green-600 hover:text-green-700 cursor-pointer">
+                Publish
+              </button>
+              <button className="text-gray-600 hover:text-gray-700 cursor-pointer">
+                Draft
+              </button>
+              <button className="text-red-600 hover:text-red-700 cursor-pointer">
+                Delete
+              </button>
             </div>
           )}
         </div>
@@ -288,11 +308,11 @@ const BlogsSection: React.FC = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setViewMode('grid')}
+            onClick={() => setViewMode("grid")}
             className={`p-2 rounded-lg cursor-pointer ${
-              viewMode === 'grid' 
-                ? 'bg-green-100 text-green-600' 
-                : 'text-gray-600 hover:bg-gray-100'
+              viewMode === "grid"
+                ? "bg-green-100 text-green-600"
+                : "text-gray-600 hover:bg-gray-100"
             }`}
           >
             <Grid3X3 className="w-5 h-5" />
@@ -300,11 +320,11 @@ const BlogsSection: React.FC = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setViewMode('list')}
+            onClick={() => setViewMode("list")}
             className={`p-2 rounded-lg cursor-pointer ${
-              viewMode === 'list' 
-                ? 'bg-green-100 text-green-600' 
-                : 'text-gray-600 hover:bg-gray-100'
+              viewMode === "list"
+                ? "bg-green-100 text-green-600"
+                : "text-gray-600 hover:bg-gray-100"
             }`}
           >
             <List className="w-5 h-5" />
@@ -317,7 +337,7 @@ const BlogsSection: React.FC = () => {
         {showFilters && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
+            animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 overflow-hidden"
           >
@@ -330,19 +350,23 @@ const BlogsSection: React.FC = () => {
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Status Filter */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Status
+                </label>
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
                   className="w-full border text-gray-900 border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer"
                 >
-                  {statuses.map(status => (
+                  {status.map((status) => (
                     <option key={status} value={status}>
-                      {status === 'all' ? 'All Status' : status.charAt(0).toUpperCase() + status.slice(1)}
+                      {status === "all"
+                        ? "All Status"
+                        : status.charAt(0).toUpperCase() + status.slice(1)}
                     </option>
                   ))}
                 </select>
@@ -350,15 +374,17 @@ const BlogsSection: React.FC = () => {
 
               {/* Category Filter */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Category
+                </label>
                 <select
                   value={filterCategory}
                   onChange={(e) => setFilterCategory(e.target.value)}
                   className="w-full text-gray-900 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer"
                 >
-                  {categories.map(category => (
+                  {categories.map((category) => (
                     <option key={category} value={category}>
-                      {category === 'all' ? 'All Categories' : category}
+                      {category === "all" ? "All Categories" : category}
                     </option>
                   ))}
                 </select>
@@ -366,7 +392,9 @@ const BlogsSection: React.FC = () => {
 
               {/* Date Range */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Date Range
+                </label>
                 <input
                   type="date"
                   className="w-full border text-gray-900 border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -379,11 +407,11 @@ const BlogsSection: React.FC = () => {
 
       {/* Blog Posts Grid/List */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        {viewMode === 'grid' ? (
+        {viewMode === "grid" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {blogs.map((blog, index) => (
               <motion.div
-                key={blog.id}
+                key={blog._id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
@@ -391,21 +419,28 @@ const BlogsSection: React.FC = () => {
               >
                 {/* Featured Image */}
                 <div className="relative aspect-[16/9]">
-                  <img
-                    src={blog?.images && blog.images.length > 0 ? blog.images[0] : ""}
-                    alt={blog?.title}
-                    className="w-full h-full object-cover"
-                  />
+                  {blog?.images?.[0] && (
+                    <img
+                      src={blog.images[0]}
+                      alt={blog.title}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+
                   <div className="absolute top-2 left-2">
                     <input
                       type="checkbox"
-                      checked={selectedBlogs.includes(blog.id)}
-                      onChange={() => toggleBlogSelection(blog.id)}
+                      checked={selectedBlogs.includes(blog._id)}
+                      onChange={() => toggleBlogSelection(blog._id)}
                       className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 cursor-pointer"
                     />
                   </div>
                   <div className="absolute top-2 right-2">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1 ${getStatusColor(blog.status)}`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1 ${getStatusColor(
+                        blog.status
+                      )}`}
+                    >
                       {getStatusIcon(blog.status)}
                       <span>{blog.status}</span>
                     </span>
@@ -422,16 +457,22 @@ const BlogsSection: React.FC = () => {
                 {/* Content */}
                 <div className="p-4">
                   <div className="flex items-center space-x-2 text-xs text-gray-500 mb-2">
-                    <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded">{blog.category}</span>
+                    <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded">
+                      {blog.category}
+                    </span>
                     <span>{blog.readTime}</span>
                   </div>
-                  
-                  <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">{blog.title}</h3>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">{blog.excerpt}</p>
-                  
+
+                  <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">
+                    {blog.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                    {blog.excerpt}
+                  </p>
+
                   {/* Tags */}
                   <div className="flex flex-wrap gap-1 mb-3">
-                    {blog.tags.slice(0, 2).map(tag => (
+                    {blog.tags.slice(0, 2).map((tag) => (
                       <span
                         key={tag}
                         className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-600"
@@ -441,11 +482,11 @@ const BlogsSection: React.FC = () => {
                       </span>
                     ))}
                     {blog.tags.length > 2 && (
-                      <span className="text-xs text-gray-400">+{blog.tags.length - 2}</span>
+                      <span className="text-xs text-gray-400">
+                        +{blog.tags.length - 2}
+                      </span>
                     )}
                   </div>
-
-                  
 
                   {/* Actions */}
                   <div className="flex items-center justify-between pt-3 border-t border-gray-100">
@@ -473,7 +514,9 @@ const BlogsSection: React.FC = () => {
                         <Trash2 className="w-4 h-4" />
                       </motion.button>
                     </div>
-                    <span className="text-xs text-gray-500">by {blog.author}</span>
+                    <span className="text-xs text-gray-500">
+                      by {blog.author}
+                    </span>
                   </div>
                 </div>
               </motion.div>
@@ -483,7 +526,7 @@ const BlogsSection: React.FC = () => {
           <div className="space-y-4">
             {blogs.map((blog, index) => (
               <motion.div
-                key={blog.id}
+                key={blog._id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
@@ -492,29 +535,35 @@ const BlogsSection: React.FC = () => {
                 {/* Checkbox */}
                 <input
                   type="checkbox"
-                  checked={selectedBlogs.includes(blog.id)}
-                  onChange={() => toggleBlogSelection(blog.id)}
+                  checked={selectedBlogs.includes(blog._id)}
+                  onChange={() => toggleBlogSelection(blog._id)}
                   className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 cursor-pointer"
                 />
 
                 {/* Thumbnail */}
-                <img
-                  src={blog?.images && blog.images.length > 0 ? blog.images[0] : ""}
-                  alt={blog.title}
-                  className="w-20 h-16 object-cover rounded-lg"
-                />
+                {blog?.images?.[0] ? (
+                  <img
+                    src={blog.images[0]}
+                    alt={blog.title}
+                    className="w-20 h-16 object-cover rounded-lg"
+                  />
+                ) : null}
 
                 {/* Info */}
                 <div className="flex-1">
                   <div className="flex items-center space-x-2 mb-1">
-                    <h3 className="font-semibold text-gray-900">{blog.title}</h3>
+                    <h3 className="font-semibold text-gray-900">
+                      {blog.title}
+                    </h3>
                     {blog.youtubeUrl && (
                       <Youtube className="w-4 h-4 text-red-600" />
                     )}
                   </div>
                   <p className="text-sm text-gray-600 mb-2">{blog.excerpt}</p>
                   <div className="flex items-center space-x-4 text-xs text-gray-500">
-                    <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded">{blog.category}</span>
+                    <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded">
+                      {blog.category}
+                    </span>
                     <span>by {blog.author}</span>
                     <span>{blog.publishDate}</span>
                     <span>{blog.readTime}</span>
@@ -527,7 +576,11 @@ const BlogsSection: React.FC = () => {
 
                 {/* Status */}
                 <div className="flex items-center space-x-2">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(blog.status)}`}>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                      blog.status
+                    )}`}
+                  >
                     {blog.status}
                   </span>
                 </div>
@@ -583,7 +636,7 @@ const BlogsSection: React.FC = () => {
               {/* Modal Header */}
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
                 <h3 className="text-xl font-bold text-gray-900">
-                  {editingBlog ? 'Edit Blog Post' : 'Create New Blog Post'}
+                  {editingBlog ? "Edit Blog Post" : "Create New Blog Post"}
                 </h3>
                 <button
                   onClick={() => setShowCreateModal(false)}
@@ -598,35 +651,51 @@ const BlogsSection: React.FC = () => {
                 {/* Basic Info */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Title
+                    </label>
                     <input
                       type="text"
                       value={blogForm.title}
-                      onChange={(e) => setBlogForm(prev => ({ ...prev, title: e.target.value }))}
+                      onChange={(e) =>
+                        setBlogForm((prev) => ({
+                          ...prev,
+                          title: e.target.value,
+                        }))
+                      }
                       className="w-full text-gray-900 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                       placeholder="Enter blog title..."
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Category
+                    </label>
                     <select
                       value={blogForm.category}
-                      onChange={(e) => setBlogForm(prev => ({ ...prev, category: e.target.value }))}
+                      onChange={(e) =>
+                        setBlogForm((prev) => ({
+                          ...prev,
+                          category: e.target.value,
+                        }))
+                      }
                       className="w-full border text-gray-900 border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer"
                     >
                       <option value="">Select category</option>
-                      {categories.slice(1).map(category => (
-                        <option key={category} value={category}>{category}</option>
+                      {categories.slice(1).map((category) => (
+                        <option key={category} value={category}>
+                          {category}
+                        </option>
                       ))}
                     </select>
                   </div>
                 </div>
 
-                
-
                 {/* Featured Image */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Featured Image</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Featured Image
+                  </label>
                   <div className="flex items-center space-x-4">
                     <input
                       type="file"
@@ -655,8 +724,10 @@ const BlogsSection: React.FC = () => {
 
                 {/* Content Editor */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
-                  
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Content
+                  </label>
+
                   {/* Toolbar */}
                   <div className="border border-gray-300 rounded-t-lg p-2 bg-gray-50 flex items-center space-x-2">
                     <motion.button
@@ -729,7 +800,12 @@ const BlogsSection: React.FC = () => {
                   <textarea
                     rows={12}
                     value={blogForm.content}
-                    onChange={(e) => setBlogForm(prev => ({ ...prev, content: e.target.value }))}
+                    onChange={(e) =>
+                      setBlogForm((prev) => ({
+                        ...prev,
+                        content: e.target.value,
+                      }))
+                    }
                     className="w-full border-x border-b border-gray-300 rounded-b-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none text-gray-900"
                     placeholder="Write your blog content here..."
                   />
@@ -737,13 +813,20 @@ const BlogsSection: React.FC = () => {
 
                 {/* YouTube Video */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">YouTube Video URL (Optional)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    YouTube Video URL (Optional)
+                  </label>
                   <div className="flex items-center space-x-2">
                     <Youtube className="w-5 h-5 text-red-600" />
                     <input
                       type="url"
                       value={blogForm.youtubeUrl}
-                      onChange={(e) => setBlogForm(prev => ({ ...prev, youtubeUrl: e.target.value }))}
+                      onChange={(e) =>
+                        setBlogForm((prev) => ({
+                          ...prev,
+                          youtubeUrl: e.target.value,
+                        }))
+                      }
                       className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                       placeholder="https://www.youtube.com/watch?v=..."
                     />
@@ -753,7 +836,9 @@ const BlogsSection: React.FC = () => {
                 {/* Additional Images */}
                 {blogForm.images.length > 0 && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Additional Images</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Additional Images
+                    </label>
                     <div className="grid grid-cols-4 gap-2">
                       {blogForm.images.map((image, index) => (
                         <div key={index} className="relative">
@@ -763,10 +848,14 @@ const BlogsSection: React.FC = () => {
                             className="w-full h-20 object-cover rounded-lg"
                           />
                           <button
-                            onClick={() => setBlogForm(prev => ({
-                              ...prev,
-                              images: prev.images.filter((_, i) => i !== index)
-                            }))}
+                            onClick={() =>
+                              setBlogForm((prev) => ({
+                                ...prev,
+                                images: prev.images.filter(
+                                  (_, i) => i !== index
+                                ),
+                              }))
+                            }
                             className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center cursor-pointer"
                           >
                             <X className="w-3 h-3" />
@@ -780,20 +869,37 @@ const BlogsSection: React.FC = () => {
                 {/* Tags and Settings */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Tags</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Tags
+                    </label>
                     <input
                       type="text"
                       value={blogForm.tags}
-                      onChange={(e) => setBlogForm(prev => ({ ...prev, tags: e.target.value }))}
+                      onChange={(e) =>
+                        setBlogForm((prev) => ({
+                          ...prev,
+                          tags: e.target.value,
+                        }))
+                      }
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                       placeholder="tag1, tag2, tag3..."
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Status
+                    </label>
                     <select
                       value={blogForm.status}
-                      onChange={(e) => setBlogForm(prev => ({ ...prev, status: e.target.value as 'draft' | 'published' | 'scheduled' }))}
+                      onChange={(e) =>
+                        setBlogForm((prev) => ({
+                          ...prev,
+                          status: e.target.value as
+                            | "draft"
+                            | "published"
+                            | "scheduled",
+                        }))
+                      }
                       className="w-full border text-gray-900 border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer"
                     >
                       <option value="draft">Draft</option>
@@ -804,13 +910,20 @@ const BlogsSection: React.FC = () => {
                 </div>
 
                 {/* Publish Date */}
-                {blogForm.status === 'scheduled' && (
+                {blogForm.status === "scheduled" && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Publish Date</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Publish Date
+                    </label>
                     <input
                       type="datetime-local"
                       value={blogForm.publishDate}
-                      onChange={(e) => setBlogForm(prev => ({ ...prev, publishDate: e.target.value }))}
+                      onChange={(e) =>
+                        setBlogForm((prev) => ({
+                          ...prev,
+                          publishDate: e.target.value,
+                        }))
+                      }
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                     />
                   </div>
@@ -835,7 +948,9 @@ const BlogsSection: React.FC = () => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => setBlogForm(prev => ({ ...prev, status: 'draft' }))}
+                    onClick={() =>
+                      setBlogForm((prev) => ({ ...prev, status: "draft" }))
+                    }
                     className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg cursor-pointer"
                   >
                     Save Draft
@@ -847,7 +962,7 @@ const BlogsSection: React.FC = () => {
                     className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center space-x-2 cursor-pointer"
                   >
                     <Save className="w-4 h-4" />
-                    <span>{editingBlog ? 'Update' : 'Publish'}</span>
+                    <span>{editingBlog ? "Update" : "Publish"}</span>
                   </motion.button>
                 </div>
               </div>

@@ -197,63 +197,26 @@ const Blog: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50">
-      {/* Hero Section */}
-      <section className="py-20 px-6 bg-gradient-to-r from-red-600 to-red-700 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-20 w-32 h-32 bg-white rounded-full"></div>
-          <div className="absolute top-40 right-32 w-24 h-24 bg-amber-300 rounded-full"></div>
-          <div className="absolute bottom-32 left-40 w-20 h-20 bg-white rounded-full"></div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50 pt-16">
+      {/* Header */}
+      <div className="text-center py-5 xl:py-16  bg-gradient-to-br from-slate-50 to-white">
+        <span className="inline-block px-4 py-2 bg-red-100 text-red-700 rounded-full text-sm font-medium mb-6">
+          Blog & Insights
+        </span>
+        <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-red-700 via-red-600 to-amber-600 bg-clip-text text-transparent">
+          Read Our <br />
+          <span className="text-slate-800">Recent Blogs </span>
+        </h1>
+        <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+          blog is a platform where we share our latest insights, tips, and
+          stories from the world of photography. Whether you're a professional
+          photographer or just starting out, you'll find valuable information to
+          help you grow your skills and stay updated with the latest trends.
+        </p>
+        <div className="mt-6 flex justify-center">
+          <BookOpen className="w-12 h-12 text-red-600" />
         </div>
-
-        <motion.div
-          className="relative z-10 max-w-7xl mx-auto text-center"
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-        >
-          <motion.div variants={itemVariants}>
-            <div className="flex justify-center">
-              <div className=" w-20 h-20 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center mb-8 shadow-2xl">
-                <BookOpen className="w-10 h-10 text-white" />
-              </div>
-            </div>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              Photography
-              <br />
-              <span className="text-amber-300">Blog</span>
-            </h1>
-            <p className="text-xl text-red-100 max-w-3xl mx-auto leading-relaxed mb-8">
-              Explore our collection of photography tips, tutorials,
-              behind-the-scenes stories, and creative inspiration from
-              professional photographers.
-            </p>
-            <div className="flex items-center justify-center space-x-6 text-red-200">
-              <span className="flex items-center space-x-2">
-                <BookOpen className="w-5 h-5" />
-                <span>{blogPosts.length} Articles</span>
-              </span>
-              <span>•</span>
-              <span className="flex items-center space-x-2">
-                <Eye className="w-5 h-5" />
-                <span>
-                  {blogPosts
-                    .reduce((sum, post) => sum + post.views, 0)
-                    .toLocaleString()}{" "}
-                  Views
-                </span>
-              </span>
-              <span>•</span>
-              <span className="flex items-center space-x-2">
-                <Heart className="w-5 h-5" />
-                <span>
-                  {blogPosts.reduce((sum, post) => sum + post.likes, 0)} Likes
-                </span>
-              </span>
-            </div>
-          </motion.div>
-        </motion.div>
-      </section>
+      </div>
 
       {/* Search and Filters */}
       <section className="py-12 px-6">
@@ -266,19 +229,6 @@ const Blog: React.FC = () => {
             className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 mb-12"
           >
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-              {/* Search */}
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search blog posts..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300 text-gray-900"
-                />
-              </div>
-
-              {/* Filter Button */}
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -294,7 +244,6 @@ const Blog: React.FC = () => {
               </motion.button>
             </div>
 
-            {/* Category Filters */}
             {showFilters && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
@@ -332,127 +281,51 @@ const Blog: React.FC = () => {
               </motion.div>
             )}
           </motion.div>
-
           {/* Blog Posts Grid */}
           <motion.div
             key={selectedCategory + searchTerm}
             initial="hidden"
             whileInView="visible"
             variants={containerVariants}
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+            className="grid md:grid-cols-2 gap-12"
           >
-            {filteredPosts.map((post, index) => (
+            {filteredPosts.map((post) => (
               <motion.article
                 key={post.id}
                 variants={itemVariants}
-                whileHover={{ y: -10 }}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden cursor-pointer group"
+                whileHover={{ y: -5 }}
+                className="bg-[#f8f6f2] rounded-lg overflow-hidden shadow-md transition-all duration-500"
               >
                 {/* Image */}
-                <div className="relative aspect-[16/9] overflow-hidden">
+                <div className="w-full aspect-[3/2] overflow-hidden">
                   <img
                     src={post.featuredImage}
                     alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                  {/* Badges */}
-                  <div className="absolute top-4 left-4 flex space-x-2">
-                    {post.featured && (
-                      <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1">
-                        <Star className="w-3 h-3 fill-current" />
-                        <span>Featured</span>
-                      </span>
-                    )}
-                    {post.hasVideo && (
-                      <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                        <Youtube className="w-3 h-3" />
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Stats Overlay */}
-                  <div className="absolute bottom-4 left-4 flex space-x-4 text-white text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="flex items-center space-x-1">
-                      <Eye className="w-4 h-4" />
-                      <span>{post.views}</span>
-                    </span>
-                    <span className="flex items-center space-x-1">
-                      <Heart className="w-4 h-4" />
-                      <span>{post.likes}</span>
-                    </span>
-                    <span className="flex items-center space-x-1">
-                      <MessageSquare className="w-4 h-4" />
-                      <span>{post.comments}</span>
-                    </span>
-                  </div>
                 </div>
 
                 {/* Content */}
                 <div className="p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-medium">
-                      {post.category}
-                    </span>
-                    <span className="text-slate-500 text-sm flex items-center space-x-1">
-                      <Clock className="w-3 h-3" />
-                      <span>{post.readTime}</span>
-                    </span>
-                  </div>
-
-                  <h2 className="text-xl font-bold text-slate-800 mb-3 line-clamp-2 group-hover:text-red-600 transition-colors duration-300">
+                  <h2 className="text-lg font-semibold text-gray-800 mb-3">
                     {post.title}
                   </h2>
-
-                  <p className="text-slate-600 mb-4 line-clamp-3 leading-relaxed">
+                  <p className="text-gray-700 mb-4 leading-relaxed">
                     {post.excerpt}
                   </p>
 
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {post.tags.slice(0, 3).map((tag) => (
-                      <span
-                        key={tag}
-                        className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-slate-100 text-slate-600"
-                      >
-                        <Tag className="w-2 h-2 mr-1" />
-                        {tag}
-                      </span>
-                    ))}
-                    {post.tags.length > 3 && (
-                      <span className="text-xs text-slate-400">
-                        +{post.tags.length - 3}
-                      </span>
-                    )}
-                  </div>
+                  {/* Read More */}
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    className="text-sm text-red-500 font-medium flex items-center gap-1 hover:underline"
+                  >
+                    Read More →
+                  </Link>
 
-                  {/* Author and Date */}
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center">
-                        <User className="w-4 h-4 text-white" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-slate-800">
-                          {post.author}
-                        </p>
-                        <p className="text-xs text-slate-500 flex items-center space-x-1">
-                          <Calendar className="w-3 h-3" />
-                          <span>{post.publishDate}</span>
-                        </p>
-                      </div>
-                    </div>
-                    <Link href={`/blog/${post.slug}`}>
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center hover:bg-red-200 transition-colors duration-300 cursor-pointer"
-                      >
-                        <ArrowRight className="w-4 h-4" />
-                      </motion.button>
-                    </Link>
-                  </div>
+                  {/* Date */}
+                  <p className="text-xs text-gray-500 mt-3">
+                    {post.publishDate}
+                  </p>
                 </div>
               </motion.article>
             ))}
@@ -470,10 +343,9 @@ const Blog: React.FC = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 mx-auto cursor-pointer"
+                className="bg-red-800 hover:bg-red-900 text-white px-8 py-4 rounded-full text-lg font-medium shadow-md transition-all duration-300"
               >
-                <span>Load More Posts</span>
-                <TrendingUp className="w-5 h-5" />
+                Load More Posts
               </motion.button>
             </motion.div>
           )}

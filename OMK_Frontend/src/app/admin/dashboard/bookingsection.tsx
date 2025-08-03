@@ -25,7 +25,7 @@ import {
   Trash2,
   Archive,
 } from "lucide-react";
-import BookingDetailsModal from "./detailsBooking";
+
 import { Booking } from "@/types/types";
 import axios from "@/utils/axios";
 import { toast } from "sonner";
@@ -49,8 +49,6 @@ const BookingsSection: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
   // Updated to work with confirmed/cancelled status
   const handleBookingAction = async (
@@ -83,15 +81,9 @@ const BookingsSection: React.FC = () => {
     }
   };
 
-  const handleViewBooking = (booking: Booking) => {
-    setSelectedBooking(booking);
-    setIsModalOpen(true);
-  };
+  
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedBooking(null);
-  };
+
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -246,7 +238,7 @@ const BookingsSection: React.FC = () => {
               exit={{ opacity: 0, scale: 0.8, y: -20 }}
               transition={{ delay: index * 0.1, type: "spring", damping: 15 }}
               className="group bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 cursor-pointer"
-              onClick={() => handleViewBooking(booking)}
+             
             >
               {/* Card Header with Gradient */}
               <div className="bg-gradient-to-r from-black via-black to-black p-6 text-white">
@@ -375,18 +367,7 @@ const BookingsSection: React.FC = () => {
                   </div>
                 ) : (
                   <div className="flex space-x-2">
-                    <motion.button
-                      whileHover={{ scale: 1.05, y: -2 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleViewBooking(booking);
-                      }}
-                      className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-4 py-3 rounded-xl text-sm font-bold flex items-center justify-center space-x-2 shadow-lg transition-all duration-300"
-                    >
-                      <Eye className="w-4 h-4" />
-                      <span>View Details</span>
-                    </motion.button>
+                    
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -423,15 +404,7 @@ const BookingsSection: React.FC = () => {
         </motion.div>
       )}
 
-      {/* Modal */}
-      <BookingDetailsModal
-        booking={selectedBooking}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onAccept={(bookingId: string) => handleBookingAction(bookingId, "confirm")}
-        onReject={(bookingId: string) => handleBookingAction(bookingId, "cancel")}
-        onDelete={(bookingId: string) => handleBookingAction(bookingId, "delete")}
-      />
+     
     </div>
   );
 };

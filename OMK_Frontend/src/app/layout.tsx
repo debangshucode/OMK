@@ -24,7 +24,6 @@ export const metadata: Metadata = {
     "OurMoments Kolkata is a top-rated photography company based in Kolkata, offering wedding, pre-wedding, event, and corporate photography services across India. With experienced photographers, expert video editors, and a client-first approach, we deliver premium photo and video experiences with digital support. Capture your special moments anywhere in India with OurMoments – trusted storytellers in visual excellence.",
 };
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -34,18 +33,15 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      > <AuthProvider>
-        
-         <ClientLayout>{children}
-          <Toaster 
-          position="top-center"
-        richColors
-
-          />
-          <HeaderAction 
-        />
-         </ClientLayout>
-         </AuthProvider>
+      >
+        {" "}
+        <AuthProvider>
+          <ClientLayout>
+            {children}
+            <Toaster position="top-center" richColors />
+            <HeaderAction />
+          </ClientLayout>
+        </AuthProvider>
       </body>
     </html>
   );
