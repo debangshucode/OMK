@@ -77,10 +77,10 @@ const BlogDetail = () => {
             {/* Featured Image */}
             <motion.div variants={itemVariants} className="mb-12">
               <img
-                src={blogPost.image}
-                alt={blogPost.title}
-                className="w-full aspect-[16/9] object-cover rounded-2xl shadow-2xl"
-              />
+                    src={Array.isArray(blogPost.image) ? blogPost.image[0] : blogPost.image}
+                    alt={blogPost.title}
+                    className="w-full h-full object-cover"
+                  />
             </motion.div>
             {/* Author Info */}
             <motion.div variants={itemVariants} className="mb-12">
@@ -186,9 +186,11 @@ const BlogDetail = () => {
                   >
                     <div className="aspect-[16/9] rounded-xl overflow-hidden mb-4">
                       <img
-                        src={post.image}
+                        src={
+                          Array.isArray(post.image) ? post.image[0] : post.image
+                        }
                         alt={post.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover"
                       />
                     </div>
                     <h4 className="font-semibold text-gray-900 group-hover:text-red-600 transition-colors duration-300 mb-2">

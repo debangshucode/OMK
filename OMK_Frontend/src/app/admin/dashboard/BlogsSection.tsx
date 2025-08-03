@@ -27,7 +27,7 @@ import {
   BookOpen,
   FileText,
 } from "lucide-react";
-import axios from "axios";
+import axios from "@/utils/axios";
 import { toast } from "sonner";
 
 interface Blog {
@@ -48,6 +48,20 @@ interface Blog {
   readTime: string;
   youtubeUrl?: string;
   images: string[];
+  imageFiles: File[];
+}
+interface BlogForm {
+  title: string;
+  content: string;
+  featuredImageFile: File | null;
+  featuredImageUrl: string;
+  category: string;
+  tags: string;
+  status: "draft" | "published" | "scheduled";
+  publishDate: string;
+  youtubeUrl: string;
+  images: string[]; // preview image URLs
+  imageFiles: File[]; // raw files to upload
 }
 
 const BlogsSection: React.FC = () => {
@@ -63,17 +77,18 @@ const BlogsSection: React.FC = () => {
   const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
 
   // Blog form state
-  const [blogForm, setBlogForm] = useState({
+  const [blogForm, setBlogForm] = useState<BlogForm>({
     title: "",
     content: "",
-    featuredImageFile: null as File | null,
+    featuredImageFile: null,
     featuredImageUrl: "",
     category: "",
     tags: "",
-    status: "draft" as "draft" | "published" | "scheduled",
+    status: "draft",
     publishDate: "",
     youtubeUrl: "",
-    images: [] as string[],
+    images: [],
+    imageFiles: [],
   });
 
   const fetchBlogs = async () => {
@@ -96,8 +111,10 @@ const BlogsSection: React.FC = () => {
   };
   useEffect(() => {
 
+  useEffect(() => {
     fetchBlogs();
   }, []);
+
   if (loading) return <p className="text-gray-600">Loading blogs...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
@@ -130,25 +147,31 @@ const BlogsSection: React.FC = () => {
       status: "draft",
       publishDate: "",
       youtubeUrl: "",
-      images: [],
+      images: [], // preview URLs
+      imageFiles: [], // actual image files
     });
     setEditingBlog(null);
     setShowCreateModal(true);
   };
 
   const handleEditBlog = (blog: Blog) => {
+    const allImages = Array.isArray(blog.image) ? blog.image : [];
+    const [featured = "", ...otherImages] = allImages;
+
     setBlogForm({
       title: blog.title,
       content: blog.content,
       featuredImageFile: null,
-      featuredImageUrl: blog.image,
+      featuredImageUrl: featured,
       category: blog.category,
       tags: Array.isArray(blog.tags) ? blog.tags.join(", ") : "",
       status: blog.status,
-      publishDate: blog.publishDate,
+      publishDate: blog.publishDate || "",
       youtubeUrl: blog.youtubeUrl || "",
-      images: Array.isArray(blog.images) ? blog.images : [],
+      images: otherImages,
+      imageFiles: [],
     });
+
     setEditingBlog(blog);
     setShowCreateModal(true);
   };
@@ -206,15 +229,17 @@ const BlogsSection: React.FC = () => {
 
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Simulate image upload
-      const imageUrl = URL.createObjectURL(file);
-      setBlogForm((prev) => ({
-        ...prev,
-        images: [...prev.images, imageUrl],
-      }));
-    }
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+
+    // Optional: store previews and real files separately if needed
+    const filePreviews = files.map((file) => URL.createObjectURL(file));
+
+    setBlogForm((prev) => ({
+      ...prev,
+      images: [...prev.images, ...filePreviews], // for preview
+      imageFiles: [...(prev.imageFiles || []), ...files], // actual files for backend
+    }));
   };
 
   const handleFeaturedImageUpload = (
@@ -439,7 +464,7 @@ const BlogsSection: React.FC = () => {
               <div className="relative aspect-[16/9]">
                 {blog.image && (
                   <img
-                    src={blog.image}
+                    src={Array.isArray(blog.image) ? blog.image[0] : blog.image}
                     alt={blog.title}
                     className="w-full h-full object-cover"
                   />

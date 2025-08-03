@@ -185,11 +185,13 @@ const Blog: React.FC = () => {
               >
                 {/* Image */}
                 <div className="w-full aspect-[3/2] overflow-hidden">
+                 
                   <img
-                    src={post.image}
+                    src={Array.isArray(post.image) ? post.image[0] : post.image}
                     alt={post.title}
-                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                    className="w-full h-full object-cover"
                   />
+              
                 </div>
 
                 {/* Content */}

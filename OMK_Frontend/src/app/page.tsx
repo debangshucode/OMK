@@ -39,7 +39,6 @@ export default function HomePage() {
       <Services />
       <BlogHome />
       <Testimonials />
-      <Footer />
       <BookingAssistant />
     </main>
   );
