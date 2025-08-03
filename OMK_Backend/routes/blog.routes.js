@@ -4,18 +4,17 @@ const {
   getAllBlogs,
   getBlogBySlug,
   updateBlog,
-  deleteBlog
- } = require("../controllers/blog.controller");
+  deleteBlog,
+} = require("../controllers/blog.controller");
 
- const { protect, authorizeRoles } = require("../middlewares/auth.middleware");
- const upload = require("../middlewares/upload.middleware.js");
+const { protect, authorizeRoles } = require("../middlewares/auth.middleware");
+const upload = require("../middlewares/upload.middleware.js");
 
 const router = express.Router();
 
 // Public routes
 router.get("/", getAllBlogs);
 router.get("/:slug", getBlogBySlug);
-
 
 // Admin-only
 router.post(
@@ -25,7 +24,13 @@ router.post(
   upload.array("image"), // 👈 this line handles file upload
   createBlog
 );
-router.put("/:id", protect, authorizeRoles("admin"), updateBlog);
+router.put(
+  "/:id",
+  protect,
+  authorizeRoles("admin"),
+  upload.array("image"), // 👈 necessary for handling multipart/form-data + files
+  updateBlog
+);
 router.delete("/:id", protect, authorizeRoles("admin"), deleteBlog);
 
 module.exports = router;

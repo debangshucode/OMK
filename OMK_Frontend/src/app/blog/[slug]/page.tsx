@@ -1,206 +1,48 @@
 "use client";
-import React, { useState } from "react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { motion } from "framer-motion";
-import { customItems } from "@/data/index";
+import { Tag, Clock, ArrowRight, Youtube } from "lucide-react";
 import Image from "next/image";
-import {
-  Calendar,
-  User,
-  Eye,
-  Heart,
-  MessageSquare,
-  Share2,
-  Clock,
-  Tag,
-  ArrowLeft,
-  ArrowRight,
-  BookOpen,
-  ThumbsUp,
-  Send,
-  Facebook,
-  Twitter,
-  Linkedin,
-  Link,
-  Youtube,
-  Star,
-  Quote,
-} from "lucide-react";
+import { customItems } from "@/data/index";
+import Link from "next/link";
 
-interface Comment {
-  id: number;
-  author: string;
-  avatar: string;
-  content: string;
-  date: string;
-  likes: number;
-  replies?: Comment[];
-}
-interface BlogPostProps {
-  blogPost: any; // or define a proper Blog type
-}
-const BlogPost: React.FC = () => {
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(189);
-  const [showShareMenu, setShowShareMenu] = useState(false);
-  const [newComment, setNewComment] = useState("");
-  const [rating, setRating] = useState(0);
+const BlogDetail = () => {
+  const { slug } = useParams();
+  const [blogPost, setBlogPost] = useState<any>(null);
+  const [allBlogs, setAllBlogs] = useState<any[]>([]);
 
   const imageItems = customItems.filter((item) => item.image);
-  // Mock blog post data
-  const blogPost = {
-    id: 1,
-    title: "Top 10 Wedding Photography Tips for Perfect Shots",
-    slug: "wedding-photography-tips-perfect-shots",
-    content: `
-      <p>Wedding photography is an art that requires skill, patience, and creativity. As a professional photographer, I've captured hundreds of weddings, and each one teaches me something new. Today, I want to share my top 10 tips that will help you capture stunning wedding moments that couples will treasure forever.</p>
 
-      <h2>1. Scout the Venue in Advance</h2>
-      <p>Before the big day, visit the wedding venue to familiarize yourself with the lighting conditions, layout, and potential photo spots. This preparation allows you to plan your shots and identify the best locations for different parts of the ceremony and reception.</p>
+  useEffect(() => {
+    const fetchBlog = async () => {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/blogs/${slug}`
+      );
+      setBlogPost(res.data);
+    };
 
-      <h2>2. Master Natural Light</h2>
-      <p>Natural light is your best friend in wedding photography. Learn to work with different lighting conditions throughout the day - from the soft morning light during preparation to the golden hour for romantic portraits. Avoid harsh midday sun when possible, or use it creatively with proper positioning.</p>
+    const fetchAllBlogs = async () => {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/blogs`);
+      setAllBlogs(res.data);
+    };
 
-      <h2>3. Capture Candid Emotions</h2>
-      <p>While posed shots are important, the most memorable wedding photos often capture genuine emotions and spontaneous moments. Keep your camera ready for tears of joy, laughter, and intimate glances between the couple and their loved ones.</p>
-
-      <h2>4. Focus on Details</h2>
-      <p>Don't forget to photograph the small details that make each wedding unique - the rings, flowers, decorations, and personal touches. These detail shots help tell the complete story of the day and are often cherished by couples.</p>
-
-      <h2>5. Use Multiple Angles</h2>
-      <p>Vary your shooting angles to create visual interest. Shoot from high above during the ceremony, get down low for dramatic perspectives, and use different focal lengths to capture both wide establishing shots and intimate close-ups.</p>
-    `,
-    featuredImage:
-      "https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=800&h=500&fit=crop",
-    author: "Alex Thompson",
-    authorBio:
-      "Professional wedding photographer with over 8 years of experience capturing love stories around the world.",
-    authorAvatar:
-      "https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop",
-    category: "Wedding Photography",
-    tags: ["wedding", "photography", "tips", "couples", "professional"],
-    publishDate: "2024-01-15",
-    readTime: "5 min read",
-    views: 2456,
-    likes: 189,
-    comments: 23,
-    featured: true,
-    hasVideo: true,
-    youtubeUrl: "https://www.youtube.com/watch?v=example",
-  };
-
-  const comments: Comment[] = [
-    {
-      id: 1,
-      author: "Sarah Johnson",
-      avatar:
-        "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop",
-      content:
-        "This is incredibly helpful! I'm getting married next month and will definitely share these tips with our photographer.",
-      date: "2024-01-16",
-      likes: 12,
-      replies: [
-        {
-          id: 2,
-          author: "Alex Thompson",
-          avatar:
-            "https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop",
-          content:
-            "Thank you Sarah! I'm sure your photographer will appreciate the collaboration. Wishing you a beautiful wedding!",
-          date: "2024-01-16",
-          likes: 5,
-        },
-      ],
-    },
-    {
-      id: 3,
-      author: "Mike Davis",
-      avatar:
-        "https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop",
-      content:
-        "As a fellow photographer, I can confirm these tips are spot on. The natural light advice especially resonates with me.",
-      date: "2024-01-16",
-      likes: 8,
-    },
-    {
-      id: 4,
-      author: "Emma Wilson",
-      avatar:
-        "https://images.pexels.com/photos/1024967/pexels-photo-1024967.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop",
-      content:
-        "Love the emphasis on candid moments! Those are always my favorite photos from weddings.",
-      date: "2024-01-17",
-      likes: 6,
-    },
-  ];
-
-  const relatedPosts = [
-    {
-      id: 2,
-      title: "Behind the Scenes: Corporate Event Photography",
-      image:
-        "https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop",
-      readTime: "7 min read",
-    },
-    {
-      id: 3,
-      title: "The Art of Pre-Wedding Photography",
-      image:
-        "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop",
-      readTime: "6 min read",
-    },
-  ];
-
-  const handleLike = () => {
-    setLiked(!liked);
-    setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
-  };
-
-  const handleShare = (platform: string) => {
-    const url = window.location.href;
-    const title = blogPost.title;
-
-    switch (platform) {
-      case "facebook":
-        window.open(
-          `https://www.facebook.com/sharer/sharer.php?u=${url}`,
-          "_blank"
-        );
-        break;
-      case "twitter":
-        window.open(
-          `https://twitter.com/intent/tweet?url=${url}&text=${title}`,
-          "_blank"
-        );
-        break;
-      case "linkedin":
-        window.open(
-          `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
-          "_blank"
-        );
-        break;
-      case "copy":
-        navigator.clipboard.writeText(url);
-        break;
+    if (slug) {
+      fetchBlog();
+      fetchAllBlogs();
     }
-    setShowShareMenu(false);
-  };
+  }, [slug]);
 
-  const handleCommentSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newComment.trim()) {
-      console.log("New comment:", newComment);
-      setNewComment("");
-    }
-  };
+  const relatedPosts = allBlogs
+    .filter((p) => p.slug !== slug && p.category === blogPost?.category)
+    .slice(0, 2);
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.1,
-      },
+      transition: { delayChildren: 0.3, staggerChildren: 0.1 },
     },
   };
 
@@ -209,12 +51,11 @@ const BlogPost: React.FC = () => {
     visible: {
       y: 0,
       opacity: 1,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut" as const, // Ensure 'easeOut' is treated as a constant
-      },
+      transition: { duration: 0.6, ease: "easeOut" as const },
     },
   };
+
+  if (!blogPost) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50 py-15">
@@ -236,7 +77,7 @@ const BlogPost: React.FC = () => {
             {/* Featured Image */}
             <motion.div variants={itemVariants} className="mb-12">
               <img
-                src={blogPost.featuredImage}
+                src={blogPost.image}
                 alt={blogPost.title}
                 className="w-full aspect-[16/9] object-cover rounded-2xl shadow-2xl"
               />
@@ -292,9 +133,9 @@ const BlogPost: React.FC = () => {
                   Tags
                 </h4>
                 <div className="flex flex-wrap gap-3">
-                  {blogPost.tags.map((tag) => (
+                  {blogPost.tags.map((tag: string, index: number) => (
                     <span
-                      key={tag}
+                      key={`${tag}-${index}`}
                       className="inline-flex items-center px-4 py-2 rounded-full text-sm bg-red-100 text-red-700 hover:bg-red-200 transition-colors duration-300 cursor-pointer"
                     >
                       <Tag className="w-3 h-3 mr-2" />
@@ -306,7 +147,6 @@ const BlogPost: React.FC = () => {
             </motion.div>
 
             {/* Author Bio */}
-           
 
             {/* Images related to blog */}
             <div className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -340,9 +180,9 @@ const BlogPost: React.FC = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 {relatedPosts.map((post) => (
                   <motion.div
-                    key={post.id}
+                    key={post._id}
                     whileHover={{ y: -5 }}
-                    className="group cursor-pointer"
+                    className="group cursor-pointer shadow-xl p-2 border  rounded-lg"
                   >
                     <div className="aspect-[16/9] rounded-xl overflow-hidden mb-4">
                       <img
@@ -354,17 +194,22 @@ const BlogPost: React.FC = () => {
                     <h4 className="font-semibold text-gray-900 group-hover:text-red-600 transition-colors duration-300 mb-2">
                       {post.title}
                     </h4>
+                    <p className="text-gray-600 mb-4">
+                      {post.content.slice(0, 100)}...
+                    </p>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-500 flex items-center space-x-1">
-                        <Clock className="w-3 h-3" />
-                        <span>{post.readTime}</span>
-                      </span>
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         className="w-8 h-8 bg-red-100 text-red-600 rounded-full flex items-center justify-center hover:bg-red-200 transition-colors duration-300 cursor-pointer"
                       >
-                        <ArrowRight className="w-4 h-4" />
+                        <Link
+                          href={`/blog/${post.slug}`}
+                          className="text-sm text-red-500 font-medium flex items-center gap-1 hover:underline"
+                        >
+                          {" "}
+                          <ArrowRight className="w-4 h-4" />
+                        </Link>
                       </motion.button>
                     </div>
                   </motion.div>
@@ -378,4 +223,4 @@ const BlogPost: React.FC = () => {
   );
 };
 
-export default BlogPost;
+export default BlogDetail;

@@ -1,155 +1,57 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import axios from "axios";
 import Link from "next/link";
-import {
-  Search,
-  Filter,
-  Calendar,
-  User,
-  Eye,
-  Heart,
-  MessageSquare,
-  Clock,
-  Tag,
-  ArrowRight,
-  BookOpen,
-  TrendingUp,
-  Star,
-  Youtube,
-  X,
-} from "lucide-react";
+import { format } from "date-fns";
+
+import { Search, Filter,BookOpen,X } from "lucide-react";
+
+interface Blog {
+  _id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  image: string;
+  author: string;
+  category: string;
+  tags: string[];
+  createdAt: string;
+  readTime: string;
+  views: number;
+  likes: number;
+  comments: number;
+  featured: boolean;
+  hasVideo: boolean;
+}
 
 const Blog: React.FC = () => {
+  const [blogPosts, setBlogPosts] = useState<Blog[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [showFilters, setShowFilters] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const blogPosts = [
-    {
-      id: 1,
-      title: "Top 10 Wedding Photography Tips for Perfect Shots",
-      slug: "wedding-photography-tips-perfect-shots",
-      excerpt:
-        "Discover essential tips and techniques for capturing stunning wedding moments that couples will treasure forever. Learn about lighting, composition, and timing.",
-      content:
-        "Wedding photography is an art that requires skill, patience, and creativity...",
-      featuredImage:
-        "https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
-      author: "Alex Thompson",
-      category: "Wedding Photography",
-      tags: ["wedding", "photography", "tips", "couples"],
-      publishDate: "2024-01-15",
-      readTime: "5 min read",
-      views: 2456,
-      likes: 189,
-      comments: 23,
-      featured: true,
-      hasVideo: true,
-    },
-    {
-      id: 2,
-      title: "Behind the Scenes: Corporate Event Photography",
-      slug: "behind-scenes-corporate-event-photography",
-      excerpt:
-        "Learn the secrets of professional corporate event photography and how to capture the essence of business gatherings with style and professionalism.",
-      content:
-        "Corporate events require a different approach to photography...",
-      featuredImage:
-        "https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
-      author: "Sarah Mitchell",
-      category: "Corporate Photography",
-      tags: ["corporate", "events", "business", "professional"],
-      publishDate: "2024-01-12",
-      readTime: "7 min read",
-      views: 1834,
-      likes: 156,
-      comments: 18,
-      featured: false,
-      hasVideo: false,
-    },
-    {
-      id: 3,
-      title: "The Art of Pre-Wedding Photography",
-      slug: "art-pre-wedding-photography",
-      excerpt:
-        "Explore creative techniques and ideas for memorable pre-wedding photography sessions that tell love stories in the most beautiful way.",
-      content: "Pre-wedding shoots are becoming increasingly popular...",
-      featuredImage:
-        "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
-      author: "Mike Johnson",
-      category: "Pre-Wedding",
-      tags: ["pre-wedding", "couples", "romance", "creativity"],
-      publishDate: "2024-01-10",
-      readTime: "6 min read",
-      views: 1567,
-      likes: 134,
-      comments: 15,
-      featured: false,
-      hasVideo: true,
-    },
-    {
-      id: 4,
-      title: "Portrait Photography: Capturing Personality",
-      slug: "portrait-photography-capturing-personality",
-      excerpt:
-        "Master the art of portrait photography with techniques for bringing out the best in your subjects and creating compelling character studies.",
-      content:
-        "Portrait photography is about more than just taking pictures...",
-      featuredImage:
-        "https://images.pexels.com/photos/1024967/pexels-photo-1024967.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
-      author: "Emma Davis",
-      category: "Portrait",
-      tags: ["portrait", "personality", "lighting", "composition"],
-      publishDate: "2024-01-08",
-      readTime: "4 min read",
-      views: 1234,
-      likes: 98,
-      comments: 12,
-      featured: false,
-      hasVideo: false,
-    },
-    {
-      id: 5,
-      title: "Event Photography: Telling Stories Through Images",
-      slug: "event-photography-telling-stories",
-      excerpt:
-        "Learn how to document events effectively, capturing both the big moments and intimate details that make each celebration unique.",
-      content: "Event photography requires quick thinking and adaptability...",
-      featuredImage:
-        "https://images.pexels.com/photos/1043473/pexels-photo-1043473.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
-      author: "David Wilson",
-      category: "Event Photography",
-      tags: ["events", "storytelling", "candid", "moments"],
-      publishDate: "2024-01-05",
-      readTime: "8 min read",
-      views: 987,
-      likes: 76,
-      comments: 9,
-      featured: false,
-      hasVideo: true,
-    },
-    {
-      id: 6,
-      title: "Photography Equipment Guide for Beginners",
-      slug: "photography-equipment-guide-beginners",
-      excerpt:
-        "A comprehensive guide to essential photography equipment for beginners, including cameras, lenses, and accessories to get you started.",
-      content: "Starting your photography journey can be overwhelming...",
-      featuredImage:
-        "https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop",
-      author: "Lisa Chen",
-      category: "Equipment",
-      tags: ["equipment", "beginners", "cameras", "lenses"],
-      publishDate: "2024-01-03",
-      readTime: "10 min read",
-      views: 2134,
-      likes: 167,
-      comments: 28,
-      featured: false,
-      hasVideo: false,
-    },
-  ];
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/blogs`,
+          {
+            withCredentials: true,
+          }
+        );
+        setBlogPosts(res.data.blogs || res.data); // depends on API structure
+      } catch (err) {
+        console.error("Failed to fetch blogs:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
 
   const categories = [
     "all",
@@ -195,6 +97,13 @@ const Blog: React.FC = () => {
       },
     },
   };
+  if (loading) {
+    return (
+      <div className="text-center py-24">
+        <p className="text-gray-500 text-lg">Loading blogs...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50 pt-16">
@@ -229,37 +138,15 @@ const Blog: React.FC = () => {
             className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 mb-12"
           >
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center space-x-2 px-6 py-3 rounded-xl border transition-all duration-300 cursor-pointer ${
-                  showFilters
-                    ? "bg-red-50 border-red-200 text-red-600"
-                    : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50"
-                }`}
-              >
-                <Filter className="w-5 h-5" />
-                <span>Categories</span>
-              </motion.button>
-            </div>
-
-            {showFilters && (
-              <motion.div
+             <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
-                className="mt-6 pt-6 border-t border-gray-200 overflow-hidden"
+                className="  overflow-hidden"
               >
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold text-gray-900">
                     Filter by Category
                   </h3>
-                  <button
-                    onClick={() => setShowFilters(false)}
-                    className="text-gray-400 hover:text-gray-600 cursor-pointer"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   {categories.map((category) => (
@@ -279,7 +166,7 @@ const Blog: React.FC = () => {
                   ))}
                 </div>
               </motion.div>
-            )}
+            </div>
           </motion.div>
           {/* Blog Posts Grid */}
           <motion.div
@@ -291,7 +178,7 @@ const Blog: React.FC = () => {
           >
             {filteredPosts.map((post) => (
               <motion.article
-                key={post.id}
+                key={post._id}
                 variants={itemVariants}
                 whileHover={{ y: -5 }}
                 className="bg-[#f8f6f2] rounded-lg overflow-hidden shadow-md transition-all duration-500"
@@ -299,7 +186,7 @@ const Blog: React.FC = () => {
                 {/* Image */}
                 <div className="w-full aspect-[3/2] overflow-hidden">
                   <img
-                    src={post.featuredImage}
+                    src={post.image}
                     alt={post.title}
                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                   />
@@ -311,9 +198,8 @@ const Blog: React.FC = () => {
                     {post.title}
                   </h2>
                   <p className="text-gray-700 mb-4 leading-relaxed">
-                    {post.excerpt}
+                    {post.content.slice(0, 150)}...
                   </p>
-
                   {/* Read More */}
                   <Link
                     href={`/blog/${post.slug}`}
@@ -321,10 +207,9 @@ const Blog: React.FC = () => {
                   >
                     Read More →
                   </Link>
-
                   {/* Date */}
                   <p className="text-xs text-gray-500 mt-3">
-                    {post.publishDate}
+                    {format(new Date(post.createdAt), "yyyy-MM-dd")}
                   </p>
                 </div>
               </motion.article>
