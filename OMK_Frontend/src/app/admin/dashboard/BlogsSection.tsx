@@ -8,15 +8,11 @@ import {
   Grid3X3,
   List,
   Eye,
-  EyeOff,
   Edit,
   Trash2,
-  Calendar,
-  User,
   X,
   Save,
   Image as ImageIcon,
-  Video,
   Link,
   Bold,
   Italic,
@@ -28,12 +24,8 @@ import {
   Youtube,
   Tag,
   Clock,
-  Heart,
-  MessageSquare,
-  Share2,
   BookOpen,
   FileText,
-  Camera,
 } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
@@ -44,7 +36,7 @@ interface Blog {
   slug: string;
   content: string;
   excerpt: string;
-  featuredImage: string;
+  image: string;
   author: string;
   category: string;
   tags: string[];
@@ -75,6 +67,7 @@ const BlogsSection: React.FC = () => {
     title: "",
     content: "",
     featuredImageFile: null as File | null,
+    featuredImageUrl: "",
     category: "",
     tags: "",
     status: "draft" as "draft" | "published" | "scheduled",
@@ -130,6 +123,7 @@ const BlogsSection: React.FC = () => {
       title: "",
       content: "",
       featuredImageFile: null,
+      featuredImageUrl: "",
       category: "",
       tags: "",
       status: "draft",
@@ -146,29 +140,47 @@ const BlogsSection: React.FC = () => {
       title: blog.title,
       content: blog.content,
       featuredImageFile: null,
+      featuredImageUrl: blog.image,
       category: blog.category,
-      tags: blog.tags.join(", "),
+      tags: Array.isArray(blog.tags) ? blog.tags.join(", ") : "",
       status: blog.status,
       publishDate: blog.publishDate,
       youtubeUrl: blog.youtubeUrl || "",
-      images: blog.images,
+      images: Array.isArray(blog.images) ? blog.images : [],
     });
     setEditingBlog(blog);
     setShowCreateModal(true);
   };
 
   const handleSaveBlog = async () => {
-    const formData = new FormData();
-    formData.append("title", blogForm.title);
-    formData.append("content", blogForm.content);
-    formData.append("category", blogForm.category);
-    formData.append("status", blogForm.status);
-    formData.append("tags", blogForm.tags); // comma-separated string
-    if (blogForm.featuredImageFile) {
-      formData.append("image", blogForm.featuredImageFile); // 👈 Important for Cloudinary
-    }
-    try {
-      const response = await axios.post(
+  const formData = new FormData()
+  formData.append("title", blogForm.title)
+  formData.append("content", blogForm.content)
+  formData.append("category", blogForm.category)
+  formData.append("status", blogForm.status)
+  formData.append("tags", blogForm.tags)
+
+  if (blogForm.featuredImageFile) {
+    formData.append("image", blogForm.featuredImageFile)
+  }
+
+  try {
+    if (editingBlog) {
+      // UPDATE blog
+      await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/blogs/${editingBlog._id}`,
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      toast.success("Blog updated successfully")
+    } else {
+      // CREATE blog
+      await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/blogs`,
         formData,
         {
@@ -177,14 +189,17 @@ const BlogsSection: React.FC = () => {
             "Content-Type": "multipart/form-data",
           },
         }
-      );
-      toast.success("Blog created successfully");
-      setShowCreateModal(false);
-      setEditingBlog(null);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Blog creation failed");
+      )
+      toast.success("Blog created successfully")
     }
-  };
+
+    setShowCreateModal(false)
+    setEditingBlog(null)
+  } catch (error: any) {
+    toast.error(error.response?.data?.message || "Blog save failed")
+  }
+}
+
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -407,213 +422,120 @@ const BlogsSection: React.FC = () => {
 
       {/* Blog Posts Grid/List */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        {viewMode === "grid" ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {blogs.map((blog, index) => (
-              <motion.div
-                key={blog._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300"
-              >
-                {/* Featured Image */}
-                <div className="relative aspect-[16/9]">
-                  {blog?.images?.[0] && (
-                    <img
-                      src={blog.images[0]}
-                      alt={blog.title}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
-
-                  <div className="absolute top-2 left-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedBlogs.includes(blog._id)}
-                      onChange={() => toggleBlogSelection(blog._id)}
-                      className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 cursor-pointer"
-                    />
-                  </div>
-                  <div className="absolute top-2 right-2">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1 ${getStatusColor(
-                        blog.status
-                      )}`}
-                    >
-                      {getStatusIcon(blog.status)}
-                      <span>{blog.status}</span>
-                    </span>
-                  </div>
-                  {blog.youtubeUrl && (
-                    <div className="absolute bottom-2 right-2">
-                      <div className="bg-red-600 text-white p-1 rounded">
-                        <Youtube className="w-4 h-4" />
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Content */}
-                <div className="p-4">
-                  <div className="flex items-center space-x-2 text-xs text-gray-500 mb-2">
-                    <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded">
-                      {blog.category}
-                    </span>
-                    <span>{blog.readTime}</span>
-                  </div>
-
-                  <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">
-                    {blog.title}
-                  </h3>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                    {blog.excerpt}
-                  </p>
-
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {blog.tags.slice(0, 2).map((tag) => (
-                      <span
-                        key={tag}
-                        className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-600"
-                      >
-                        <Tag className="w-2 h-2 mr-1" />
-                        {tag}
-                      </span>
-                    ))}
-                    {blog.tags.length > 2 && (
-                      <span className="text-xs text-gray-400">
-                        +{blog.tags.length - 2}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                    <div className="flex space-x-2">
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="p-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded cursor-pointer"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => handleEditBlog(blog)}
-                        className="p-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded cursor-pointer"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="p-1 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded cursor-pointer"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </motion.button>
-                    </div>
-                    <span className="text-xs text-gray-500">
-                      by {blog.author}
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {blogs.map((blog, index) => (
-              <motion.div
-                key={blog._id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200"
-              >
-                {/* Checkbox */}
-                <input
-                  type="checkbox"
-                  checked={selectedBlogs.includes(blog._id)}
-                  onChange={() => toggleBlogSelection(blog._id)}
-                  className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 cursor-pointer"
-                />
-
-                {/* Thumbnail */}
-                {blog?.images?.[0] ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {blogs.map((blog, index) => (
+            <motion.div
+              key={blog._id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300"
+            >
+              {/* Featured Image */}
+              <div className="relative aspect-[16/9]">
+                {blog.image && (
                   <img
-                    src={blog.images[0]}
+                    src={blog.image}
                     alt={blog.title}
-                    className="w-20 h-16 object-cover rounded-lg"
+                    className="w-full h-full object-cover"
                   />
-                ) : null}
+                )}
 
-                {/* Info */}
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-1">
-                    <h3 className="font-semibold text-gray-900">
-                      {blog.title}
-                    </h3>
-                    {blog.youtubeUrl && (
-                      <Youtube className="w-4 h-4 text-red-600" />
-                    )}
-                  </div>
-                  <p className="text-sm text-gray-600 mb-2">{blog.excerpt}</p>
-                  <div className="flex items-center space-x-4 text-xs text-gray-500">
-                    <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded">
-                      {blog.category}
-                    </span>
-                    <span>by {blog.author}</span>
-                    <span>{blog.publishDate}</span>
-                    <span>{blog.readTime}</span>
-                    <span className="flex items-center space-x-1">
-                      <Eye className="w-3 h-3" />
-                      <span>{blog.views}</span>
-                    </span>
-                  </div>
+                <div className="absolute top-2 left-2">
+                  <input
+                    type="checkbox"
+                    checked={selectedBlogs.includes(blog._id)}
+                    onChange={() => toggleBlogSelection(blog._id)}
+                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 cursor-pointer"
+                  />
                 </div>
-
-                {/* Status */}
-                <div className="flex items-center space-x-2">
+                <div className="absolute top-2 right-2">
                   <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                    className={`px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1 ${getStatusColor(
                       blog.status
                     )}`}
                   >
-                    {blog.status}
+                    {getStatusIcon(blog.status)}
+                    <span>{blog.status}</span>
                   </span>
+                </div>
+                {blog.youtubeUrl && (
+                  <div className="absolute bottom-2 right-2">
+                    <div className="bg-red-600 text-white p-1 rounded">
+                      <Youtube className="w-4 h-4" />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Content */}
+              <div className="p-4">
+                <div className="flex items-center space-x-2 text-xs text-gray-500 mb-2">
+                  <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded">
+                    {blog.category}
+                  </span>
+                  <span>{blog.readTime}</span>
+                </div>
+
+                <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">
+                  {blog.title}
+                </h3>
+                <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                  {blog.excerpt}
+                </p>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-1 mb-3">
+                  {blog.tags.slice(0, 2).map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-600"
+                    >
+                      <Tag className="w-2 h-2 mr-1" />
+                      {tag}
+                    </span>
+                  ))}
+                  {blog.tags.length > 2 && (
+                    <span className="text-xs text-gray-400">
+                      +{blog.tags.length - 2}
+                    </span>
+                  )}
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center space-x-2">
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg cursor-pointer"
-                  >
-                    <Eye className="w-4 h-4" />
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => handleEditBlog(blog)}
-                    className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg cursor-pointer"
-                  >
-                    <Edit className="w-4 h-4" />
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg cursor-pointer"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </motion.button>
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                  <div className="flex space-x-2">
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="p-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded cursor-pointer"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => handleEditBlog(blog)}
+                      className="p-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded cursor-pointer"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="p-1 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded cursor-pointer"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </motion.button>
+                  </div>
+                  <span className="text-xs text-gray-500">
+                    by {blog.author}
+                  </span>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        )}
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
 
       {/* Create/Edit Blog Modal */}
@@ -712,9 +634,18 @@ const BlogsSection: React.FC = () => {
                       <Upload className="w-4 h-4" />
                       <span>Upload Image</span>
                     </label>
+                    {blogForm.featuredImageUrl &&
+                      !blogForm.featuredImageFile && (
+                        <img
+                          src={blogForm.featuredImageUrl}
+                          alt="Featured"
+                          className="w-20 h-16 object-cover rounded-lg"
+                        />
+                      )}
+
                     {blogForm.featuredImageFile && (
                       <img
-                        src={blogForm.featuredImageFile}
+                        src={URL.createObjectURL(blogForm.featuredImageFile)}
                         alt="Featured"
                         className="w-20 h-16 object-cover rounded-lg"
                       />
