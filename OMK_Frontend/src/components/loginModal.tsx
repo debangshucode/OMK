@@ -18,7 +18,7 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
   const [loading, setLoading] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
-  const { setAuthState, user, isAuthenticated, setUser } = useAuth(); // ⬅️ Add this
+  const { setAuthState, user, isAuthenticated, setUser , authenticated} = useAuth(); // ⬅️ Add this
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 

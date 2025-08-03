@@ -44,6 +44,20 @@ const HeaderActions = () => {
     setIsDropdownOpen(false);
   };
 
+  // Enhanced logout handler
+  const handleLogout = async () => {
+    try {
+      setIsDropdownOpen(false);
+      await logout();
+      // Force a small delay to ensure state updates
+      setTimeout(() => {
+        // Optional: You can add any additional cleanup here
+      }, 100);
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   const dropdownItems = [
     // {
     //   icon: <User size={16} />,
@@ -59,8 +73,8 @@ const HeaderActions = () => {
       onClick: () => {
         if(user?.role === "admin") {
           window.location.href = "/admin/dashboard";
-        }else{
-        window.location.href = "/client/dashboard";
+        } else {
+          window.location.href = "/client/dashboard";
         }
       },
     },
@@ -75,10 +89,18 @@ const HeaderActions = () => {
     {
       icon: <LogOut size={16} />,
       label: "Logout",
-      onClick: logout,
+      onClick: handleLogout,
       danger: true,
     },
   ];
+
+  // Enhanced login success handler
+  const handleLoginSuccess = (userData: any) => {
+    setShowModal(false);
+    // Force close any open dropdowns
+    setIsDropdownOpen(false);
+    // Optional: Add any additional success handling
+  };
 
   return (
     <>
@@ -97,7 +119,7 @@ const HeaderActions = () => {
             <CgSpinnerAlt size={18} className="mr-2 animate-spin" />
             Loading...
           </button>
-        ) : authenticated ? (
+        ) : authenticated && user ? (
           <div className="relative" ref={dropdownRef}>
             {/* User Button */}
             <button
@@ -155,10 +177,10 @@ const HeaderActions = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
-                        {user?.name || "User"}
+                        {user?.name || ""}
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                        {user?.email || "user@example.com"}
+                        {user?.email || ""}
                       </p>
                     </div>
                   </div>
@@ -206,10 +228,7 @@ const HeaderActions = () => {
       {showModal && (
         <LoginModal
           onClose={() => setShowModal(false)}
-          onSuccess={(user) => {
-            setShowModal(false);
-            // Handle successful login/signup
-          }}
+          onSuccess={handleLoginSuccess}
         />
       )}
     </>
