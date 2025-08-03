@@ -19,6 +19,7 @@ interface AuthContextType {
   logout: () => void;
   setAuthState: (user: User) => void;
   authenticated:boolean;
+  setAuthenticated: (value: boolean) => void;
   getUserData:() => void;
   
 
@@ -80,7 +81,7 @@ useEffect(()=>{
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, loading, logout, setAuthState , setUser , authenticated ,getUserData}}>
+    <AuthContext.Provider value={{ user, isAuthenticated, loading, logout, setAuthState , setUser , authenticated ,getUserData , setAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );
