@@ -4,15 +4,18 @@
 import { motion } from "framer-motion";
 import { Camera,LogOut } from "lucide-react";
 import { useRouter } from "next/navigation"; 
+import { log } from "console";
+import { useAuth } from "@/context/AuthContext";
 interface AdminHeaderProps {
   searchTerm: string;
   setSearchTerm: (term: string) => void;
 }
 
 const AdminHeader: React.FC<AdminHeaderProps> = ({
- 
+  
 }) => {
-    const router = useRouter();
+  const router = useRouter();
+  const {logout} = useAuth();
   return (
     <motion.header
       initial={{ y: -20, opacity: 0 }}
@@ -42,7 +45,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => router.push("/")}
+            onClick={logout}
             className="w-full flex items-center space-x-3 px-3 lg:px-4 py-2.5 lg:py-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 text-sm lg:text-base"
           >
             <LogOut className="w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0" />

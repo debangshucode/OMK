@@ -75,25 +75,26 @@ const BlogsSection: React.FC = () => {
     youtubeUrl: "",
     images: [] as string[],
   });
+
+  const fetchBlogs = async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs`,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log("Response data:", res.data);
+      setBlogs(res.data);
+      console.log("Fetched blogs:", res.data.blogs);
+    } catch (err: any) {
+      console.error("Failed to fetch blogs:", err);
+      setError(err.response?.data?.message || "Failed to load blogs");
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/blogs`,
-          {
-            withCredentials: true,
-          }
-        );
-        console.log("Response data:", res.data);
-        setBlogs(res.data);
-        console.log("Fetched blogs:", res.data.blogs);
-      } catch (err: any) {
-        console.error("Failed to fetch blogs:", err);
-        setError(err.response?.data?.message || "Failed to load blogs");
-      } finally {
-        setLoading(false);
-      }
-    };
 
     fetchBlogs();
   }, []);
@@ -168,7 +169,7 @@ const BlogsSection: React.FC = () => {
     if (editingBlog) {
       // UPDATE blog
       await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/blogs/${editingBlog._id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs/${editingBlog._id}`,
         formData,
         {
           withCredentials: true,
@@ -178,10 +179,11 @@ const BlogsSection: React.FC = () => {
         }
       )
       toast.success("Blog updated successfully")
+      await fetchBlogs();
     } else {
       // CREATE blog
       await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/blogs`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs`,
         formData,
         {
           withCredentials: true,
@@ -191,10 +193,12 @@ const BlogsSection: React.FC = () => {
         }
       )
       toast.success("Blog created successfully")
+      
     }
 
     setShowCreateModal(false)
     setEditingBlog(null)
+    await fetchBlogs();
   } catch (error: any) {
     toast.error(error.response?.data?.message || "Blog save failed")
   }

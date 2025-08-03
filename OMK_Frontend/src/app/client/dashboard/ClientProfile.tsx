@@ -1,9 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import {
-  User, Mail, Phone, MapPin, Camera, Edit, Save, X,
-  Download, Heart, Star
+  User, Mail, Phone, MapPin, Heart, Edit, Save, X, AlertCircle
 } from "lucide-react";
 import axios from "axios";
 
@@ -18,9 +16,12 @@ interface ProfileData {
 
 const ClientProfile: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [profileData, setProfileData] = useState<ProfileData>({
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [isError, setIsError] = useState(false);
+  
+  const [profile, setProfile] = useState<ProfileData>({
     name: "",
     email: "",
     phone: "",
@@ -29,267 +30,253 @@ const ClientProfile: React.FC = () => {
     profileImage: "",
   });
 
-  const [tempData, setTempData] = useState<ProfileData>({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    partnerName: "",
-    profileImage: "",
-  });
+  const [formData, setFormData] = useState<ProfileData>(profile);
 
+  // Fetch profile data
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await axios.get("http://localhost:4000/api/settings/get-user", {
-          withCredentials: true
-        });
-
-        const data = response.data;
-
-        const cleanedData = {
-          name: data.name || "",
-          email: data.email || "",
-          phone: data.phone || "",
-          address: data.address || "",
-          partnerName: data.partnerName || "",
-          profileImage: data.profileImage || "",
-        };
-
-        setProfileData(cleanedData);
-        setTempData(cleanedData);
-        setProfilePhoto(cleanedData.profileImage);
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-      }
-    };
-
     fetchProfile();
   }, []);
 
-  const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfilePhoto(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleEdit = () => {
-    setTempData(profileData);
-    setIsEditing(true);
-  };
-
-const handleSave = async () => {
-  try {
-    let imageUrl = profileData.profileImage;
-
-    if (selectedFile) {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-      formData.append("upload_preset", "omk_profiles");
-      formData.append("cloud_name", "dtaga1wxt");
-
-      const cloudRes = await fetch("https://api.cloudinary.com/v1_1/dtaga1wxt/image/upload", {
-        method: "POST",
-        body: formData,
+  const fetchProfile = async () => {
+    try {
+      setLoading(true);
+      const { data } = await axios.get("http://localhost:4000/api/settings/get-user", {
+        withCredentials: true
       });
-
-      const cloudData = await cloudRes.json();
-      imageUrl = cloudData.secure_url;
+      
+      const profileData: ProfileData = {
+        name: data.name || "",
+        email: data.email || "",
+        phone: data.phone || "",
+        address: data.address || "",
+        partnerName: data.partnerName || "",
+        profileImage: data.profileImage || "",
+      };
+      
+      setProfile(profileData);
+      setFormData(profileData);
+    } catch (error) {
+      showMessage("Failed to load profile", true);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const updatedData = { ...tempData, profileImage: imageUrl };
+  const showMessage = (text: string, error = false) => {
+    setMessage(text);
+    setIsError(error);
+    setTimeout(() => setMessage(""), 3000);
+  };
 
-    const response = await axios.put(
-      "http://localhost:4000/api/settings/clientsettings",
-      updatedData,
-      { withCredentials: true }
-    );
-
-    const updatedUser = response?.data?.user;
-    if (!updatedUser || !updatedUser.name) {
-      throw new Error("Invalid response from server");
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    if (!file.type.startsWith('image/')) {
+      showMessage("Please select an image file", true);
+      return;
     }
-
-    setProfileData({
-      name: updatedUser.name || "",
-      email: updatedUser.email || "",
-      phone: updatedUser.phone || "",
-      address: updatedUser.address || "",
-      partnerName: updatedUser.partnerName || "",
-      profileImage: updatedUser.profileImage || "",
-    });
-
-    setIsEditing(false);
-  } catch (error) {
-    console.error("Failed to update profile:", error);
-  }
-};
-
-
-  const handleCancel = () => {
-    setTempData(profileData);
-    setIsEditing(false);
-    setProfilePhoto(null);
-    setSelectedFile(null);
+    
+    if (file.size > 5 * 1024 * 1024) {
+      showMessage("File size must be less than 5MB", true);
+      return;
+    }
+    
+    setSelectedFile(file);
   };
 
   const handleInputChange = (field: keyof ProfileData, value: string) => {
-    setTempData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const stats = [
-    { label: "Total Photos", value: "245", icon: Camera, color: "text-blue-600" },
-    { label: "Downloads", value: "12", icon: Download, color: "text-green-600" },
-    { label: "Favorites", value: "34", icon: Heart, color: "text-red-600" },
-    { label: "Rating Given", value: "5.0", icon: Star, color: "text-amber-600" },
+  const handleEdit = () => {
+    setIsEditing(true);
+    setFormData(profile);
+    setSelectedFile(null);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setFormData(profile);
+    setSelectedFile(null);
+  };
+
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+      
+      const data = new FormData();
+      data.append('name', formData.name.trim());
+      data.append('email', formData.email.trim());
+      data.append('phone', formData.phone.trim());
+      data.append('address', formData.address.trim());
+      data.append('partnerName', formData.partnerName.trim());
+      
+      if (selectedFile) {
+        data.append('profileImage', selectedFile);
+      }
+
+      const response = await axios.put(
+        "http://localhost:4000/api/settings/clientsettings",
+        data,
+        { withCredentials: true }
+      );
+
+      if (response.data.success) {
+        await fetchProfile(); // Refresh data
+        setIsEditing(false);
+        setSelectedFile(null);
+        showMessage("Profile updated successfully!");
+      }
+    } catch (error: any) {
+      const errorMsg = error.response?.data?.message || "Failed to update profile";
+      showMessage(errorMsg, true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getImageUrl = () => {
+    if (selectedFile) return URL.createObjectURL(selectedFile);
+    if (profile.profileImage) {
+      return profile.profileImage.startsWith('http') 
+        ? profile.profileImage 
+        : `http://localhost:4000/uploads/${profile.profileImage}`;
+    }
+    return null;
+  };
+
+  const fields = [
+    { key: 'name', label: 'Name', icon: User, type: 'text' },
+    { key: 'email', label: 'Email', icon: Mail, type: 'email' },
+    { key: 'phone', label: 'Phone', icon: Phone, type: 'text' },
+    { key: 'address', label: 'Address', icon: MapPin, type: 'text' },
+    { key: 'partnerName', label: 'Partner Name', icon: Heart, type: 'text' },
   ];
 
+  if (loading && !profile.name) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Profile Settings</h2>
-          <p className="text-gray-600">Manage your account information and preferences</p>
+          <h1 className="text-2xl font-bold text-gray-900">Profile Settings</h1>
+          <p className="text-gray-600">Manage your account information</p>
         </div>
-        {!isEditing ? (
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleEdit}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 shadow-lg cursor-pointer"
-          >
-            <Edit className="w-5 h-5" />
-            <span>Edit Profile</span>
-          </motion.button>
-        ) : (
-          <div className="flex space-x-3">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleSave}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 shadow-lg cursor-pointer"
+        
+        {isEditing ? (
+          <div className="flex gap-2">
+            <button 
+              onClick={handleSave} 
+              disabled={loading}
+              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 flex items-center gap-2"
             >
-              <Save className="w-5 h-5" />
-              <span>Save</span>
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              <Save size={16} />
+              {loading ? "Saving..." : "Save"}
+            </button>
+            <button 
               onClick={handleCancel}
-              className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 shadow-lg cursor-pointer"
+              className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 flex items-center gap-2"
             >
-              <X className="w-5 h-5" />
-              <span>Cancel</span>
-            </motion.button>
+              <X size={16} />
+              Cancel
+            </button>
           </div>
+        ) : (
+          <button 
+            onClick={handleEdit}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center gap-2"
+          >
+            <Edit size={16} />
+            Edit Profile
+          </button>
         )}
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="bg-white rounded-xl p-6 shadow-lg border border-gray-100"
-      >
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="flex flex-col items-center lg:items-start">
+      {/* Message */}
+      {message && (
+        <div className={`p-4 rounded-lg flex items-center gap-2 ${
+          isError ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-green-50 text-green-700 border border-green-200'
+        }`}>
+          {isError && <AlertCircle size={20} />}
+          {message}
+        </div>
+      )}
+
+      {/* Profile Card */}
+      <div className="bg-white rounded-lg shadow-sm border p-6">
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* Profile Image */}
+          <div className="flex flex-col items-center">
             <div className="relative">
-              <div className="w-24 h-24 lg:w-32 lg:h-32 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full overflow-hidden shadow-lg flex items-center justify-center">
-                {profilePhoto ? (
-                  <img src={profilePhoto} alt="Profile" className="w-full h-full object-cover" />
+              <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                {getImageUrl() ? (
+                  <img src={getImageUrl()!} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
-                  <User className="w-12 h-12 lg:w-16 lg:h-16 text-white" />
+                  <User size={32} className="text-gray-400" />
                 )}
               </div>
+              
               {isEditing && (
                 <>
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="absolute -bottom-2 -right-2 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg cursor-pointer"
-                    onClick={() => document.getElementById("photoUpload")?.click()}
-                  >
-                    <Edit className="w-4 h-4" />
-                  </motion.button>
-                  <input
-                    id="photoUpload"
-                    type="file"
-                    accept="image/*"
-                    onChange={handlePhotoChange}
-                    className="hidden"
+                  <input 
+                    id="photo" 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handleFileChange}
+                    className="hidden" 
                   />
+                  <label 
+                    htmlFor="photo"
+                    className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-600"
+                  >
+                    <Edit size={12} />
+                  </label>
                 </>
               )}
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mt-4 text-center lg:text-left">
-              {isEditing ? tempData.name : profileData.name}
-            </h3>
-            <p className="text-blue-600 font-medium text-center lg:text-left">
-              Premium Client
-            </p>
+            
+            <h3 className="mt-3 font-semibold text-lg">{profile.name || "User"}</h3>
+            <p className="text-sm text-blue-500">Premium Client</p>
+            {selectedFile && <p className="text-xs text-gray-500 mt-1">New photo selected</p>}
           </div>
 
-          <div className="flex-1 space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
-              {["name", "email", "phone", "partnerName", "address"].map((field) => (
-                <div key={field}>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {field === "partnerName" ? "Partner Name" : field[0].toUpperCase() + field.slice(1)}
-                  </label>
-                  {isEditing ? (
-                    <input
-                      type={field === "email" ? "email" : "text"}
-                      value={tempData[field as keyof ProfileData]}
-                      onChange={(e) => handleInputChange(field as keyof ProfileData, e.target.value)}
-                      className="w-full border text-gray-700 border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  ) : (
-                    <div className="flex items-center space-x-2 text-gray-900">
-                      {
-                        {
-                          name: <User className="w-4 h-4 text-gray-400" />,
-                          email: <Mail className="w-4 h-4 text-gray-400" />,
-                          phone: <Phone className="w-4 h-4 text-gray-400" />,
-                          address: <MapPin className="w-4 h-4 text-gray-400" />,
-                          partnerName: <Heart className="w-4 h-4 text-gray-400" />
-                        }[field]
-                      }
-                      <span>{profileData[field as keyof ProfileData]}</span>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+          {/* Form Fields */}
+          <div className="flex-1 grid md:grid-cols-2 gap-4">
+            {fields.map(({ key, label, icon: Icon, type }) => (
+              <div key={key}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {label}
+                </label>
+                
+                {isEditing ? (
+                  <input
+                    type={type}
+                    value={formData[key as keyof ProfileData]}
+                    onChange={(e) => handleInputChange(key as keyof ProfileData, e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder={`Enter ${label.toLowerCase()}`}
+                  />
+                ) : (
+                  <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-md">
+                    <Icon size={16} className="text-gray-400" />
+                    <span className="text-gray-700">
+                      {profile[key as keyof ProfileData] || `No ${label.toLowerCase()}`}
+                    </span>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.3 }}
-        className="bg-white rounded-xl p-6 shadow-lg border border-gray-100"
-      >
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Statistics</h3>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {stats.map((stat, index) => (
-            <div key={index} className="text-center p-4 bg-gray-50 rounded-lg">
-              <stat.icon className={`w-8 h-8 ${stat.color} mx-auto mb-2`} />
-              <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
-              <div className="text-sm text-gray-600">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-      </motion.div>
+      </div>
     </div>
   );
 };

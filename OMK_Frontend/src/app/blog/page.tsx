@@ -37,7 +37,7 @@ const Blog: React.FC = () => {
     const fetchBlogs = async () => {
       try {
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/blogs`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs`,
           {
             withCredentials: true,
           }
