@@ -61,19 +61,39 @@ exports.getBlogBySlug = async (req, res) => {
 // Update blog (admin only)
 exports.updateBlog = async (req, res) => {
   const { id } = req.params;
-  const { title, content, tags, image , category, status } = req.body;
+  let { title, content, tags, category, status, image } = req.body;
 
   try {
+    let updatedImages = [];
+
+    if (req.files && req.files.length > 0) {
+      const uploadedImagePaths = req.files.map((file) => file.path);
+      updatedImages = uploadedImagePaths;
+    } else if (typeof image === "string") {
+      updatedImages = [image];
+    } else if (Array.isArray(image)) {
+      updatedImages = image;
+    }
+
     const updated = await Blog.findByIdAndUpdate(
       id,
-      { title, content, tags, image , category, status },
+      {
+        title,
+        content,
+        tags: tags ? tags.split(",") : [],
+        image: updatedImages,
+        category,
+        status
+      },
       { new: true }
     );
+
     res.json(updated);
   } catch (error) {
     res.status(500).json({ message: "Failed to update blog", error: error.message });
   }
 };
+
 
 // Delete blog (admin only)
 exports.deleteBlog = async (req, res) => {

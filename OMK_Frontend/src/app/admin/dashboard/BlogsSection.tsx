@@ -27,7 +27,7 @@ import {
   BookOpen,
   FileText,
 } from "lucide-react";
-import axios from "axios";
+import axios from "@/utils/axios";
 import { toast } from "sonner";
 
 interface Blog {
@@ -48,6 +48,20 @@ interface Blog {
   readTime: string;
   youtubeUrl?: string;
   images: string[];
+  imageFiles: File[];
+}
+interface BlogForm {
+  title: string;
+  content: string;
+  featuredImageFile: File | null;
+  featuredImageUrl: string;
+  category: string;
+  tags: string;
+  status: "draft" | "published" | "scheduled";
+  publishDate: string;
+  youtubeUrl: string;
+  images: string[]; // preview image URLs
+  imageFiles: File[]; // raw files to upload
 }
 
 const BlogsSection: React.FC = () => {
@@ -63,40 +77,40 @@ const BlogsSection: React.FC = () => {
   const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
 
   // Blog form state
-  const [blogForm, setBlogForm] = useState({
+  const [blogForm, setBlogForm] = useState<BlogForm>({
     title: "",
     content: "",
-    featuredImageFile: null as File | null,
+    featuredImageFile: null,
     featuredImageUrl: "",
     category: "",
     tags: "",
-    status: "draft" as "draft" | "published" | "scheduled",
+    status: "draft",
     publishDate: "",
     youtubeUrl: "",
-    images: [] as string[],
+    images: [],
+    imageFiles: [],
   });
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/blogs`,
-          {
-            withCredentials: true,
-          }
-        );
-        console.log("Response data:", res.data);
-        setBlogs(res.data);
-        console.log("Fetched blogs:", res.data.blogs);
-      } catch (err: any) {
-        console.error("Failed to fetch blogs:", err);
-        setError(err.response?.data?.message || "Failed to load blogs");
-      } finally {
-        setLoading(false);
-      }
-    };
 
+  const fetchBlogs = async () => {
+    try {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/blogs`, {
+        withCredentials: true,
+      });
+      console.log("Response data:", res.data);
+      setBlogs(res.data);
+      console.log("Fetched blogs:", res.data.blogs);
+    } catch (err: any) {
+      console.error("Failed to fetch blogs:", err);
+      setError(err.response?.data?.message || "Failed to load blogs");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchBlogs();
   }, []);
+
   if (loading) return <p className="text-gray-600">Loading blogs...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
@@ -129,88 +143,91 @@ const BlogsSection: React.FC = () => {
       status: "draft",
       publishDate: "",
       youtubeUrl: "",
-      images: [],
+      images: [], // preview URLs
+      imageFiles: [], // actual image files
     });
     setEditingBlog(null);
     setShowCreateModal(true);
   };
 
   const handleEditBlog = (blog: Blog) => {
+    const allImages = Array.isArray(blog.image) ? blog.image : [];
+    const [featured = "", ...otherImages] = allImages;
+
     setBlogForm({
       title: blog.title,
       content: blog.content,
       featuredImageFile: null,
-      featuredImageUrl: blog.image,
+      featuredImageUrl: featured,
       category: blog.category,
       tags: Array.isArray(blog.tags) ? blog.tags.join(", ") : "",
       status: blog.status,
-      publishDate: blog.publishDate,
+      publishDate: blog.publishDate || "",
       youtubeUrl: blog.youtubeUrl || "",
-      images: Array.isArray(blog.images) ? blog.images : [],
+      images: otherImages,
+      imageFiles: [],
     });
+
     setEditingBlog(blog);
     setShowCreateModal(true);
   };
 
   const handleSaveBlog = async () => {
-  const formData = new FormData()
-  formData.append("title", blogForm.title)
-  formData.append("content", blogForm.content)
-  formData.append("category", blogForm.category)
-  formData.append("status", blogForm.status)
-  formData.append("tags", blogForm.tags)
+    const formData = new FormData();
+    formData.append("title", blogForm.title);
+    formData.append("content", blogForm.content);
+    formData.append("category", blogForm.category);
+    formData.append("status", blogForm.status);
+    formData.append("tags", blogForm.tags);
+    if (blogForm.youtubeUrl)
+      formData.append("youTubeLink", blogForm.youtubeUrl);
 
-  if (blogForm.featuredImageFile) {
-    formData.append("image", blogForm.featuredImageFile)
-  }
+    // featured image
+    if (blogForm.featuredImageFile)
+      formData.append("image", blogForm.featuredImageFile);
 
-  try {
-    if (editingBlog) {
-      // UPDATE blog
-      await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/blogs/${editingBlog._id}`,
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
-      toast.success("Blog updated successfully")
-    } else {
-      // CREATE blog
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/blogs`,
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
-      toast.success("Blog created successfully")
+    // additional images
+    blogForm.imageFiles?.forEach((file) => {
+      formData.append("image", file); // multiple with same key
+    });
+
+    try {
+      const res = editingBlog
+        ? await axios.put(
+            `${process.env.NEXT_PUBLIC_API_URL}/blogs/${editingBlog._id}`,
+            formData,
+            {
+              headers: { "Content-Type": "multipart/form-data" },
+            }
+          )
+        : await axios.post(
+            `${process.env.NEXT_PUBLIC_API_URL}/blogs`,
+            formData,
+            {
+              headers: { "Content-Type": "multipart/form-data" },
+            }
+          );
+
+      console.log("Blog saved:", res.data);
+      setShowCreateModal(false);
+      fetchBlogs(); // refresh
+    } catch (err) {
+      console.error("Save error", err);
     }
-
-    setShowCreateModal(false)
-    setEditingBlog(null)
-  } catch (error: any) {
-    toast.error(error.response?.data?.message || "Blog save failed")
-  }
-}
-
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Simulate image upload
-      const imageUrl = URL.createObjectURL(file);
-      setBlogForm((prev) => ({
-        ...prev,
-        images: [...prev.images, imageUrl],
-      }));
-    }
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+
+    // Optional: store previews and real files separately if needed
+    const filePreviews = files.map((file) => URL.createObjectURL(file));
+
+    setBlogForm((prev) => ({
+      ...prev,
+      images: [...prev.images, ...filePreviews], // for preview
+      imageFiles: [...(prev.imageFiles || []), ...files], // actual files for backend
+    }));
   };
 
   const handleFeaturedImageUpload = (
@@ -435,7 +452,7 @@ const BlogsSection: React.FC = () => {
               <div className="relative aspect-[16/9]">
                 {blog.image && (
                   <img
-                    src={blog.image}
+                    src={Array.isArray(blog.image) ? blog.image[0] : blog.image}
                     alt={blog.title}
                     className="w-full h-full object-cover"
                   />
