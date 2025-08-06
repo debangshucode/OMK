@@ -63,7 +63,7 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/auth/login",
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
         { email, password },
         {
           withCredentials: true,
@@ -103,7 +103,7 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/auth/register",
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
         { name, email, password },
         {
           withCredentials: true,
@@ -132,7 +132,7 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/auth/otp-verification",
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/otp-verification`,
         { email, otp },
         {
           withCredentials: true,

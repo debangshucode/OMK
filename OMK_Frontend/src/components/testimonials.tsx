@@ -22,7 +22,7 @@ const Testimonials = () => {
     const fetchApprovedReviews = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:4000/api/reviews/public-review"
+          `${process.env.NEXT_PUBLIC_API_URL}/reviews/public-review`
         );
         setTestimonials(response.data);
       } catch (error) {
@@ -349,21 +349,17 @@ const Testimonials = () => {
 
         {/* Right - Text */}
         <motion.div className="md:w-1/2" variants={itemVariants}>
-          <h2 className="text-4xl font-bold text-slate-800 mb-4">
+          <h2 className="text-4xl text-center font-bold text-slate-800 mb-4">
             Celebrating Love <br />
-            <span className="italic underline text-red-600">with Every Frame</span>
+            <span className="italic text-red-600">with Every Frame</span>
           </h2>
           <p className="text-slate-700 mb-4">
-            When we started KnotsbyAMP in 2014, it was more than just about clicking pictures—
-            it was about capturing love, joy, and everything in between. Back then, <strong>Soumi</strong> was
-            a lawyer and MBA, and Anupam, a BITS Pilani grad, had other plans. Our shared passion
-            for storytelling brought us together, and the rest, as they say, is history.
+            At OurMoments Kolkata, we are not just photographers — we are passionate storytellers behind the lens. Founded by <strong>Sayani Pradhan</strong> and <strong>Koushik Samanta</strong>, two young creatives driven by a love for timeless memories and human connection, our journey began with one simple belief: every moment deserves to be immortalized beautifully. Whether it’s a wedding, birthday, engagement, or a candid celebration, we bring our heart and creativity into every frame. Our lens doesn’t just capture photos — it captures emotions, laughter, tears, and the unforgettable essence of your story. As young professionals in the middle of the lens, we strive to make your most special day feel cinematic, elegant, and deeply personal.
           </p>
           <p className="text-slate-700">
-            Our journey has been nothing short of magical. Inspired by travel, street photography,
-            and our love for experimenting with light, we’ve crafted a unique style—a mix of candid
-            moments, fine art, and fashion vibes. It’s not just photography for us; it’s weaving
-            stories that couples cherish forever.
+            We are in love — with lenses, lights, and the lovely people we meet. At OurMoments, we don’t just shoot events — we build connections. Our tagline speaks our soul:
+“স্মৃতিরা গেছে পরবাস…… কথারা হয়েছে নিঝুম…. এ বুকে তবু বারো…মাস ভালোবাসারই মরশুম……”
+Every shutter click carries our promise to make your memory eternal. When you choose us, you don’t just hire photographers — you invite two passionate visionaries who care about your story just as much as you do. So let your favorite moment live forever — with OurMoments Kolkata, where your love meets our lens.
           </p>
         </motion.div>
       </div>

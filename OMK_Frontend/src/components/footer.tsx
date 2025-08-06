@@ -85,7 +85,7 @@ const Footer = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/bookings",
+        `${process.env.NEXT_PUBLIC_API_URL}/bookings`,
         formData,
         {
           headers: {

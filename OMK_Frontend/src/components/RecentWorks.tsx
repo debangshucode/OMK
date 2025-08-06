@@ -37,7 +37,7 @@ const RecentWorks = () => {
   useEffect(() => {
     const fetchRecentWorks = async () => {
       try {
-        const res = await fetch("http://localhost:4000/api/recentwork");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recentwork`);
         if (!res.ok) throw new Error("Failed to fetch data");
         const data = await res.json();
         setRecentWorks(data);
