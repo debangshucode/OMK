@@ -35,7 +35,7 @@ const BlogHome: React.FC = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/blogs`, {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs`, {
           withCredentials: true
         })
         const allBlogs = res.data.blogs || res.data
@@ -130,10 +130,10 @@ const BlogHome: React.FC = () => {
               className="bg-[#F8F1E9] rounded-lg shadow-md overflow-hidden flex flex-col"
             >
               <img
-                src={post.image}
-                alt={post.title}
-                className="w-full h-56 object-cover"
-              />
+                    src={Array.isArray(post.image) ? post.image[0] : post.image}
+                    alt={post.title}
+                    className="w-full h-full object-cover"
+                  />
 
               <div className="p-6 flex flex-col flex-grow">
                 <div className="text-sm text-gray-500 mb-2">

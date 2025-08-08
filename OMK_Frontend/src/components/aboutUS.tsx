@@ -16,6 +16,29 @@ const AboutUs = () => {
     "/images/weadingHome5.jpg",
   ];
   useEffect(() => {
+  // Extend window.FB type inline
+  const win = window as typeof window & {
+    FB: any
+  }
+
+  if (win.FB) {
+    win.FB.XFBML.parse()
+    return
+  }
+
+  const script = document.createElement("script")
+  script.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v19.0"
+  script.async = true
+  script.defer = true
+  script.crossOrigin = "anonymous"
+  script.onload = () => {
+    if (win.FB) win.FB.XFBML.parse()
+  }
+
+  document.body.appendChild(script)
+}, [])
+
+  useEffect(() => {
     images.forEach((src) => {
       const img = new Image();
       img.src = src;
@@ -49,7 +72,7 @@ const AboutUs = () => {
       opacity: 1,
       transition: {
         duration: 0.8,
-        ease: easeBezier
+        ease: easeBezier,
       },
     },
   };
@@ -103,7 +126,10 @@ const AboutUs = () => {
   ];
 
   return (
-    <div id="about" className="min-h-screen bg-gradient-to-br from-white to-red-50">
+    <div
+      id="about"
+      className="min-h-screen bg-gradient-to-br from-white to-red-50"
+    >
       <Book />
       {/* Hero Section */}
       <motion.section
@@ -145,7 +171,9 @@ const AboutUs = () => {
                     className={`flex items-center gap-3 px-3 py-2 rounded-full backdrop-blur-md ${service.bg} ${service.border} ${service.text} shadow-[0_4px_30px_rgba(18,1,18,0.1)] transition-transform duration-300 hover:cursor-pointer  hover:scale-105`}
                   >
                     <div className={`w-3 h-3 rounded-full ${service.dot}`} />
-                    <span className="font-semibold xl:text-md text-sm">{service.name}</span>
+                    <span className="font-semibold xl:text-md text-sm">
+                      {service.name}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -154,44 +182,26 @@ const AboutUs = () => {
 
           {/* Image Mockup */}
           <motion.div variants={itemVariants} className="relative z-10">
-            <div className="relative z-50 w-80 h-[600px] bg-black rounded-[3rem] p-2 shadow-2xl mx-auto">
+            <div className="relative z-50 w-75 h-[600px] bg-black rounded-[3rem] p-2 shadow-2xl mx-auto">
               <div className="w-full h-full bg-white rounded-[2.5rem] relative overflow-hidden">
                 {/* Notch */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-2xl z-10"></div>
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-3 bg-black rounded-b-2xl z-10"></div>
 
-                <AnimatePresence mode="sync">
-                  <motion.img
-                    key={currentImageIndex}
-                    src={images[currentImageIndex]}
-                    alt="Photography Showcase"
-                    className="absolute inset-0 w-full h-full object-cover rounded-[2.5rem]"
-                    variants={slideVariants}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                    transition={{
-                      x: { type: "spring", stiffness: 300, damping: 30 },
-                      opacity: { duration: 0.2 },
-                    }}
-                  />
-                </AnimatePresence>
-
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10" />
-
-                {/* Dots */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-                  {images.map((_, i) => (
-                    <div
-                      key={i}
-                      className={`w-2 h-2 rounded-full ${
-                        i === currentImageIndex
-                          ? "bg-white scale-125"
-                          : "bg-white/50"
-                      } transition-all`}
-                    />
-                  ))}
+                <div className="absolute inset-0 w-full h-[95%] bg-white overflow-y-auto  overflow-x-hidden hide-scrollbar rounded-[2.5rem] z-0 ">
+                  <div
+                    className="fb-page hide-scrollbar"
+                    data-href="https://www.facebook.com/ourmoments.kolkata"
+                    data-tabs="timeline"
+                    data-width="300"
+                    data-height="650"
+                    data-small-header="false"
+                    data-adapt-container-width="true"
+                    data-hide-cover="false"
+                    data-show-facepile="true"
+                  ></div>
                 </div>
+
+                
               </div>
             </div>
 
@@ -249,16 +259,16 @@ const AboutUs = () => {
                 <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-white/20 transition-colors duration-300">
                   <stat.icon className="w-8 h-8 text-amber-300" />
                 </div>
-                
-                  <CountUp
-                    end={stat.value}
-                    duration={2.5}
-                    enableScrollSpy
-                    scrollSpyOnce
-                    suffix={stat.suffix}
-                    className="text-3xl md:text-4xl font-bold text-white mb-2"
-                  />
-                
+
+                <CountUp
+                  end={stat.value}
+                  duration={2.5}
+                  enableScrollSpy
+                  scrollSpyOnce
+                  suffix={stat.suffix}
+                  className="text-3xl md:text-4xl font-bold text-white mb-2"
+                />
+
                 <div className="text-red-100 font-medium">{stat.label}</div>
               </motion.div>
             ))}

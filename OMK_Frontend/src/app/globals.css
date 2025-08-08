@@ -38,9 +38,9 @@ body {
 
 
 .hide-scrollbar::-webkit-scrollbar {
-  display: none;
+  display: none !important;
 }
 .hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none   !important; /* Firefox */
 }
