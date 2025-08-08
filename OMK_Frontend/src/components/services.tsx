@@ -110,6 +110,8 @@ const Services = () => {
     },
   ];
 
+  
+
   const active = services[activeService];
 
   useEffect(() => {
@@ -151,6 +153,7 @@ const Services = () => {
           </motion.div>
         </div>
       </motion.section>
+      
       <motion.section
         className="px-3 xl:px-6  mb-20"
         initial="hidden"

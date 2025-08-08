@@ -19,7 +19,7 @@ const CreateAlbumModal: React.FC<CreateAlbumModalProps> = ({ isOpen, onClose, on
 
   const handleCreateAlbum = async () => {
     try {
-      const response = await fetch("http://localhost:4000/api/albums", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/albums`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title, description, category, clientId }),
