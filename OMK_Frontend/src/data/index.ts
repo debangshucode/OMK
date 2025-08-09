@@ -36,6 +36,29 @@ export const customItems: GridItem[] = [
   { image: "/images/weadingHome6.jpg", label: "City" },
 ];
 import { MediaItem, Album } from '../types/types';
+export interface Photo {
+  id: number
+  src: string
+  alt: string
+}
+
+export const photos: Photo[] = [
+  { id: 1, src: '/images/weadingHome.jpg', alt: 'Nature view' },
+  { id: 2, src: '/images/albumcover_lg.png', alt: 'Mountain landscape' },
+  { id: 3, src: '/images/landscape1.jpg', alt: 'City skyline' },
+  { id: 4, src: '/images/weadingHome3.jpg', alt: 'Ocean waves' },
+  { id: 5, src: '/images/landscape2.jpg', alt: 'Forest trail' },
+  { id: 13, src: '/images/albumcover_lg.png', alt: 'Morning mist' },
+  { id: 6, src: '/images/weadingHome1.jpg', alt: 'Sunset horizon' },
+  { id: 7, src: '/images/weadingHome3.jpg', alt: 'Coastal cliffs' },
+  { id: 8, src: '/images/weadingHome.jpg', alt: 'Green valley' },
+  { id: 9, src: '/images/weadingHome1.jpg', alt: 'Golden fields' },
+  { id: 10, src: '/images/landscape2.jpg', alt: 'Snowy mountains' },
+  { id: 11, src: '/images/albumcover_lg.png', alt: 'Urban sunset' },
+  { id: 12, src: '/images/weadingHome.jpg', alt: 'Morning mist' },
+  
+]
+
 
 const samplePhotos = [
   '/images/weadingHome.jpg',
