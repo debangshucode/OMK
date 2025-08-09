@@ -2,10 +2,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Phone, Camera, Video, Heart, Film } from "lucide-react";
-
+import { BentoGridThirdDemo } from "./ui/ServiceGrid";
 const Services = () => {
   const [activeService, setActiveService] = useState(0);
-  const detailRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
   const imageSectionRef = useRef<HTMLDivElement>(null);
 
@@ -17,7 +16,7 @@ const Services = () => {
       subtitle: "Capturing Timeless Moments",
       color: "from-red-500 to-red-600",
       bgColor: "bg-red-50",
-      textColor: "red-600",
+      textColor: "#dc2626",
       subServices: [
         {
           name: "Wedding Photography",
@@ -46,7 +45,7 @@ const Services = () => {
       subtitle: "Dynamic Visual Storytelling",
       color: "from-blue-500 to-blue-600",
       bgColor: "bg-blue-50",
-      textColor: "blue-600",
+      textColor: "#2563EB",
       subServices: [
         {
           name: "Event Videography",
@@ -75,7 +74,7 @@ const Services = () => {
       subtitle: "Romance in Every Frame",
       color: "from-pink-500 to-pink-600",
       bgColor: "bg-pink-50",
-      textColor: "pink-600",
+      textColor: "#DB2777",
       subServices: [
         {
           name: "Couple Shoot",
@@ -95,7 +94,7 @@ const Services = () => {
       subtitle: "Cinematic Excellence",
       color: "from-slate-500 to-slate-600",
       bgColor: "bg-slate-50",
-      textColor: "slate-600",
+      textColor: "#475569",
       subServices: [
         {
           name: "Music Videos",
@@ -109,8 +108,6 @@ const Services = () => {
       ],
     },
   ];
-
-  
 
   const active = services[activeService];
 
@@ -130,6 +127,32 @@ const Services = () => {
 
     const interval = setInterval(scroll, 3000);
     return () => clearInterval(interval);
+  }, [activeService]);
+  const [currentSubIndex, setCurrentSubIndex] = useState(0);
+
+  useEffect(() => {
+    const container = carouselRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const scrollLeft = container.scrollLeft;
+      const itemWidth = container.clientWidth;
+
+      const index = Math.round(scrollLeft / itemWidth);
+
+      // Determine which sub-service this image belongs to
+      let count = 0;
+      for (let i = 0; i < active.subServices.length; i++) {
+        count += active.subServices[i].images.length;
+        if (index < count) {
+          setCurrentSubIndex(i);
+          break;
+        }
+      }
+    };
+
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    return () => container.removeEventListener("scroll", handleScroll);
   }, [activeService]);
 
   return (
@@ -153,7 +176,7 @@ const Services = () => {
           </motion.div>
         </div>
       </motion.section>
-      
+
       <motion.section
         className="px-3 xl:px-6  mb-20"
         initial="hidden"
@@ -192,7 +215,8 @@ const Services = () => {
                     </div>
                     <div className="flex-1">
                       <h3
-                        className={`text-xl font-bold text-${service.textColor}`}
+                        className="text-xl font-bold"
+  style={{ color: service.textColor }} 
                       >
                         {service.title}
                       </h3>
@@ -203,19 +227,68 @@ const Services = () => {
                   </div>
 
                   {/* Sub-services for active service */}
+
                   {activeService === index && (
-                    <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {service.subServices.map((sub, idx) => (
-                        <div
-                          key={idx}
-                          className="rounded-xl flex overflow-hidden bg-white shadow"
-                        >
-                          <p className="p-4 text-center font-medium text-slate-700">
-                            {sub.name}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
+                    <motion.ul
+                      className="mt-4 space-y-3 pl-4 border-l-2 border-gray-200"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                    >
+                      {service.subServices.map((sub, idx) => {
+                        const isActiveSub = currentSubIndex === idx; // from state
+
+                        return (
+                          <li
+                            key={idx}
+                            className="flex items-center space-x-3 cursor-pointer"
+                            onClick={() => {
+                              // Scroll carousel to this sub-service's first image
+                              const imageIndex = service.subServices
+                                .slice(0, idx)
+                                .reduce((acc, s) => acc + s.images.length, 0);
+
+                              const scrollPos =
+                                imageIndex *
+                                (carouselRef.current?.clientWidth || 0);
+                              carouselRef.current?.scrollTo({
+                                left: scrollPos,
+                                behavior: "smooth",
+                              });
+                            }}
+                          >
+                            {/* Animated Circle Icon */}
+                            <motion.div
+                              style={{
+                                width: "1rem",
+                                height: "1rem",
+                                borderRadius: "9999px",
+                                border: `2px solid ${service.textColor}`, // dynamic border color
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                              animate={{
+                                scale: isActiveSub ? [1, 1.3, 1] : 1,
+                                backgroundColor: isActiveSub
+                                  ? `${service.textColor}CC` // same color with opacity (CC ~ 80%)
+                                  : "transparent",
+                                boxShadow: isActiveSub
+                                  ? `0 0 10px 4px ${service.textColor}`
+                                  : "none",
+                              }}
+                              transition={{
+                                duration: 2,
+                                repeat: isActiveSub ? Infinity : 0,
+                              }}
+                            />
+
+                            <span className="text-slate-700 font-medium">
+                              {sub.name}
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </motion.ul>
                   )}
                 </motion.div>
               ))}
@@ -266,6 +339,7 @@ const Services = () => {
           </div>
         </div>
       </motion.section>
+      <BentoGridThirdDemo />
     </section>
   );
 };
