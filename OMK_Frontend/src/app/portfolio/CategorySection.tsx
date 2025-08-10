@@ -1,8 +1,12 @@
 "use client";
-import React, { useRef } from 'react';
-import { ChevronRight, ChevronLeft, DivideIcon as LucideIcon } from 'lucide-react';
-import MediaCard from './MediaCard';
-import { MediaItem, Album } from '../../types/types';
+import React, { useRef } from "react";
+import {
+  ChevronRight,
+  ChevronLeft,
+  DivideIcon as LucideIcon,
+} from "lucide-react";
+import MediaCard from "./MediaCard";
+import { MediaItem, Album } from "../../types/types";
 
 interface CategorySectionProps {
   title: string;
@@ -21,20 +25,20 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   onViewMore,
   showViewMore = true,
   icon: Icon,
-  iconColor = 'bg-gray-700'
+  iconColor = "bg-gray-700",
 }) => {
   const displayItems = items.slice(0, 8);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scrollLeft = () => {
     if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: -320, behavior: 'smooth' });
+      scrollRef.current.scrollBy({ left: -320, behavior: "smooth" });
     }
   };
 
   const scrollRight = () => {
     if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: 320, behavior: 'smooth' });
+      scrollRef.current.scrollBy({ left: 320, behavior: "smooth" });
     }
   };
 
@@ -48,7 +52,9 @@ const CategorySection: React.FC<CategorySectionProps> = ({
               <Icon className="w-5 h-5 text-white" />
             </div>
           )}
-          <h2 className="text-2xl font-bold bg-gray-700 bg-clip-text text-transparent">{title}</h2>
+          <h1 className="text-6xl font-bold text-transparent [-webkit-text-stroke:2px_black]">
+            {title}
+          </h1>
         </div>
         {showViewMore && (
           <button
@@ -79,17 +85,17 @@ const CategorySection: React.FC<CategorySectionProps> = ({
           <ChevronRight className="w-5 h-5 text-gray-600" />
         </button>
 
-        <div 
-          ref={scrollRef}
-          className="flex space-x-4 overflow-x-auto hide-scrollbar pb-4 scroll-smooth -mx-4 px-4"
-        >
-        {displayItems.map((item, index) => (
-          <MediaCard
-            key={('id' in item && item.id) ? item.id : `item-${index}`}
-            item={item}
-            onClick={() => onItemClick(item)}
-          />
-        ))}
+        <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4 space-y-4">
+            {displayItems.map((item, index) => (
+              <div
+                key={"id" in item && item.id ? item.id : `item-${index}`}
+                className="break-inside-avoid cursor-pointer bg-white rounded-xl overflow-hidden shadow-sm"
+              >
+                <MediaCard item={item} onClick={() => onItemClick(item)} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

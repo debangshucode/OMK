@@ -27,7 +27,7 @@ const MediaCard: React.FC<MediaCardProps> = ({
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
       viewport={{ once: true }}
-      className={`group relative w-[170px] min-w-[170px] h-[260px] hover:scale-105 rounded-lg overflow-hidden bg-black shadow-md hover:shadow-lg transition-all duration-300 flex-shrink-0 ${className}`}
+      className={`group relative  hover:scale-105 rounded-lg overflow-hidden bg-black shadow-md hover:shadow-lg transition-all duration-300 flex-shrink-0 ${className}`}
       onClick={onClick}
     >
       {/* Background image */}
