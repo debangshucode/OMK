@@ -35,9 +35,11 @@ const Blog: React.FC = () => {
 
   useEffect(() => {
     const fetchBlogs = async () => {
+      console.log("Backend URL:", process.env.NEXT_PUBLIC_BACKEND_URL);
+
       try {
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs`,
+          `${process.env.NEXT_PUBLIC_API_URL}/blogs`,
           {
             withCredentials: true,
           }

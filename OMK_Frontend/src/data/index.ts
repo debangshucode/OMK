@@ -3,24 +3,25 @@
 export interface GridItem {
   image?: string;
   label?: string;
+  details?: String;
 }
 
 export const customItems: GridItem[] = [
   { label: "Hire Us" },
-  { image: "/images/weadingHome.jpg", label: "Golden Hour" },
-  { image: "/images/weadingHome1.jpg", label: "Candid Moment" },
-  { image: "/images/weadingHome.jpg", label: "Behind the Scenes" },
-  { image: "/images/weadingHome3.jpg", label: "Perfect Shot" },
-  { image: "/images/weadingHome2.jpg", label: "Captured Beauty" },
-  { label: "Photography" },
-  { image: "/images/weadingHome6.jpg", label: "City" },
-  { image: "/images/weadingHome5.jpg", label: "Nature" },
-  { label: "Cinematography" },
-  { image: "/images/weadingHome1.jpg", label: "Nature" },
-  { image: "/images/weadingHome6.jpg", label: "Nature" },
-  { label: "Pre-Weading" },
-  { image: "/images/weadingHome2.jpg", label: "Space" },
-  { label: "Hire Us" },
+  { image: "/images/weadingHome.jpg", label: "Pre-Wedding Shoot" , details: "Expert Pre-Wedding Photography & Videography | Capture Your Love Story with Stunning, Professional Shots"},
+  { image: "/images/weadingHome1.jpg", label: "Candid Moment" ,  details: "Authentic Candid Photography | Natural, unscripted shots that beautifully capture emotions and timeless pre-wedding memories."},
+  { image: "/images/weadingHome.jpg", label: "Behind the Scenes" ,  details: "Exclusive Behind-the-Scenes Photography | Relive the fun, laughter, and real moments from your pre-wedding journey."},
+  { image: "/images/weadingHome3.jpg", label: "Perfect Shot" ,  details: "Perfectly Composed Photography | Stunning pre-wedding pictures that highlight your chemistry with professional artistry."},
+  { image: "/images/weadingHome2.jpg", label: "Captured Beauty",  details: "Elegant Pre-Wedding Portraits | Showcase your beauty and love with magazine-style photography by experts." },
+  { label: "Photography" , details: "Professional Wedding & Pre-Wedding Photography | Creative storytelling through high-quality photos that last a lifetime."},
+  { image: "/images/weadingHome6.jpg", label: "City" ,  details: "Urban Pre-Wedding Photography | Stylish and modern shoots with iconic city backdrops to reflect your unique love story." },
+  { image: "/images/weadingHome5.jpg", label: "Nature", details: "Nature-Inspired Photography | Romantic pre-wedding shoots in lush greenery, mountains, and scenic outdoor landscapes." },
+  { label: "Cinematography" , details: "Cinematic Wedding Films | Professionally shot pre-wedding and wedding videos that bring your story to life like a movie." },
+  { image: "/images/weadingHome1.jpg", label: "Nature" , details: "Romantic Outdoor Photography | Natural light, greenery, and candid moments for dreamy pre-wedding captures." },
+  { image: "/images/weadingHome6.jpg", label: "Nature" ,  details: "Scenic Pre-Wedding Photoshoots | Elegant, emotional portraits surrounded by breathtaking natural beauty."},
+  { label: "Pre-Wedding", details: "Stylish Pre-Wedding Shoots | Creative themes, cinematic storytelling, and stunning visuals crafted for your big day."  },
+  { image: "/images/weadingHome2.jpg", label: "Space" , details: "Unique Pre-Wedding Concepts | Creative themes and artistic shots that stand out and showcase your personality." },
+  { label: "Hire Us", details: "Hire our expert photographers & cinematographers for unforgettable pre-wedding and wedding coverage." },
   { image: "/images/weadingHome6.jpg", label: "Ocean" },
   { image: "/images/weadingHome3.jpg", label: "Ocean" },
   { label: "Videography" },

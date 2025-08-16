@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { BookOpen } from "lucide-react";
+import { BookOpen , Phone } from "lucide-react";
 import { customItems } from "../data/index";
 import { GridItem } from "../data/index";
 
@@ -161,9 +161,27 @@ const Book: React.FC = () => {
                           alt={page.label}
                           className="w-full h-full object-cover rounded-xl"
                         />
-                        <div className="absolute bottom-4 left-4 right-4 bg-amber-700/60 text-white font-semibold text-center py-2 rounded-md text-md">
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent flex flex-col justify-end p-4">
+                        <h3 className="text-white text-center text-lg md:text-xl font-semibold">
                           {page.label || "Captured Moment"}
-                        </div>
+                        </h3>
+                        {page.details && (
+                          <p className="text-gray-200 text-center text-sm md:text-base mt-1 leading-relaxed">
+                            {page.details}
+                          </p>
+                            )}
+                            <a
+  href="tel:+919876543210"
+  className="mt-3 w-4/5 mx-auto inline-flex items-center justify-center gap-2 
+             bg-gradient-to-r from-amber-500/80 via-amber-600/80 to-amber-700/80 
+             hover:from-amber-600 hover:via-amber-700 hover:to-amber-800
+             text-white text-sm md:text-base font-semibold 
+             px-4 py-2 rounded-lg shadow-lg backdrop-blur-sm transition"
+>
+  <Phone size={18} />
+  Call Now
+</a>
+                      </div>
                       </>
                     )}
                   </div>
