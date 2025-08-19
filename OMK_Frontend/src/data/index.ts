@@ -129,7 +129,8 @@ const generateAlbums = (): Album[] => {
       coverImage: items[0].thumbnail || items[0].url,
       date: new Date(2024, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString(),
       itemCount: items.length,
-      items
+      items,
+      type: 'album'
     };
   });
 };

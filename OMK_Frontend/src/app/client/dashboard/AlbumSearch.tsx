@@ -33,8 +33,9 @@ const AlbumSearch: React.FC = () => {
   useEffect(()=>{
     const fetchAlbums = async () => {
       try {
+        if (!user?._id) return;
         console.log(user)
-        const res = await albumService.getClientAlbums(user.id);
+        const res = await albumService.getClientAlbums(user._id);
         console.log("album",res)
         setAlbums(res);
       } catch (err) {
