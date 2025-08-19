@@ -2,7 +2,6 @@ import { useState } from "react"
 import axios from "@/utils/axios"
 import { toast } from "sonner"
 import { useAlbums } from "@/hooks/useAlbums"
-import { albumService } from "@/services/albumService"
 import Link from "next/link"
 import { PlusIcon } from "lucide-react"
 import Folder from "@/components/ui/folder"
@@ -37,10 +36,10 @@ const CreateAlbumModal = ({
             onChange={(e) => setCategory(e.target.value)}
             className="w-full border-b border-stone-300 pb-2 text-stone-700 bg-transparent focus:border-stone-500 focus:outline-none transition-colors"
           >
-            <option value="personal">Personal</option>
+            <option value="personal">family</option>
             <option value="wedding">Wedding</option>
-            <option value="birthday">Birthday</option>
-            <option value="portfolio">Portfolio</option>
+            <option value="birthday">baby</option>
+            <option value="portfolio">prewedding</option>
             <option value="corporate">Corporate</option>
           </select>
           <input

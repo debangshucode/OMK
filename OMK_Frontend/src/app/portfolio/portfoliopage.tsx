@@ -17,21 +17,27 @@ import FullScreenViewer from "./FullScreenViewer";
 import AlbumView from "./AlbumView";
 import CategoryView from "./CategoryView";
 import AllAlbumsView from "./AllAlbumsView";
-import { portfolioData } from "../../data/index";
+// import { portfolioData } from "../../data/index"; // Replaced with API data
+import { usePortfolioData } from "../../hooks/usePortfolio";
+import { LoadingSection, ErrorState, FullPageLoading } from "../../components/ui/LoadingStates";
 import { MediaItem, Album as AlbumType } from "../../types/types";
 import FaceSearch from "./FaceSearch";
 import { useSearchParams, useRouter } from "next/navigation";
 const Portfolio: React.FC = () => {
   const [mediaGroup, setMediaGroup] = useState<MediaItem[]>([]);
-
   const [currentView, setCurrentView] = useState<
     "home" | "album" | "category" | "all-albums"
   >("home");
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
   const [selectedAlbum, setSelectedAlbum] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showFaceSearch, setShowFaceSearch] = useState(false);
+  
   const searchParams = useSearchParams();
   const router = useRouter();
+  
+  // Use API data instead of static data
+  const { loading, error, data: portfolioData, refetch } = usePortfolioData();
 
   useEffect(() => {
     const view = searchParams.get("view");
@@ -53,13 +59,27 @@ const Portfolio: React.FC = () => {
     }
   }, [searchParams]);
 
-  // Get all photos and videos
-  const allPhotos = Object.values(portfolioData.categories)
-    .flat()
-    .filter((item) => item.type === "photo");
-  const allVideos = Object.values(portfolioData.categories)
-    .flat()
-    .filter((item) => item.type === "video");
+  // Show loading state while data is being fetched
+  if (loading) {
+    return <FullPageLoading />;
+  }
+
+  // Show error state if data fetching failed
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-white to-red-50">
+        <ErrorState 
+          message={error}
+          onRetry={refetch}
+          className="min-h-screen"
+        />
+      </div>
+    );
+  }
+
+  // Get all photos and videos from API data
+  const allPhotos = portfolioData.photos;
+  const allVideos = portfolioData.videos;
 
   const handleMediaClick = (media: MediaItem, group: MediaItem[]) => {
     setSelectedMedia(media);
@@ -70,7 +90,6 @@ const Portfolio: React.FC = () => {
     router.push(`?view=album&album=${album.id}`);
     setCurrentView("album");
   };
-  const [showFaceSearch, setShowFaceSearch] = useState(false);
   const handleViewMore = (section: string) => {
     if (section === "albums") {
        router.push(`?view=all-albums`);
@@ -104,7 +123,7 @@ const Portfolio: React.FC = () => {
         {selectedMedia && (
           <FullScreenViewer
             media={selectedMedia}
-            allMedia={Object.values(portfolioData.categories).flat()}
+            allMedia={mediaGroup}
             onClose={() => setSelectedMedia(null)}
           />
         )}
@@ -123,7 +142,7 @@ const Portfolio: React.FC = () => {
         {selectedMedia && (
           <FullScreenViewer
             media={selectedMedia}
-            allMedia={Object.values(portfolioData.categories).flat()}
+            allMedia={mediaGroup}
             onClose={() => setSelectedMedia(null)}
           />
         )}
@@ -184,10 +203,10 @@ const Portfolio: React.FC = () => {
   }
 
   if (currentView === "category" && selectedCategory) {
-    const categoryData =
-      portfolioData.categories[
-        selectedCategory as keyof typeof portfolioData.categories
-      ];
+    const categoryData = portfolioData.categories[
+      selectedCategory as keyof typeof portfolioData.categories
+    ] || [];
+    
     const categoryIcons = {
       wedding: Heart,
       prewedding: Users,

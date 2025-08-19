@@ -14,29 +14,35 @@ export interface PortfolioItem {
   duration?: string;
   photoCount?: number;
 }
-export interface MediaItem {
-  id: string;
-  title: string;
-  description: string;
-  url: string;
-  thumbnail?: string; // For videos and YouTube links
-  coverImage?: string; // For albums
-  type: 'photo' | 'video' | 'youtube' | 'thumbnail' | 'album' | 'MediaItem';
-  category: string;
-  date: string;
-  tags: string[];
+// Base structure for shared fields
+export interface BaseMedia {
+  id: string
+  title: string
+  description?: string
+  category?: string
+  date: string
+  tags?: string[]
 }
 
-export interface Album {
-  id: string;
-  title: string;
-  description: string;
-  coverImage: string;
-  date: string;
-  itemCount: number;
-  items: MediaItem[];
-  thumbnail?: string;
+// Individual media items
+export interface MediaItem extends BaseMedia {
+  type: 'photo' | 'video' | 'youtube' | 'thumbnail'
+  url: string
+  thumbnail?: string // for videos / YouTube
 }
+
+// Album containing media items
+export interface Album extends BaseMedia {
+  type: 'album'
+  coverImage: string
+  itemCount: number
+  items: MediaItem[]
+  thumbnail?: string
+}
+
+// Union type for easy handling
+export type Media = MediaItem | Album
+
 
 export interface Booking {
   _id: string;

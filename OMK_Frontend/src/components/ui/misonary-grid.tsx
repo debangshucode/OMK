@@ -5,7 +5,7 @@ import { photos } from '../../data/index'
 const MasonryGrid: React.FC = () => {
   return (
     <div className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4 space-y-4">
+      <div className="columns-2 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4 space-y-4">
         {photos.map(photo => (
           <div
             key={photo.id}
