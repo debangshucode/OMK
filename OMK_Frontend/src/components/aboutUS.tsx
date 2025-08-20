@@ -1,7 +1,7 @@
 "use client";
 import CountUp from "react-countup";
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence, Easing } from "framer-motion";
+import { motion,  Easing } from "framer-motion";
 import { Award, Users, Clock, Sparkles } from "lucide-react";
 import Book from "./book";
 const AboutUs = () => {
@@ -77,11 +77,7 @@ const AboutUs = () => {
     },
   };
 
-  const slideVariants = {
-    enter: { x: 300, opacity: 0 },
-    center: { x: 0, opacity: 1, zIndex: 1 },
-    exit: { x: -300, opacity: 0, zIndex: 0 },
-  };
+ 
 
   const stats = [
     { icon: Award, value: 500, label: "Projects Completed", suffix: "+" },
