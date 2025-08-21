@@ -21,11 +21,10 @@ import {
   Clock,
   CheckCircle,
   ArrowRight,
-  Aperture,
 } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
-import { link } from "fs";
+
 
 declare global {
   interface Window {

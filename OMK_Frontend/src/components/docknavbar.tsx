@@ -49,12 +49,14 @@ const DockNavbar = () => {
     {
       label: "Blog",
       id: "blog",
-      onClick: () => router.push("/blog"),
+      onClick: () => router.push("/blog", { scroll: true }),
+
     },
     {
       label: "Portfolio",
       id: "portfolio",
-      onClick: () => router.push("/portfolio"),
+      onClick: () => router.push("/portfolio", { scroll: true }),
+
     },
     {
       label: "Testimonials",

@@ -171,7 +171,7 @@ export const getQuickLinks = (
   },
   {
     label: "Portfolio",
-    onClick: () => router.push("/portfolio"),
+    onClick: () => router.push("/portfolio", { scroll: true }),
   },
   {
     label: "Testimonials",

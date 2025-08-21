@@ -39,7 +39,7 @@ export default function HomePage() {
       <Services />
       <BlogHome />
       <Testimonials />
-      <BookingAssistant />
+      {/* <BookingAssistant /> */}
     </main>
   );
 }
