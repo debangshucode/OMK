@@ -17,6 +17,7 @@ interface Blog {
   author: string;
   category: string;
   tags: string[];
+  status: "draft" | "published"; // ✅ Add status field
   createdAt: string;
   readTime: string;
   views: number;
@@ -33,6 +34,11 @@ const Blog: React.FC = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // ✅ Fix scroll issue - scroll to top when page loads
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
   useEffect(() => {
     const fetchBlogs = async () => {
       console.log("Backend URL:", process.env.NEXT_PUBLIC_BACKEND_URL);
@@ -44,7 +50,13 @@ const Blog: React.FC = () => {
             withCredentials: true,
           }
         );
-        setBlogPosts(res.data.blogs || res.data); // depends on API structure
+        
+        const allBlogs = res.data.blogs || res.data;
+        
+        // ✅ Fix: Filter out draft blogs - only show published blogs
+        const publishedBlogs = allBlogs.filter((blog: Blog) => blog.status === 'published');
+        
+        setBlogPosts(publishedBlogs);
       } catch (err) {
         console.error("Failed to fetch blogs:", err);
       } finally {

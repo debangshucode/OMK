@@ -4,6 +4,7 @@ import "./globals.css";
 import dynamic from "next/dynamic";
 
 import ClientLayout from "@/components/clientlayout";
+import ScrollToTop from "@/components/ScrollToTop"; // ✅ Add scroll to top component
 
 import HeaderAction from "@/components/headeraction";
 import { AuthProvider } from "@/context/AuthContext";
@@ -36,6 +37,7 @@ export default function RootLayout({
       >
         {" "}
         <AuthProvider>
+          <ScrollToTop /> {/* ✅ Add global scroll to top */}
           <ClientLayout>
             {children}
             <Toaster position="top-center" richColors />

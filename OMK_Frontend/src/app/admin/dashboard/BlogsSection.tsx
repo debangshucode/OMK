@@ -57,7 +57,8 @@ interface BlogForm {
   featuredImageFile: File | null;
   featuredImageUrl: string;
   category: string;
-  tags: string;  tagList: string[]; // Add this new field for individual tags
+  tags: string;
+  tagList: string[]; // Add this new field for individual tags
 
   status: "draft" | "published" | "scheduled";
   publishDate: string;
@@ -85,7 +86,8 @@ const BlogsSection: React.FC = () => {
     featuredImageFile: null,
     featuredImageUrl: "",
     category: "",
-    tags: "",    tagList: [], // Add this for individual tags
+    tags: "",
+    tagList: [], // Add this for individual tags
     status: "draft",
     publishDate: "",
     youtubeUrl: "",
@@ -94,73 +96,80 @@ const BlogsSection: React.FC = () => {
   });
 
   // Add tag management state
-  const [currentTag, setCurrentTag] = useState('');
+  const [currentTag, setCurrentTag] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [saving, setSaving] = useState(false); // ✅ Add loading state
 
   // Text formatting function for Bold/Italic buttons
-  const applyFormatting = (format: 'bold' | 'italic' | 'underline') => {
+  const applyFormatting = (format: "bold" | "italic" | "underline") => {
     const textarea = textareaRef.current;
     if (!textarea) return;
 
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const selectedText = textarea.value.substring(start, end);
-    
-    let formattedText = '';
+
+    let formattedText = "";
     switch (format) {
-      case 'bold':
+      case "bold":
         formattedText = `**${selectedText}**`;
         break;
-      case 'italic':
+      case "italic":
         formattedText = `*${selectedText}*`;
         break;
-      case 'underline':
+      case "underline":
         formattedText = `<u>${selectedText}</u>`;
         break;
     }
 
-    const newContent = 
-      textarea.value.substring(0, start) + 
-      formattedText + 
+    const newContent =
+      textarea.value.substring(0, start) +
+      formattedText +
       textarea.value.substring(end);
-      
-    setBlogForm(prev => ({ ...prev, content: newContent }));
-    
+
+    setBlogForm((prev) => ({ ...prev, content: newContent }));
+
     // Restore cursor position
     setTimeout(() => {
       textarea.focus();
-      textarea.setSelectionRange(start + formattedText.length, start + formattedText.length);
+      textarea.setSelectionRange(
+        start + formattedText.length,
+        start + formattedText.length
+      );
     }, 0);
   };
 
   // Tag management functions
   const addTag = (tag: string) => {
     if (tag.trim() && !blogForm.tagList.includes(tag.trim())) {
-      setBlogForm(prev => ({
+      setBlogForm((prev) => ({
         ...prev,
-        tagList: [...prev.tagList, tag.trim()]
+        tagList: [...prev.tagList, tag.trim()],
       }));
     }
-    setCurrentTag('');
+    setCurrentTag("");
   };
 
   const removeTag = (tagToRemove: string) => {
-    setBlogForm(prev => ({
+    setBlogForm((prev) => ({
       ...prev,
-      tagList: prev.tagList.filter(tag => tag !== tagToRemove)
+      tagList: prev.tagList.filter((tag) => tag !== tagToRemove),
     }));
   };
 
   const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       addTag(currentTag);
-    } else if (e.key === 'Backspace' && !currentTag && blogForm.tagList.length > 0) {
+    } else if (
+      e.key === "Backspace" &&
+      !currentTag &&
+      blogForm.tagList.length > 0
+    ) {
       const lastTag = blogForm.tagList[blogForm.tagList.length - 1];
       removeTag(lastTag);
     }
   };
-
 
   const fetchBlogs = async () => {
     try {
@@ -196,7 +205,7 @@ const BlogsSection: React.FC = () => {
     "Portrait",
     "Event Photography",
   ];
-  const status = ["all", "published", "draft", "scheduled"];
+  const status = ["all", "published", "draft"]; // Remove "scheduled"
 
   const toggleBlogSelection = (blogId: number) => {
     setSelectedBlogs((prev) =>
@@ -213,14 +222,15 @@ const BlogsSection: React.FC = () => {
       featuredImageFile: null,
       featuredImageUrl: "",
       category: "",
-      tags: "",      tagList: [], // Add this
+      tags: "",
+      tagList: [], // Add this
       status: "draft",
       publishDate: "",
       youtubeUrl: "",
       images: [], // preview URLs
       imageFiles: [], // actual image files
     });
-    setCurrentTag(''); // Reset current tag input
+    setCurrentTag(""); // Reset current tag input
 
     setEditingBlog(null);
     setShowCreateModal(true);
@@ -236,7 +246,8 @@ const BlogsSection: React.FC = () => {
       featuredImageFile: null,
       featuredImageUrl: featured,
       category: blog.category,
-      tags: Array.isArray(blog.tags) ? blog.tags.join(", ") : "",      tagList: Array.isArray(blog.tags) ? blog.tags : [], // Populate tagList
+      tags: Array.isArray(blog.tags) ? blog.tags.join(", ") : "",
+      tagList: Array.isArray(blog.tags) ? blog.tags : [], // Populate tagList
       status: blog.status,
       publishDate: blog.publishDate || "",
       youtubeUrl: blog.youTubeLink || "", // Fix: Use backend field name
@@ -244,85 +255,198 @@ const BlogsSection: React.FC = () => {
       imageFiles: [],
     });
 
-    setCurrentTag(''); // Reset tag input
+    setCurrentTag(""); // Reset tag input
 
     setEditingBlog(blog);
     setShowCreateModal(true);
   };
 
-const handleSaveBlog = async () => {
-  const formData = new FormData();
-  formData.append("title", blogForm.title);
-  formData.append("content", blogForm.content);
-  formData.append("category", blogForm.category);
-  formData.append("status", blogForm.status);
-  formData.append("tags", blogForm.tagList.join(",")); // ✅ Fix: Use tagList array
-
-  // Add featured image
-  if (blogForm.featuredImageFile) {
-    formData.append("image", blogForm.featuredImageFile);
-  }
-
-  // ✅ Fix: Add all additional images - multiple files support
-  blogForm.imageFiles.forEach((file) => {
-    formData.append("image", file); // Backend expects "image" field name
-  });
-
-  if (blogForm.youtubeUrl) {
-    formData.append("youTubeLink", blogForm.youtubeUrl); // ✅ Fix: Correct backend field name
-  }
- 
-  try {
-    if (editingBlog) {
-      await axios.put(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs/${editingBlog._id}`,
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+  const handleDeleteBlog = async (blogId: number) => {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this blog? This action cannot be undone."
       )
-      toast.success("Blog updated successfully")
-      await fetchBlogs();
-    } else {
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs`,
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
-      toast.success("Blog created successfully")
+    ) {
+      try {
+        await axios.delete(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs/${blogId}`,
+          { withCredentials: true }
+        );
+        toast.success("Blog deleted successfully");
+        await fetchBlogs(); // Refresh the blogs list
+      } catch (error: any) {
+        toast.error(error.response?.data?.message || "Failed to delete blog");
+      }
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedBlogs.length === 0) {
+      toast.error("Please select blogs to delete");
+      return;
     }
 
-    setShowCreateModal(false)
-    setEditingBlog(null)
-    await fetchBlogs();
-  } catch (error: any) {
-    toast.error(error.response?.data?.message || "Blog save failed")
-  }
-}
+    if (
+      window.confirm(
+        `Are you sure you want to delete ${selectedBlogs.length} blog(s)? This action cannot be undone.`
+      )
+    ) {
+      try {
+        // Delete each selected blog
+        await Promise.all(
+          selectedBlogs.map((blogId) =>
+            axios.delete(
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs/${blogId}`,
+              { withCredentials: true }
+            )
+          )
+        );
 
+        toast.success(`${selectedBlogs.length} blog(s) deleted successfully`);
+        setSelectedBlogs([]); // Clear selection
+        await fetchBlogs(); // Refresh the blogs list
+      } catch (error: any) {
+        toast.error(
+          error.response?.data?.message || "Failed to delete some blogs"
+        );
+      }
+    }
+  };
 
+  const handleSaveBlog = async () => {
+    setSaving(true);
+
+    const formData = new FormData();
+    formData.append("title", blogForm.title);
+    formData.append("content", blogForm.content);
+    formData.append("category", blogForm.category);
+    formData.append("status", blogForm.status);
+    formData.append("tags", blogForm.tagList.join(","));
+
+    if (editingBlog) {
+      // When editing, handle featured and additional images separately
+
+      // Handle featured image
+      if (blogForm.featuredImageFile) {
+        // New featured image uploaded
+        formData.append("image", blogForm.featuredImageFile);
+        formData.append("imageType", "featured");
+        formData.append("keepExistingFeatured", "false");
+        formData.append("keepExistingAdditional", "true"); // Keep existing additional images
+      } else {
+        // No new featured image, keep existing one
+        formData.append("keepExistingFeatured", "true");
+      }
+
+      // Handle additional images
+      if (blogForm.imageFiles.length > 0) {
+        // New additional images uploaded
+        blogForm.imageFiles.forEach((file) => {
+          formData.append("image", file);
+        });
+        formData.append("imageType", "additional");
+        formData.append("keepExistingAdditional", "true"); // Keep existing + add new
+
+        // If no featured image was uploaded, make sure to keep existing featured
+        if (!blogForm.featuredImageFile) {
+          formData.append("keepExistingFeatured", "true");
+        }
+      } else if (!blogForm.featuredImageFile) {
+        // No new images at all, keep everything
+        formData.append("keepExistingAdditional", "true");
+        formData.append("keepExistingFeatured", "true");
+      }
+    } else {
+      // For new blogs, add all images normally (first = featured, rest = additional)
+      if (blogForm.featuredImageFile) {
+        formData.append("image", blogForm.featuredImageFile);
+      }
+      blogForm.imageFiles.forEach((file) => {
+        formData.append("image", file);
+      });
+    }
+
+    if (blogForm.youtubeUrl) {
+      formData.append("youTubeLink", blogForm.youtubeUrl);
+    }
+
+    // Debug logging
+    console.log("Form data being sent:");
+    for (let [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        console.log(key, "→", value.name, "(File)");
+      } else {
+        console.log(key, "→", value);
+      }
+    }
+
+    try {
+      if (editingBlog) {
+        await axios.put(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs/${editingBlog._id}`,
+          formData,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        toast.success("Blog updated successfully");
+        await fetchBlogs();
+      } else {
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs`,
+          formData,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        toast.success("Blog created successfully");
+      }
+
+      setShowCreateModal(false);
+      setEditingBlog(null);
+      await fetchBlogs();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Blog save failed");
+    } finally {
+      setSaving(false); // ✅ End loading
+    }
+  };
+
+  const removeAdditionalImage = (indexToRemove: number) => {
+    setBlogForm((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, index) => index !== indexToRemove),
+      imageFiles: prev.imageFiles.filter((_, index) => index !== indexToRemove),
+    }));
+  };
+
+  const removeFeaturedImage = () => {
+    setBlogForm((prev) => ({
+      ...prev,
+      featuredImageUrl: "",
+      featuredImageFile: null,
+    }));
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const files = Array.from(e.target.files || []);
-  if (!files.length) return;
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
 
-  // Create previews for new files
-  const filePreviews = files.map((file) => URL.createObjectURL(file));
+    // Create previews for new files
+    const filePreviews = files.map((file) => URL.createObjectURL(file));
 
-  setBlogForm((prev) => ({
-    ...prev,
-    images: [...prev.images, ...filePreviews], // Add to existing previews
-    imageFiles: [...(prev.imageFiles || []), ...files], // Add to existing files
-  }));
-};
+    setBlogForm((prev) => ({
+      ...prev,
+      images: [...prev.images, ...filePreviews], // Add to existing previews
+      imageFiles: [...(prev.imageFiles || []), ...files], // Add to existing files
+    }));
+  };
 
   const handleFeaturedImageUpload = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -332,7 +456,7 @@ const handleSaveBlog = async () => {
       const imageUrl = URL.createObjectURL(file);
       setBlogForm((prev) => ({
         ...prev,
-        featuredImage: imageUrl,
+        featuredImageUrl: imageUrl, // 👈 Fix: Use featuredImageUrl instead of featuredImage
         featuredImageFile: file, // 👈 store actual file for FormData
       }));
     }
@@ -422,7 +546,10 @@ const handleSaveBlog = async () => {
               <button className="text-gray-600 hover:text-gray-700 cursor-pointer">
                 Draft
               </button>
-              <button className="text-red-600 hover:text-red-700 cursor-pointer">
+              <button
+                onClick={handleBulkDelete}
+                className="text-red-600 hover:text-red-700 cursor-pointer"
+              >
                 Delete
               </button>
             </div>
@@ -634,6 +761,7 @@ const handleSaveBlog = async () => {
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
+                      onClick={() => handleDeleteBlog(blog._id)}
                       className="p-1 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded cursor-pointer"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -729,37 +857,53 @@ const handleSaveBlog = async () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Featured Image
                   </label>
-                  <div className="flex items-center space-x-4">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={handleFeaturedImageUpload}
-                      className="hidden text-gray-900"
-                      id="featured-image"
-                    />
-                    <label
-                      htmlFor="featured-image"
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 cursor-pointer"
-                    >
-                      <Upload className="w-4 h-4" />
-                      <span>Upload Image</span>
-                    </label>
-                    {blogForm.featuredImageUrl &&
-                      !blogForm.featuredImageFile && (
-                        <img
-                          src={blogForm.featuredImageUrl}
-                          alt="Featured"
-                          className="w-20 h-16 object-cover rounded-lg"
-                        />
-                      )}
-
-                    {blogForm.featuredImageFile && (
-                      <img
-                        src={URL.createObjectURL(blogForm.featuredImageFile)}
-                        alt="Featured"
-                        className="w-20 h-16 object-cover rounded-lg"
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-4">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFeaturedImageUpload}
+                        className="hidden"
+                        id="featured-image"
                       />
+                      <label
+                        htmlFor="featured-image"
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 cursor-pointer"
+                      >
+                        <Upload className="w-4 h-4" />
+                        <span>
+                          {blogForm.featuredImageUrl ||
+                          blogForm.featuredImageFile
+                            ? "Change Featured Image"
+                            : "Upload Featured Image"}
+                        </span>
+                      </label>
+                    </div>
+
+                    {/* Featured Image Preview */}
+                    {(blogForm.featuredImageUrl ||
+                      blogForm.featuredImageFile) && (
+                      <div className="relative inline-block">
+                        <img
+                          src={
+                            blogForm.featuredImageFile
+                              ? URL.createObjectURL(blogForm.featuredImageFile)
+                              : blogForm.featuredImageUrl
+                          }
+                          alt="Featured"
+                          className="w-32 h-24 object-cover rounded-lg border-2 border-green-200"
+                        />
+                        <button
+                          type="button"
+                          onClick={removeFeaturedImage}
+                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                        <span className="absolute bottom-0 left-0 right-0 bg-green-600 text-white text-xs px-2 py-1 rounded-b-lg text-center">
+                          Featured
+                        </span>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -772,23 +916,7 @@ const handleSaveBlog = async () => {
 
                   {/* Toolbar */}
                   <div className="border border-gray-300 rounded-t-lg p-2 bg-gray-50 flex items-center space-x-2">
-                   
                     <div className="w-px h-6 bg-gray-300"></div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={handleImageUpload}
-                      className="hidden text-gray-900"
-                      id="content-image"
-                    />
-                    <label
-                      htmlFor="content-image"
-                      className="p-2 hover:bg-gray-200 rounded cursor-pointer text-gray-900"
-                    >
-                      <ImageIcon className="w-4 h-4" />
-                    </label>
-                   
                   </div>
 
                   {/* Content Textarea */}
@@ -830,37 +958,93 @@ const handleSaveBlog = async () => {
                 </div>
 
                 {/* Additional Images */}
-                {blogForm.images.length > 0 && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Additional Images
-                    </label>
-                    <div className="grid grid-cols-4 gap-2">
-                      {blogForm.images.map((image, index) => (
-                        <div key={index} className="relative">
-                          <img
-                            src={image}
-                            alt={`Additional ${index + 1}`}
-                            className="w-full h-20 object-cover rounded-lg"
-                          />
-                          <button
-                            onClick={() =>
-                              setBlogForm((prev) => ({
-                                ...prev,
-                                images: prev.images.filter(
-                                  (_, i) => i !== index
-                                ),
-                              }))
-                            }
-                            className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center cursor-pointer"
-                          >
-                            <X className="w-3 h-3" />
-                          </button>
-                        </div>
-                      ))}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Additional Images
+                  </label>
+                  <div className="space-y-4">
+                    {/* Upload Additional Images */}
+                    <div className="flex items-center space-x-4">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleImageUpload}
+                        className="hidden"
+                        id="additional-images"
+                      />
+                      <label
+                        htmlFor="additional-images"
+                        className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 cursor-pointer"
+                      >
+                        <Upload className="w-4 h-4" />
+                        <span>Add More Images</span>
+                      </label>
                     </div>
+
+                    {/* Show Existing Additional Images from Database */}
+                    {editingBlog && blogForm.images.length === 0 && (
+                      <div>
+                        <p className="text-sm text-gray-500 mb-2">
+                          Current additional images:
+                        </p>
+                        <div className="grid grid-cols-4 gap-2">
+                          {(() => {
+                            const allImages = Array.isArray(editingBlog.image)
+                              ? editingBlog.image
+                              : [];
+                            const [, ...additionalImages] = allImages; // Skip first (featured) image
+                            return additionalImages.map((image, index) => (
+                              <div
+                                key={`existing-${index}`}
+                                className="relative"
+                              >
+                                <img
+                                  src={image}
+                                  alt={`Existing Additional ${index + 1}`}
+                                  className="w-full h-20 object-cover rounded-lg border border-gray-200"
+                                />
+                                <span className="absolute bottom-0 left-0 right-0 bg-blue-600 text-white text-xs px-1 py-0.5 rounded-b-lg text-center">
+                                  Existing
+                                </span>
+                              </div>
+                            ));
+                          })()}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Show New Additional Images Being Added */}
+                    {blogForm.images.length > 0 && (
+                      <div>
+                        <p className="text-sm text-gray-600 mb-2">
+                          New additional images to be added:
+                        </p>
+                        <div className="grid grid-cols-4 gap-2">
+                          {blogForm.images.map((image, index) => (
+                            <div key={`new-${index}`} className="relative">
+                              <img
+                                src={image}
+                                alt={`New Additional ${index + 1}`}
+                                className="w-full h-20 object-cover rounded-lg border-2 border-purple-200"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => removeAdditionalImage(index)}
+                                className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                              <span className="absolute bottom-0 left-0 right-0 bg-purple-600 text-white text-xs px-1 py-0.5 rounded-b-lg text-center">
+                                New
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
 
                 {/* Tags and Settings */}
                 <div className="grid md:grid-cols-2 gap-4">
@@ -868,11 +1052,13 @@ const handleSaveBlog = async () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Tags
                     </label>
-                    
+
                     {/* Tag Display */}
                     <div className="flex flex-wrap gap-2 mb-2 min-h-[2rem] p-2 border border-gray-300 rounded-lg bg-gray-50">
                       {blogForm.tagList.length === 0 ? (
-                        <span className="text-gray-400 text-sm">No tags added yet...</span>
+                        <span className="text-gray-400 text-sm">
+                          No tags added yet...
+                        </span>
                       ) : (
                         blogForm.tagList.map((tag, index) => (
                           <span
@@ -892,7 +1078,7 @@ const handleSaveBlog = async () => {
                         ))
                       )}
                     </div>
-                    
+
                     {/* Tag Input */}
                     <input
                       type="text"
@@ -915,40 +1101,18 @@ const handleSaveBlog = async () => {
                       onChange={(e) =>
                         setBlogForm((prev) => ({
                           ...prev,
-                          status: e.target.value as
-                            | "draft"
-                            | "published"
-                            | "scheduled",
+                          status: e.target.value as "draft" | "published",
                         }))
                       }
                       className="w-full border text-gray-900 border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer"
                     >
                       <option value="draft">Draft</option>
                       <option value="published">Published</option>
-                      <option value="scheduled">Scheduled</option>
                     </select>
                   </div>
                 </div>
 
-                {/* Publish Date */}
-                {blogForm.status === "scheduled" && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Publish Date
-                    </label>
-                    <input
-                      type="datetime-local"
-                      value={blogForm.publishDate}
-                      onChange={(e) =>
-                        setBlogForm((prev) => ({
-                          ...prev,
-                          publishDate: e.target.value,
-                        }))
-                      }
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                  </div>
-                )}
+                {/* Tags and Settings sections end here */}
               </div>
 
               {/* Modal Footer */}
@@ -959,31 +1123,52 @@ const handleSaveBlog = async () => {
                 </div>
                 <div className="flex space-x-3">
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: saving ? 1 : 1.05 }}
+                    whileTap={{ scale: saving ? 1 : 0.95 }}
                     onClick={() => setShowCreateModal(false)}
-                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 cursor-pointer"
+                    disabled={saving}
+                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Cancel
                   </motion.button>
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() =>
-                      setBlogForm((prev) => ({ ...prev, status: "draft" }))
-                    }
-                    className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg cursor-pointer"
+                    whileHover={{ scale: saving ? 1 : 1.05 }}
+                    whileTap={{ scale: saving ? 1 : 0.95 }}
+                    onClick={async () => {
+                      setBlogForm((prev) => ({ ...prev, status: "draft" }));
+                      setTimeout(() => handleSaveBlog(), 100);
+                    }}
+                    disabled={saving}
+                    className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                   >
-                    Save Draft
+                    {saving && blogForm.status === "draft" ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Save className="w-4 h-4" />
+                    )}
+                    <span>Save Draft</span>
                   </motion.button>
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: saving ? 1 : 1.05 }}
+                    whileTap={{ scale: saving ? 1 : 0.95 }}
                     onClick={handleSaveBlog}
-                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center space-x-2 cursor-pointer"
+                    disabled={saving}
+                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center space-x-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Save className="w-4 h-4" />
-                    <span>{editingBlog ? "Update" : "Publish"}</span>
+                    {saving ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Save className="w-4 h-4" />
+                    )}
+                    <span>
+                      {saving
+                        ? "Saving..."
+                        : editingBlog
+                        ? "Update"
+                        : blogForm.status === "draft"
+                        ? "Save Draft"
+                        : "Publish"}
+                    </span>
                   </motion.button>
                 </div>
               </div>
