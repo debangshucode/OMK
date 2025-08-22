@@ -3,9 +3,8 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { Tag, Clock, ArrowRight, Youtube } from "lucide-react";
+import { Tag,  ArrowRight, Youtube } from "lucide-react";
 import Image from "next/image";
-import { customItems } from "@/data/index";
 import Link from "next/link";
 
 const BlogDetail = () => {
@@ -13,7 +12,6 @@ const BlogDetail = () => {
   const [blogPost, setBlogPost] = useState<any>(null);
   const [allBlogs, setAllBlogs] = useState<any[]>([]);
 
-  const imageItems = customItems.filter((item) => item.image);
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -77,10 +75,14 @@ const BlogDetail = () => {
             {/* Featured Image */}
             <motion.div variants={itemVariants} className="mb-12">
               <img
-                    src={Array.isArray(blogPost.image) ? blogPost.image[0] : blogPost.image}
-                    alt={blogPost.title}
-                    className="w-full h-full object-cover"
-                  />
+                src={
+                  Array.isArray(blogPost.image)
+                    ? blogPost.image[0]
+                    : blogPost.image
+                }
+                alt={blogPost.title}
+                className="w-full h-full object-cover"
+              />
             </motion.div>
             {/* Author Info */}
             <motion.div variants={itemVariants} className="mb-12">
@@ -96,22 +98,28 @@ const BlogDetail = () => {
             </motion.div>
 
             {/* YouTube Video */}
-            {blogPost.hasVideo && (
+            {blogPost.youTubeLink && (
               <motion.div variants={itemVariants} className="mb-12">
                 <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
                   <div className="flex items-center space-x-3 mb-4">
                     <Youtube className="w-6 h-6 text-red-600" />
                     <h3 className="text-lg font-semibold text-gray-900">
-                      Watch the Video Tutorial
+                      Watch the Video
                     </h3>
                   </div>
-                  <div className="aspect-video bg-gray-100 rounded-xl flex items-center justify-center">
-                    <div className="text-center">
-                      <Youtube className="w-16 h-16 text-red-600 mx-auto mb-4" />
-                      <p className="text-gray-600">
-                        Video content would be embedded here
-                      </p>
-                    </div>
+                  <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden">
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      src={blogPost.youTubeLink.replace(
+                        "youtu.be/",
+                        "www.youtube.com/embed/"
+                      )}
+                      title="YouTube video"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full"
+                    />
                   </div>
                 </div>
               </motion.div>
@@ -151,21 +159,24 @@ const BlogDetail = () => {
             {/* Images related to blog */}
             <div className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
               <div className="columns-3 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4 space-y-4">
-                {imageItems.map((item, index) => (
-                  <div
-                    key={index}
-                    className="break-inside-avoid cursor-pointer bg-white rounded-xl overflow-hidden shadow-sm"
-                  >
-                    <Image
-                      src={item.image!}
-                      alt={item.label!}
-                      width={500}
-                      height={500}
-                      className="w-full h-auto object-contain"
-                      unoptimized
-                    />
-                  </div>
-                ))}
+                {Array.isArray(blogPost.image) &&
+                  blogPost.image
+                    .slice(1)
+                    .map((imgUrl: string, index: number) => (
+                      <div
+                        key={index}
+                        className="break-inside-avoid cursor-pointer bg-white rounded-xl overflow-hidden shadow-sm"
+                      >
+                        <Image
+                          src={imgUrl}
+                          alt={`${blogPost.title}-image-${index}`}
+                          width={500}
+                          height={500}
+                          className="w-full h-auto object-contain"
+                          unoptimized
+                        />
+                      </div>
+                    ))}
               </div>
             </div>
 

@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus,
@@ -56,7 +57,8 @@ interface BlogForm {
   featuredImageFile: File | null;
   featuredImageUrl: string;
   category: string;
-  tags: string;
+  tags: string;  tagList: string[]; // Add this new field for individual tags
+
   status: "draft" | "published" | "scheduled";
   publishDate: string;
   youtubeUrl: string;
@@ -83,13 +85,82 @@ const BlogsSection: React.FC = () => {
     featuredImageFile: null,
     featuredImageUrl: "",
     category: "",
-    tags: "",
+    tags: "",    tagList: [], // Add this for individual tags
     status: "draft",
     publishDate: "",
     youtubeUrl: "",
     images: [],
     imageFiles: [],
   });
+
+  // Add tag management state
+  const [currentTag, setCurrentTag] = useState('');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Text formatting function for Bold/Italic buttons
+  const applyFormatting = (format: 'bold' | 'italic' | 'underline') => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(start, end);
+    
+    let formattedText = '';
+    switch (format) {
+      case 'bold':
+        formattedText = `**${selectedText}**`;
+        break;
+      case 'italic':
+        formattedText = `*${selectedText}*`;
+        break;
+      case 'underline':
+        formattedText = `<u>${selectedText}</u>`;
+        break;
+    }
+
+    const newContent = 
+      textarea.value.substring(0, start) + 
+      formattedText + 
+      textarea.value.substring(end);
+      
+    setBlogForm(prev => ({ ...prev, content: newContent }));
+    
+    // Restore cursor position
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + formattedText.length, start + formattedText.length);
+    }, 0);
+  };
+
+  // Tag management functions
+  const addTag = (tag: string) => {
+    if (tag.trim() && !blogForm.tagList.includes(tag.trim())) {
+      setBlogForm(prev => ({
+        ...prev,
+        tagList: [...prev.tagList, tag.trim()]
+      }));
+    }
+    setCurrentTag('');
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setBlogForm(prev => ({
+      ...prev,
+      tagList: prev.tagList.filter(tag => tag !== tagToRemove)
+    }));
+  };
+
+  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addTag(currentTag);
+    } else if (e.key === 'Backspace' && !currentTag && blogForm.tagList.length > 0) {
+      const lastTag = blogForm.tagList[blogForm.tagList.length - 1];
+      removeTag(lastTag);
+    }
+  };
+
 
   const fetchBlogs = async () => {
     try {
@@ -142,13 +213,15 @@ const BlogsSection: React.FC = () => {
       featuredImageFile: null,
       featuredImageUrl: "",
       category: "",
-      tags: "",
+      tags: "",      tagList: [], // Add this
       status: "draft",
       publishDate: "",
       youtubeUrl: "",
       images: [], // preview URLs
       imageFiles: [], // actual image files
     });
+    setCurrentTag(''); // Reset current tag input
+
     setEditingBlog(null);
     setShowCreateModal(true);
   };
@@ -163,33 +236,44 @@ const BlogsSection: React.FC = () => {
       featuredImageFile: null,
       featuredImageUrl: featured,
       category: blog.category,
-      tags: Array.isArray(blog.tags) ? blog.tags.join(", ") : "",
+      tags: Array.isArray(blog.tags) ? blog.tags.join(", ") : "",      tagList: Array.isArray(blog.tags) ? blog.tags : [], // Populate tagList
       status: blog.status,
       publishDate: blog.publishDate || "",
-      youtubeUrl: blog.youtubeUrl || "",
+      youtubeUrl: blog.youTubeLink || "", // Fix: Use backend field name
       images: otherImages,
       imageFiles: [],
     });
+
+    setCurrentTag(''); // Reset tag input
 
     setEditingBlog(blog);
     setShowCreateModal(true);
   };
 
-  const handleSaveBlog = async () => {
-  const formData = new FormData()
-  formData.append("title", blogForm.title)
-  formData.append("content", blogForm.content)
-  formData.append("category", blogForm.category)
-  formData.append("status", blogForm.status)
-  formData.append("tags", blogForm.tags)
+const handleSaveBlog = async () => {
+  const formData = new FormData();
+  formData.append("title", blogForm.title);
+  formData.append("content", blogForm.content);
+  formData.append("category", blogForm.category);
+  formData.append("status", blogForm.status);
+  formData.append("tags", blogForm.tagList.join(",")); // ✅ Fix: Use tagList array
 
+  // Add featured image
   if (blogForm.featuredImageFile) {
-    formData.append("image", blogForm.featuredImageFile)
+    formData.append("image", blogForm.featuredImageFile);
   }
 
+  // ✅ Fix: Add all additional images - multiple files support
+  blogForm.imageFiles.forEach((file) => {
+    formData.append("image", file); // Backend expects "image" field name
+  });
+
+  if (blogForm.youtubeUrl) {
+    formData.append("youTubeLink", blogForm.youtubeUrl); // ✅ Fix: Correct backend field name
+  }
+ 
   try {
     if (editingBlog) {
-      // UPDATE blog
       await axios.put(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs/${editingBlog._id}`,
         formData,
@@ -203,7 +287,6 @@ const BlogsSection: React.FC = () => {
       toast.success("Blog updated successfully")
       await fetchBlogs();
     } else {
-      // CREATE blog
       await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs`,
         formData,
@@ -215,7 +298,6 @@ const BlogsSection: React.FC = () => {
         }
       )
       toast.success("Blog created successfully")
-      
     }
 
     setShowCreateModal(false)
@@ -227,19 +309,20 @@ const BlogsSection: React.FC = () => {
 }
 
 
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    if (!files.length) return;
+  const files = Array.from(e.target.files || []);
+  if (!files.length) return;
 
-    // Optional: store previews and real files separately if needed
-    const filePreviews = files.map((file) => URL.createObjectURL(file));
+  // Create previews for new files
+  const filePreviews = files.map((file) => URL.createObjectURL(file));
 
-    setBlogForm((prev) => ({
-      ...prev,
-      images: [...prev.images, ...filePreviews], // for preview
-      imageFiles: [...(prev.imageFiles || []), ...files], // actual files for backend
-    }));
-  };
+  setBlogForm((prev) => ({
+    ...prev,
+    images: [...prev.images, ...filePreviews], // Add to existing previews
+    imageFiles: [...(prev.imageFiles || []), ...files], // Add to existing files
+  }));
+};
 
   const handleFeaturedImageUpload = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -689,53 +772,12 @@ const BlogsSection: React.FC = () => {
 
                   {/* Toolbar */}
                   <div className="border border-gray-300 rounded-t-lg p-2 bg-gray-50 flex items-center space-x-2">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="p-2 hover:bg-gray-200 rounded cursor-pointer text-gray-900"
-                    >
-                      <Bold className="w-4 h-4" />
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="p-2 hover:bg-gray-200 rounded cursor-pointer text-gray-900"
-                    >
-                      <Italic className="w-4 h-4" />
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="p-2 hover:bg-gray-200 rounded cursor-pointer text-gray-900"
-                    >
-                      <Underline className="w-4 h-4" />
-                    </motion.button>
-                    <div className="w-px h-6 bg-gray-300 text-gray-900"></div>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="p-2 hover:bg-gray-200 rounded cursor-pointer text-gray-900"
-                    >
-                      <AlignLeft className="w-4 h-4" />
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="p-2 hover:bg-gray-200 rounded cursor-pointer text-gray-900"
-                    >
-                      <AlignCenter className="w-4 h-4" />
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="p-2 hover:bg-gray-200 rounded cursor-pointer text-gray-900"
-                    >
-                      <AlignRight className="w-4 h-4" />
-                    </motion.button>
+                   
                     <div className="w-px h-6 bg-gray-300"></div>
                     <input
                       type="file"
                       accept="image/*"
+                      multiple
                       onChange={handleImageUpload}
                       className="hidden text-gray-900"
                       id="content-image"
@@ -746,17 +788,12 @@ const BlogsSection: React.FC = () => {
                     >
                       <ImageIcon className="w-4 h-4" />
                     </label>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="p-2 hover:bg-gray-200 rounded cursor-pointer text-gray-900"
-                    >
-                      <Link className="w-4 h-4" />
-                    </motion.button>
+                   
                   </div>
 
                   {/* Content Textarea */}
                   <textarea
+                    ref={textareaRef}
                     rows={12}
                     value={blogForm.content}
                     onChange={(e) =>
@@ -831,18 +868,43 @@ const BlogsSection: React.FC = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Tags
                     </label>
+                    
+                    {/* Tag Display */}
+                    <div className="flex flex-wrap gap-2 mb-2 min-h-[2rem] p-2 border border-gray-300 rounded-lg bg-gray-50">
+                      {blogForm.tagList.length === 0 ? (
+                        <span className="text-gray-400 text-sm">No tags added yet...</span>
+                      ) : (
+                        blogForm.tagList.map((tag, index) => (
+                          <span
+                            key={index}
+                            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800 border border-blue-200"
+                          >
+                            <Tag className="w-3 h-3 mr-1" />
+                            {tag}
+                            <button
+                              onClick={() => removeTag(tag)}
+                              className="ml-2 text-blue-600 hover:text-blue-800 hover:bg-blue-200 rounded-full p-0.5"
+                              type="button"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </span>
+                        ))
+                      )}
+                    </div>
+                    
+                    {/* Tag Input */}
                     <input
                       type="text"
-                      value={blogForm.tags}
-                      onChange={(e) =>
-                        setBlogForm((prev) => ({
-                          ...prev,
-                          tags: e.target.value,
-                        }))
-                      }
+                      value={currentTag}
+                      onChange={(e) => setCurrentTag(e.target.value)}
+                      onKeyDown={handleTagKeyDown}
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
-                      placeholder="tag1, tag2, tag3..."
+                      placeholder="Type a tag and press Enter to add..."
                     />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Press Enter to add a tag, Backspace to remove the last tag
+                    </p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
