@@ -1,11 +1,48 @@
 "use client";
 
-import { ArrowBigRightDash } from "lucide-react";
 import RotatingText from "./rotatingtext";
 import { motion } from "framer-motion";
-
+import Head from "next/head";
 export default function HeroOverlay() {
   return (
+    <>
+       <Head>
+  {/* Title Tag (70 chars max, include keywords + location) */}
+  <title>Best Wedding Photography in Kolkata | Capture Precious Moments</title>
+
+  {/* Meta Description (150–160 chars, must include keywords naturally) */}
+  <meta
+    name="description"
+    content="Looking for the best wedding photography in Kolkata? We capture timeless moments with elegance, style, and soul. Professional wedding photographers in Kolkata."
+  />
+
+  {/* Open Graph Tags for Social Sharing */}
+  <meta property="og:title" content="Best Wedding Photography in Kolkata" />
+  <meta
+    property="og:description"
+    content="Professional Kolkata wedding photographers capturing smiles, love & stories with cinematic elegance. Book your special day with us."
+  />
+  <meta property="og:image" content="/og-image.jpg" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://ourmomentskolkata.com" />
+
+  {/* Twitter Card */}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Best Wedding Photography in Kolkata" />
+  <meta
+    name="twitter:description"
+    content="Wedding photographers in Kolkata capturing timeless memories with elegance & cinematic style."
+  />
+  <meta name="twitter:image" content="/og-image.jpg" />
+
+  {/* Extra SEO keywords (not critical for Google, but some crawlers use them) */}
+  <meta
+    name="keywords"
+    content="Kolkata wedding photography, best wedding photographers in Kolkata, Kolkata wedding photography packages, wedding cinematography Kolkata, Bengali wedding photography"
+  />
+</Head>
+
+    
     <motion.div
       className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 md:px-8 text-center pointer-events-none"
       initial={{ opacity: 0 }}
@@ -64,6 +101,7 @@ export default function HeroOverlay() {
       >
         Book Your Special Day
       </motion.button>
-    </motion.div>
+      </motion.div>
+      </>
   );
 }

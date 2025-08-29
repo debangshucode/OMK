@@ -7,7 +7,7 @@ import {
   TrendingUp
 } from "lucide-react"
 import axios from "axios"
-
+import Head from "next/head"
 interface Blog {
   _id: string
   title: string
@@ -86,6 +86,33 @@ const BlogHome: React.FC = () => {
 
   return (
     <section className="py-20 bg-gradient-to-br from-red-50 to-red-100 relative overflow-hidden">
+      <Head>
+        <title>Photography Blog | Tips, Stories & Inspiration | Kolkata</title>
+        <meta
+          name="description"
+          content="Read the latest photography tips, behind-the-scenes stories, and creative inspiration from our professional photographers in Kolkata."
+        />
+        <meta
+          name="keywords"
+          content="photography blog Kolkata, wedding photography tips, professional photography stories, pre-wedding photoshoot ideas, cinematic photography"
+        />
+        <meta property="og:title" content="Photography Blog | Our Moments Kolkata" />
+        <meta
+          property="og:description"
+          content="Explore our photography blog featuring tips, behind-the-scenes stories, and inspiration from professional wedding photographers in Kolkata."
+        />
+        <meta property="og:image" content="/images/weadingHome.jpg" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://ourmomentskolkata.com/blog" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Photography Blog | Our Moments Kolkata" />
+        <meta
+          name="twitter:description"
+          content="Professional photography blog from Kolkata wedding photographers sharing tips, stories, and inspiration."
+        />
+        <meta name="twitter:image" content="/images/weadingHome.jpg" />
+      </Head>
       {/* Background Blobs */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-20 left-20 w-32 h-32 bg-red-600 rounded-full"></div>

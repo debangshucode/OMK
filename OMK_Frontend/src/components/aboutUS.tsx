@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion,  Easing } from "framer-motion";
 import { Award, Users, Clock, Sparkles } from "lucide-react";
 import Book from "./book";
+import Head from "next/head";
 const AboutUs = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -122,6 +123,39 @@ const AboutUs = () => {
   ];
 
   return (
+<>
+      <Head>
+        <title>About Us | Best Wedding Photographers in Kolkata</title>
+        <meta
+          name="description"
+          content="We are professional wedding photographers in Kolkata, capturing timeless memories with photography, videography, pre-wedding shoots, and cinematography."
+        />
+        <meta
+          name="keywords"
+          content="wedding photography Kolkata, best photographers in Kolkata, pre-wedding photography Kolkata, wedding cinematography Kolkata, candid wedding photography Kolkata"
+        />
+        <meta property="og:title" content="About Us | Wedding Photography Kolkata" />
+        <meta
+          property="og:description"
+          content="Passionate wedding photographers in Kolkata capturing beautiful stories, smiles, and emotions with elegance & style."
+        />
+        <meta property="og:image" content="/images/weadingHome.jpg" />
+        <meta property="og:type" content="website" />
+        {/* <meta property="og:url" content="https://ourmomentskolkata.com/about" /> */}
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="About Us | Best Wedding Photographers in Kolkata"
+        />
+        <meta
+          name="twitter:description"
+          content="Professional wedding photography & cinematography services in Kolkata. Capturing love, smiles, and timeless stories."
+        />
+        <meta name="twitter:image" content="/images/weadingHome.jpg" />
+      </Head>
+
+
     <div
       id="about"
       className="min-h-screen bg-gradient-to-br from-white to-red-50"
@@ -271,7 +305,8 @@ const AboutUs = () => {
           </div>
         </div>
       </motion.section>
-    </div>
+      </div>
+      </>
   );
 };
 
